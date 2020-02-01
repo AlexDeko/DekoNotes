@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">DekoNotes</string>
+    <string name="settings">Настройки</string>
+    <string name="notes">Заметки</string>
+    <string name="main">Начальная страница</string>
+    <string name="save">Сохранить</string>
+    <string name="delete">Удалить</string>
+    <string name="toast_save">данные сохранены</string>
+    <string name="toast_notes">Отркыть записную книжку</string>
+    <string name="toast_main">Отркыть начальную страницу</string>
+
+</resources>
