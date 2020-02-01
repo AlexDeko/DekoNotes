@@ -6,7 +6,8 @@
     <string name="save">Сохранить</string>
     <string name="delete">Удалить</string>
     <string name="toast_save">данные сохранены</string>
-    <string name="toast_notes">Отркыть записную книжку</string>
+    <string name="toast_notes">Отркыты заметки</string>
+    <string name="toast_settings">Отркыты настройки</string>
     <string name="toast_main">Отркыть начальную страницу</string>
 
 </resources>
