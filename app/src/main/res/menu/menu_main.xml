@@ -9,5 +9,5 @@
         android:orderInCategory="100"
         android:icon="@drawable/ic_settings_art"
         android:title="@string/settings"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always"/>
 </menu>

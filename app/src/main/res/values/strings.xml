@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">DekoNotes</string>
     <string name="settings">Настройки</string>
+    <string name="add">Добавить</string>
     <string name="notes">Заметки</string>
     <string name="main">Начальная страница</string>
     <string name="save">Сохранить</string>
