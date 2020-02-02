@@ -9,7 +9,6 @@
     tools:context=".MainActivity">
 
     <include layout="@layout/toolbar" />
-
     <EditText
         android:id="@+id/inputNote"
         android:layout_width="match_parent"
