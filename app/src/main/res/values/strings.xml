@@ -11,6 +11,10 @@
     <string name="toast_settings">Отркыты настройки</string>
     <string name="toast_main">Отркыть начальную страницу</string>
     <string name="add_btn">Добавить</string>
+    <string name="title">Заговолок</string>
+    <string name="deadline_check">Как насчёт Deadline?</string>
+    <string name="deadline_day">Deadline day</string>
+    <string name="text_notes">Ваш великолепный текст</string>
     <string name="newString">Новая строка</string>
 
     <string name="large_text">

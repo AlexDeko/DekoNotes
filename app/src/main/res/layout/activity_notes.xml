@@ -1,24 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/scroll"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center_vertical"
-    android:orientation="vertical"
-    android:padding="50dp"
-    tools:context=".MainActivity">
+    android:layout_height="wrap_content">
 
-    <include layout="@layout/toolbar" />
-    <EditText
-        android:id="@+id/inputNote"
+
+    <LinearLayout
+        android:id="@+id/linerLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        />
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/btnSaveNote"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/save" />
+        <include layout="@layout/toolbar"/>
 
-</LinearLayout>
+        <EditText
+            android:id="@+id/editTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/notes_liner_margin"
+            android:ems="10"
+            android:hint="@string/title"
+            android:inputType="textPersonName" />
+
+        <EditText
+            android:id="@+id/editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/notes_liner_margin"
+            android:ems="10"
+            android:hint="@string/text_notes"
+            android:inputType="textPersonName" />
+
+        <CheckBox
+            android:id="@+id/checkDeadline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/notes_liner_margin"
+            android:text="@string/deadline_check" />
+
+        <LinearLayout
+            android:id="@+id/linerLayoutCalendar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/notes_liner_margin"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/editDateDeadline"
+                android:layout_width="@dimen/notes_liner_sizeTextDate"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/notes_liner_itemMargin"
+                android:layout_weight="1"
+                android:ems="10"
+                android:gravity="bottom"
+                android:hint="@string/deadline_day"
+                android:inputType="date" />
+
+            <ImageButton
+                android:id="@+id/imgBtnCalendar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@null"
+                app:srcCompat="@drawable/ic_calendar_20" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+</ScrollView>
