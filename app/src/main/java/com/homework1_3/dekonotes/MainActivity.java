@@ -18,6 +18,8 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences sharedPref;
     private String result;
     private String[] content;
+    private FloatingActionButton addNewNote;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +46,9 @@ public class MainActivity extends AppCompatActivity {
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
         myToolbar.setLogo(getDrawable(R.drawable.ic_notepad_12));
+
+        initViews();
+        btnAddNote();
 
         updateList();
         content = prepareContent();
@@ -77,6 +83,21 @@ public class MainActivity extends AppCompatActivity {
             public void onRefresh() {
                 updateList();
                 swipeLayout.setRefreshing(false);
+            }
+        });
+    }
+
+    private void initViews(){
+        addNewNote =findViewById(R.id.FABAddNote);
+    }
+
+    private void btnAddNote(){
+        addNewNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent startCreateNewNote = new Intent(MainActivity.this,
+                        NotesActivity.class);
+                startActivity(startCreateNewNote);
             }
         });
     }
