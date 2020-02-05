@@ -1,10 +1,9 @@
-package com.homework1_3.dekonotes;
+package com.homework1_3.dekonotes.activity;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,14 +12,14 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.homework1_3.dekonotes.R;
+
 import java.util.Calendar;
-import java.util.Date;
 
 public class NotesActivity extends AppCompatActivity {
 
@@ -43,7 +42,6 @@ public class NotesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_notes);
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
-        myToolbar.setLogo(getDrawable(R.drawable.ic_notepad_12));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         initViews();

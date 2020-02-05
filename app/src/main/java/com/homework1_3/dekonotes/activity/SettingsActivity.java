@@ -1,8 +1,10 @@
-package com.homework1_3.dekonotes;
+package com.homework1_3.dekonotes.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.homework1_3.dekonotes.R;
 
 public class SettingsActivity extends AppCompatActivity {
 

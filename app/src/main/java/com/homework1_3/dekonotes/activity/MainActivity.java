@@ -1,4 +1,4 @@
-package com.homework1_3.dekonotes;
+package com.homework1_3.dekonotes.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +19,11 @@ import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.homework1_3.dekonotes.App;
+import com.homework1_3.dekonotes.R;
+import com.homework1_3.dekonotes.data.AppDatabase;
+import com.homework1_3.dekonotes.note.Note;
+import com.homework1_3.dekonotes.note.NoteDao;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,7 +50,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
-        myToolbar.setLogo(getDrawable(R.drawable.ic_notepad_12));
+
+        AppDatabase appDatabase = App.getInstance().getDatabase();
+        NoteDao noteDao = appDatabase.noteDao();
+
 
         initViews();
         btnAddNote();
@@ -60,6 +68,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, final int position, long id) {
                 //final View item = (TextView) parent.getItemAtPosition(position);
+
+                //  list.removeView(item);
+
+                // listContentAdapter.notifyDataSetChanged();
+            }
+        });
+
+        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, final View view, final int position, long id) {
                 view.animate().setDuration(20).alpha(0)
                         .withEndAction(new Runnable() {
                             @Override
@@ -70,9 +88,8 @@ public class MainActivity extends AppCompatActivity {
                                 view.setAlpha(1);
                             }
                         });
-                //  list.removeView(item);
 
-                // listContentAdapter.notifyDataSetChanged();
+                return true;
             }
         });
 

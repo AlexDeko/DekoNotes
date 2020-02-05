@@ -2,6 +2,7 @@
 <resources>
     <dimen name="fab_margin">50dp</dimen>
     <dimen name="notes_liner_margin">20dp</dimen>
+    <dimen name="notes_liner_BigMargin">80dp</dimen>
     <dimen name="notes_liner_itemMargin">6dp</dimen>
     <dimen name="notes_liner_sizeTextDate">70dp</dimen>
 </resources>
