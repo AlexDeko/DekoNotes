@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -23,7 +24,8 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="51dp"
+        android:layout_margin="@dimen/notes_liner_margin"
         android:layout_marginStart="@dimen/notes_liner_margin"
         android:layout_marginEnd="@dimen/notes_liner_margin"
         android:orientation="horizontal">
@@ -51,7 +53,7 @@
         <View
             android:id="@+id/viewNull1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1" />
 
         <View
@@ -75,57 +77,82 @@
             android:background="@drawable/shape" />
     </LinearLayout>
 
-    <android.widget.GridLayout
+    <GridLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="199dp"
         android:layout_gravity="center"
-        android:columnCount="3"
-        android:orientation="horizontal">
+        android:layout_margin="@dimen/notes_liner_sizeTextDate"
+        android:columnCount="3">
+
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/number0" />
-        <Button
+            android:id="@+id/btnNumber1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/number1" />
+
         <Button
+            android:id="@+id/btnNumber2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/number2" />
+
         <Button
+            android:id="@+id/btnNumber3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/number3" />
+
         <Button
+            android:id="@+id/btnNumber4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/number4" />
+
         <Button
+            android:id="@+id/btnNumber5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/number5" />
+
         <Button
+            android:id="@+id/btnNumber6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/number6" />
+
         <Button
+            android:id="@+id/btnNumber7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/number7" />
-        <Button android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/number8" />
-        <Button android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/number9" />
+
         <Button
+            android:id="@+id/btnNumber8"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/numberS" />
+            android:text="@string/number8" />
 
-    </android.widget.GridLayout>
+        <Button
+            android:id="@+id/btnNumber9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/number9" />
 
+        <Button
+            android:id="@+id/btnNumber0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="1"
+            android:text="@string/number0" />
+
+        <Button
+            android:id="@+id/btnDeleteLastInput"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_delete_string" />
+
+
+    </GridLayout>
 
 
 </LinearLayout>

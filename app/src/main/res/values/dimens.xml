@@ -4,5 +4,8 @@
     <dimen name="notes_liner_margin">20dp</dimen>
     <dimen name="notes_liner_BigMargin">80dp</dimen>
     <dimen name="notes_liner_itemMargin">6dp</dimen>
-    <dimen name="notes_liner_sizeTextDate">70dp</dimen>
+    <dimen name="activity_vertical_margin">60dp</dimen>
+    <dimen name="activity_horizontal_margin">20dp</dimen>
+    <dimen name="list_miniMargin">10dp</dimen>
+
 </resources>

@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
                 simpleAdapterContent,
                 R.layout.list_item,
                 new String[]{TITLE, SUBTITLE},
-                new int[]{R.id.textItem1, R.id.textItem2}
+                new int[]{R.id.titleItem1, R.id.textItem2}
         );
     }
 
