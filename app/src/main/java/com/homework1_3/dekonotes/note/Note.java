@@ -35,24 +35,13 @@ public class Note {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
 
     public String getText() {
         return text;
     }
 
-    public void setText(String text) {
-        this.text = text;
-    }
-
     public int getDayDeadline() {
         return dayDeadline;
-    }
-
-    public void setDayDeadline(int dayDeadline) {
-        this.dayDeadline = dayDeadline;
     }
 
     public long getId() {
@@ -61,5 +50,17 @@ public class Note {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public void setDayDeadline(int dayDeadline) {
+        this.dayDeadline = dayDeadline;
     }
 }

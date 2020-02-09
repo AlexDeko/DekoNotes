@@ -8,18 +8,21 @@ import androidx.room.Update;
 
 import java.util.List;
 
+import io.reactivex.Completable;
+import io.reactivex.Flowable;
+
 @Dao
 public interface NoteDao {
 
     @Query("SELECT * FROM note")
-    List<Note> getAll();
+    Flowable<List<Note>> getAll();
     @Query("SELECT * FROM note WHERE id = :id")
-    Note getNoteById(long id);
+    Flowable<Note> getNoteById(long id);
     @Insert
-    void insertNote(Note note);
+    Completable insertNote(Note note);
     @Update
-    void update(Note note);
+    Completable update(Note note);
     @Delete
-    void delete(Note note);
+    Completable delete(Note note);
 }
 

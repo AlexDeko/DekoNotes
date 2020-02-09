@@ -1,11 +1,13 @@
 package com.homework1_3.dekonotes.activity;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -30,7 +32,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity {
+import io.reactivex.Completable;
+import io.reactivex.Flowable;
+
+public class MainActivity extends AppCompatActivity implements NoteDao {
 
     private final static String LOG_TAG = "sample";
     private final static String TITLE = "title";
@@ -43,6 +48,10 @@ public class MainActivity extends AppCompatActivity {
     private String result;
     private String[] content;
     private FloatingActionButton addNewNote;
+    BaseAdapter listContentAdapter;
+
+    AppDatabase appDatabase;
+    NoteDao noteDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,48 +60,28 @@ public class MainActivity extends AppCompatActivity {
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
-        AppDatabase appDatabase = App.getInstance().getDatabase();
-        NoteDao noteDao = appDatabase.noteDao();
+        appDatabase = App.getInstance().getDatabase();
+        noteDao = appDatabase.noteDao();
+
 
 
         initViews();
         btnAddNote();
+        setItemClicks();
+        setSwipe();
 
         updateList();
         content = prepareContent();
-        final BaseAdapter listContentAdapter = createAdapter(content);
+        listContentAdapter = createAdapter(content);
         list.setAdapter(listContentAdapter);
         listContentAdapter.notifyDataSetChanged();
 
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, final View view, final int position, long id) {
-                //final View item = (TextView) parent.getItemAtPosition(position);
 
-                //  list.removeView(item);
 
-                // listContentAdapter.notifyDataSetChanged();
-            }
-        });
 
-        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, final View view, final int position, long id) {
-                view.animate().setDuration(20).alpha(0)
-                        .withEndAction(new Runnable() {
-                            @Override
-                            public void run() {
-                                // list.removeView(item);
-                                simpleAdapterContent.remove(position);
-                                listContentAdapter.notifyDataSetChanged();
-                                view.setAlpha(1);
-                            }
-                        });
+    }
 
-                return true;
-            }
-        });
-
+    private void setSwipe(){
         final SwipeRefreshLayout swipeLayout = findViewById(R.id.swiperefresh);
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             // Будет вызван, когда пользователь потянет список вниз
@@ -115,6 +104,68 @@ public class MainActivity extends AppCompatActivity {
                 Intent startCreateNewNote = new Intent(MainActivity.this,
                         NotesActivity.class);
                 startActivity(startCreateNewNote);
+            }
+        });
+    }
+
+    private void setItemClicks(){
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, final View view, final int position, long id) {
+                //final View item = (TextView) parent.getItemAtPosition(position);
+
+                //  list.removeView(item);
+
+                // listContentAdapter.notifyDataSetChanged();
+            }
+        });
+
+        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, final View view, final int position, final long id) {
+                view.animate().setDuration(20).alpha(0)
+                        .withEndAction(new Runnable() {
+                            @Override
+                            public void run() {
+                                AlertDialog.Builder builderDialogDelete = new AlertDialog
+                                        .Builder(MainActivity.this );
+
+                                builderDialogDelete.setPositiveButton(R.string.ok,
+                                        new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        // User clicked OK button
+
+
+                                        // list.removeView(item);
+
+                                        //   Note note ;
+
+                                        //   appDatabase.noteDao().delete().observeOn(App.getInstance());
+
+
+
+                                        simpleAdapterContent.remove(position);
+                                        listContentAdapter.notifyDataSetChanged();
+                                        view.setAlpha(1);
+                                    }
+                                });
+
+                                builderDialogDelete.setNegativeButton(R.string.cancel,
+                                        new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        // User cancelled the dialog
+                                    }
+                                });
+
+                                builderDialogDelete.setMessage(R.string.dialog_message)
+                                        .setTitle(R.string.dialog_title)
+                                        .setIcon(R.drawable.ic_delete3d);
+                                AlertDialog dialogDelete = builderDialogDelete.create();
+                                dialogDelete.show();
+                            }
+                        });
+
+                return true;
             }
         });
     }
@@ -182,5 +233,35 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public Flowable<List<Note>> getAll() {
+        return null;
+    }
+
+    @Override
+    public Flowable<Note> getNoteById(long id) {
+        return null;
+    }
+
+    @Override
+    public Completable insertNote(Note note) {
+        return null;
+    }
+
+    @Override
+    public Completable update(Note note) {
+        return null;
+    }
+
+    @Override
+    public Completable delete(Note note) {
+        return null;
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
     }
 }
