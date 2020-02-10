@@ -35,7 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/shape" />
+            android:background="@drawable/shape_tint" />
 
         <View
             android:id="@+id/viewNull0"
@@ -48,7 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/shape" />
+            android:background="@drawable/shape_tint" />
 
         <View
             android:id="@+id/viewNull1"
@@ -61,7 +61,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/shape" />
+            android:background="@drawable/shape_tint" />
 
         <View
             android:id="@+id/viewNull2"
@@ -74,7 +74,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/shape" />
+            android:background="@drawable/shape_tint" />
     </LinearLayout>
 
     <GridLayout

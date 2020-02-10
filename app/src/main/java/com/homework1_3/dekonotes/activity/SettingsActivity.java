@@ -73,7 +73,7 @@ public class SettingsActivity extends AppCompatActivity {
                     error.setVisibility(View.VISIBLE);
                 } else {
                     error.setVisibility(View.INVISIBLE);
-                    
+
                 }
             }
         });
