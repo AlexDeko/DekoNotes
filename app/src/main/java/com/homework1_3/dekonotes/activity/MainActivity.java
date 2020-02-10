@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -66,9 +67,7 @@ public class MainActivity extends AppCompatActivity implements NoteDao {
 
 
         initViews();
-        btnAddNote();
-        setItemClicks();
-        setSwipe();
+
 
         updateList();
         content = prepareContent();
@@ -76,7 +75,9 @@ public class MainActivity extends AppCompatActivity implements NoteDao {
         list.setAdapter(listContentAdapter);
         listContentAdapter.notifyDataSetChanged();
 
-
+        btnAddNote();
+        setItemClicks();
+        setSwipe();
 
 
     }
@@ -227,7 +228,7 @@ public class MainActivity extends AppCompatActivity implements NoteDao {
         if (id == R.id.action_settings) {
             Toast.makeText(MainActivity.this, getString(R.string.toast_settings),
                     Toast.LENGTH_LONG).show();
-            targetIntent = new Intent(MainActivity.this, NotesActivity.class);
+            targetIntent = new Intent(MainActivity.this, SettingsActivity.class);
             startActivity(targetIntent);
             return true;
         }
@@ -235,29 +236,29 @@ public class MainActivity extends AppCompatActivity implements NoteDao {
         return super.onOptionsItemSelected(item);
     }
 
+
     @Override
-    public Flowable<List<Note>> getAll() {
+    public List<Note> getAll() {
         return null;
     }
 
     @Override
-    public Flowable<Note> getNoteById(long id) {
+    public Note getNoteById(long id) {
         return null;
     }
 
     @Override
-    public Completable insertNote(Note note) {
-        return null;
+    public void insertNote(Note note) {
     }
 
     @Override
-    public Completable update(Note note) {
-        return null;
+    public void update(Note note) {
+
     }
 
     @Override
-    public Completable delete(Note note) {
-        return null;
+    public void delete(Note note) {
+
     }
 
     @Override

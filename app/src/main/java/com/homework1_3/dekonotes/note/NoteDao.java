@@ -13,16 +13,17 @@ import io.reactivex.Flowable;
 
 @Dao
 public interface NoteDao {
-
+   // Flowable
     @Query("SELECT * FROM note")
-    Flowable<List<Note>> getAll();
+    List<Note> getAll();
     @Query("SELECT * FROM note WHERE id = :id")
-    Flowable<Note> getNoteById(long id);
+    Note getNoteById(long id);
+   // Completable
     @Insert
-    Completable insertNote(Note note);
+    void insertNote(Note note);
     @Update
-    Completable update(Note note);
+    void update(Note note);
     @Delete
-    Completable delete(Note note);
+    void delete(Note note);
 }
 

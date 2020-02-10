@@ -1,6 +1,7 @@
 package com.homework1_3.dekonotes.note;
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity
@@ -17,13 +18,13 @@ public class Note {
         this.text = text;
         this.dayDeadline = dayDeadline;
     }
-
+    @Ignore
     public Note(long id, String text, int dayDeadline) {
         this.id = id;
         this.text = text;
         this.dayDeadline = dayDeadline;
     }
-
+    @Ignore
     public Note(long id, String text) {
         this.id = id;
         this.text = text;

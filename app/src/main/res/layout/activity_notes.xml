@@ -48,7 +48,7 @@
 
             <EditText
                 android:id="@+id/editDateDeadline"
-                android:layout_width="@dimen/notes_liner_sizeTextDate"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="@dimen/notes_liner_itemMargin"
                 android:layout_weight="1"

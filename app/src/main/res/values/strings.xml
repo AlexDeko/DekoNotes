@@ -2,6 +2,8 @@
     <string name="app_name">DekoNotes</string>
     <string name="settings">Настройки</string>
     <string name="add">Добавить</string>
+    <string name="pin">****</string>
+    <string name="enter_new_pin">Введите новый pin code</string>
     <string name="notes">Заметки</string>
     <string name="main">Начальная страница</string>
     <string name="save">Сохранить</string>
@@ -33,6 +35,7 @@
     <string name="dialog_title">Опасно</string>
     <string name="ok">Ок</string>
     <string name="cancel">Отмена</string>
+    <string name="error_enter_newPin">Введите, пожалуйста, 4 символа.</string>
 
 
 

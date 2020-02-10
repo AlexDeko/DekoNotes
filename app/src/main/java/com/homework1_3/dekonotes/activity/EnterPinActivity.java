@@ -35,12 +35,16 @@ public class EnterPinActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enter_pin);
 
+        storePin();
         initViews();
         setClickNumberOnKeyboard();
         setClickDeleteLastInput();
 
 
 
+    }
+
+    private void storePin(){
 
     }
 
