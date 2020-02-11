@@ -7,16 +7,16 @@ import androidx.room.PrimaryKey;
 
 @Entity
 public class Note {
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private long id;
   //  @ColumnInfo(name = "title")
     private String title;
   //  @ColumnInfo(name = "text")
     private String text;
    // @ColumnInfo(name = "deadline")
-    private int dayDeadline;
+    private long dayDeadline;
 
-    public Note(long id, String title, String text, int dayDeadline) {
+    public Note(long id, String title, String text, long dayDeadline) {
         this.id = id;
         this.title = title;
         this.text = text;
@@ -34,18 +34,15 @@ public class Note {
         this.text = text;
     }
 
-
-
     public String getTitle() {
         return title;
     }
-
 
     public String getText() {
         return text;
     }
 
-    public int getDayDeadline() {
+    public long getDayDeadline() {
         return dayDeadline;
     }
 
@@ -65,7 +62,7 @@ public class Note {
         this.text = text;
     }
 
-    public void setDayDeadline(int dayDeadline) {
+    public void setDayDeadline(long dayDeadline) {
         this.dayDeadline = dayDeadline;
     }
 }

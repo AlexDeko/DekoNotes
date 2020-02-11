@@ -33,15 +33,17 @@ import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
+import io.reactivex.Scheduler;
+import io.reactivex.Single;
 import io.reactivex.exceptions.Exceptions;
+import io.reactivex.functions.Consumer;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 
-public class MainActivity extends AppCompatActivity implements NoteDao {
+public class MainActivity extends AppCompatActivity {
 
     private final static String LOG_TAG = "sample";
     private final static String TITLE = "title";
@@ -97,18 +99,16 @@ public class MainActivity extends AppCompatActivity implements NoteDao {
                     }
                 });
 
+        appDatabase.noteDao().getAll()
+                .observeOn(Schedulers.io())
+                .subscribe(new Consumer<List<Note>>() {
+                    @Override
+                    public void accept(List<Note> notes) throws Exception {
+                        //..
+                    }
+                });
 
 
-
-//                .noteDao().getNoteById(1)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(Schedulers.newThread())
-//                .subscribe(new Consumer<List<Note>>() {
-//                    @Override
-//                    public void accept(List<Note> notes)throws Exception {
-//                        //
-//                    }
-//                });
 
 
 
@@ -146,6 +146,7 @@ public class MainActivity extends AppCompatActivity implements NoteDao {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, final int position, long id) {
                 //final View item = (TextView) parent.getItemAtPosition(position);
+
 
 
                 //  list.removeView(item);
@@ -270,32 +271,11 @@ public class MainActivity extends AppCompatActivity implements NoteDao {
     }
 
 
-    @Override
-    public List<Note> getAll() {
-        return null;
-    }
 
-    @Override
-    public Note getNoteById(long id) {
-        return null;
-    }
-
-    @Override
-    public void insertNote(Note note) {
-    }
-
-    @Override
-    public void update(Note note) {
-
-    }
-
-    @Override
-    public void delete(Note note) {
-
-    }
 
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
 
     }
+
 }

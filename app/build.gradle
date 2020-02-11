@@ -26,13 +26,21 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'com.google.android.material:material:1.1.0'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
-    implementation "android.arch.persistence.room:runtime:1.0.0"
-    annotationProcessor "android.arch.persistence.room:compiler:1.0.0"
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
-    // RxJava support for Room
-    implementation 'android.arch.persistence.room:rxjava2:1.0.0-alpha5'
+    //Room
+   // implementation "androidx.arch.persistence.room:runtime:${rootProject.ext.roomVersion}"
+   // annotationProcessor "androidx.arch.persistence.room:compiler:${rootProject.ext.roomVersion}"
+   // implementation "androidx.arch.persistence.room:rxjava2:${rootProject.ext.roomVersion}"
     // Testing support
-    androidTestImplementation 'android.arch.core:core-testing:1.0.0-alpha5'
+  // androidTestImplementation 'androidx.arch.core:core-testing:2.1.0'
+
+
+    // Room
+    implementation "androidx.room:room-runtime:${rootProject.ext.roomVersion}"
+    annotationProcessor "androidx.room:room-compiler:${rootProject.ext.roomVersion}"
+    implementation "androidx.room:room-rxjava2:${rootProject.ext.roomVersion}"
+    // Testing support
+    androidTestImplementation 'android.arch.core:core-testing:1.1.1'
 }

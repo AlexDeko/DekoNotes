@@ -46,17 +46,17 @@
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/FABAddNote"
-            style="@style/Widget.AppCompat.ImageButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="@dimen/fab_margin"
-            android:background="@null"
-            android:clickable="true"
-            app:borderWidth="0dp"
-            app:elevation="6dp"
-            app:backgroundTint="@color/colorBlueToolBar"
-            app:srcCompat="@drawable/ic_add_black_24dp" />
+        android:id="@+id/FABAddNote"
+        style="@style/Widget.AppCompat.ImageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:background="@null"
+        android:clickable="true"
+        app:backgroundTint="@color/colorBlueToolBar"
+        app:borderWidth="0dp"
+        app:elevation="6dp"
+        app:srcCompat="@drawable/ic_add_black_24dp" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

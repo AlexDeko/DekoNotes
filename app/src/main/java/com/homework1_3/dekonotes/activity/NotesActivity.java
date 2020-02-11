@@ -18,6 +18,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.homework1_3.dekonotes.R;
+import com.homework1_3.dekonotes.data.AppDatabase;
+import com.homework1_3.dekonotes.note.Note;
 
 import java.util.Calendar;
 
@@ -34,6 +36,8 @@ public class NotesActivity extends AppCompatActivity {
     private EditText dateCalendar;
     private DatePickerDialog datePickerDialog;
     private Calendar todayCalendar;
+
+    AppDatabase appDatabase;
 
 
     @Override
@@ -78,7 +82,13 @@ public class NotesActivity extends AppCompatActivity {
         imgBtnCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Note id;
+                long date = todayCalendar.getTimeInMillis() ;
                 setDateCalendar();
+                String titleNote = title.getText().toString();
+                String textNote = text.getText().toString();
+                Note note = new Note(0,titleNote,textNote, date);
+                appDatabase.noteDao().insertNote(note);
             }
         });
 
