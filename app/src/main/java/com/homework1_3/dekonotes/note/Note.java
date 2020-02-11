@@ -1,5 +1,6 @@
 package com.homework1_3.dekonotes.note;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
@@ -8,8 +9,11 @@ import androidx.room.PrimaryKey;
 public class Note {
     @PrimaryKey
     private long id;
+  //  @ColumnInfo(name = "title")
     private String title;
+  //  @ColumnInfo(name = "text")
     private String text;
+   // @ColumnInfo(name = "deadline")
     private int dayDeadline;
 
     public Note(long id, String title, String text, int dayDeadline) {

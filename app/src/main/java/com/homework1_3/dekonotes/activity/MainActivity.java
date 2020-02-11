@@ -29,12 +29,17 @@ import com.homework1_3.dekonotes.note.Note;
 import com.homework1_3.dekonotes.note.NoteDao;
 
 import java.util.ArrayList;
+import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
+import io.reactivex.exceptions.Exceptions;
+import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity implements NoteDao {
 
@@ -61,11 +66,6 @@ public class MainActivity extends AppCompatActivity implements NoteDao {
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
-        appDatabase = App.getInstance().getDatabase();
-        noteDao = appDatabase.noteDao();
-
-
-
         initViews();
 
 
@@ -78,6 +78,38 @@ public class MainActivity extends AppCompatActivity implements NoteDao {
         btnAddNote();
         setItemClicks();
         setSwipe();
+
+
+        appDatabase = App.getInstance().getDatabase();
+        noteDao = appDatabase.noteDao();
+        appDatabase.noteDao().getNoteById(1)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe(new DisposableSingleObserver<Note>() {
+                    @Override
+                    public void onSuccess(Note note) {
+                        // ...
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        // ...
+                    }
+                });
+
+
+
+
+//                .noteDao().getNoteById(1)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(Schedulers.newThread())
+//                .subscribe(new Consumer<List<Note>>() {
+//                    @Override
+//                    public void accept(List<Note> notes)throws Exception {
+//                        //
+//                    }
+//                });
+
 
 
     }
@@ -114,6 +146,7 @@ public class MainActivity extends AppCompatActivity implements NoteDao {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, final int position, long id) {
                 //final View item = (TextView) parent.getItemAtPosition(position);
+
 
                 //  list.removeView(item);
 
