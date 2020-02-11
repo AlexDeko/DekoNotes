@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,7 +22,17 @@ import com.homework1_3.dekonotes.R;
 import com.homework1_3.dekonotes.data.AppDatabase;
 import com.homework1_3.dekonotes.note.Note;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.observers.DisposableCompletableObserver;
+import io.reactivex.schedulers.Schedulers;
+
 
 public class NotesActivity extends AppCompatActivity {
 
@@ -29,6 +40,7 @@ public class NotesActivity extends AppCompatActivity {
     private Button btnSaveNote;
     private SharedPreferences myNoteSharedPref;
     private static String NOTE_TEXT = "note_text";
+    private static final String TAG = "Note";
     private ImageButton imgBtnCalendar;
     private CheckBox checkDeadline;
     private EditText title;
@@ -38,6 +50,7 @@ public class NotesActivity extends AppCompatActivity {
     private Calendar todayCalendar;
 
     AppDatabase appDatabase;
+    Note note;
 
 
     @Override
@@ -55,10 +68,14 @@ public class NotesActivity extends AppCompatActivity {
 
     private void initViews() {
         imgBtnCalendar = findViewById(R.id.imgBtnCalendar);
+        imgBtnCalendar.setClickable(false);
+        imgBtnCalendar.setEnabled(false);
         checkDeadline = findViewById(R.id.checkDeadline);
         title = findViewById(R.id.editTitle);
         text = findViewById(R.id.editText);
         dateCalendar = findViewById(R.id.editDateDeadline);
+        dateCalendar.setClickable(false);
+        dateCalendar.setEnabled(false);
 
 
         //inputNote = findViewById(R.id.inputNote);
@@ -82,13 +99,7 @@ public class NotesActivity extends AppCompatActivity {
         imgBtnCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Note id;
-                long date = todayCalendar.getTimeInMillis() ;
                 setDateCalendar();
-                String titleNote = title.getText().toString();
-                String textNote = text.getText().toString();
-                Note note = new Note(0,titleNote,textNote, date);
-                appDatabase.noteDao().insertNote(note);
             }
         });
 
@@ -96,14 +107,26 @@ public class NotesActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(checkDeadline.isChecked()){
-
+                    imgBtnCalendar.setClickable(true);
+                    imgBtnCalendar.setEnabled(true);
+                    dateCalendar.setClickable(true);
+                    dateCalendar.setEnabled(true);
+                    Date date = new Date();
+                    DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy",
+                            Locale.getDefault());
+                    dateCalendar.setText(dateFormat.format(date));
+                } else {
+                    dateCalendar.setText(null);
+                    imgBtnCalendar.setClickable(false);
+                    imgBtnCalendar.setEnabled(false);
+                    dateCalendar.setClickable(false);
+                    dateCalendar.setEnabled(false);
                 }
             }
         });
     }
 
     private void setDateCalendar(){
-
         todayCalendar = Calendar.getInstance();
         datePickerDialog = new DatePickerDialog(
                 this,
@@ -113,31 +136,50 @@ public class NotesActivity extends AppCompatActivity {
                 todayCalendar.get(Calendar.DAY_OF_MONTH)
         );
         datePickerDialog.show();
-
-
     }
-
-//    private void setInitialDateTime() {
-//
-//        currentDateTime.setText(DateUtils.formatDateTime(this,
-//                dateAndTime.getTimeInMillis(),
-//                DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR
-//                        | DateUtils.FORMAT_SHOW_TIME));
-//    }
 
     DatePickerDialog.OnDateSetListener onDateSet = new DatePickerDialog.OnDateSetListener() {
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
             todayCalendar.set(Calendar.YEAR, year);
             todayCalendar.set(Calendar.MONTH, monthOfYear);
             todayCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-           // setInitialDateTime();
+            Date date = new Date();
+            date.setTime(todayCalendar.getTimeInMillis());
+            DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+            dateCalendar.setText(dateFormat.format(date.getTime()));
         }
     };
 
-//    private void getDateFromSharedPref(){
-//        String noteTxt = myNoteSharedPref.getString(NOTE_TEXT, "");
-//        inputNote.setText(noteTxt);
-//    }
+    private void saveNote(){
+        try {
+            long date = todayCalendar.getTimeInMillis() ;
+            String titleNote = title.getText().toString();
+            String textNote = text.getText().toString();
+            note = new Note(0,titleNote,textNote,checkDeadline.isChecked(), date);
+        } catch (Exception e){
+            Log.e(TAG, "Error");
+        }
+
+        try {
+            appDatabase.noteDao().insertNote(note)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new DisposableCompletableObserver() {
+                        @Override
+                        public void onComplete() {
+                            Log.i(TAG, "Новая заметка");
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Log.e(TAG, "Ошибка с новой заметкой");
+                        }
+                    });
+        } catch (Exception e){
+            Log.e(TAG, "ERROR_SAVE");
+        }
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -145,26 +187,21 @@ public class NotesActivity extends AppCompatActivity {
         return true;
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
         Intent targetIntent;
-       if (id == R.id.action_settings) {
-            Toast.makeText(NotesActivity.this, getString(R.string.toast_settings),
+       if (id == R.id.action_save) {
+            saveNote();
+            Toast.makeText(NotesActivity.this, getString(R.string.toast_database_save),
                     Toast.LENGTH_LONG).show();
-           // targetIntent = new Intent(MainActivity.this, NotesActivity.class);
-           // startActivity(targetIntent);
+            //targetIntent = new Intent(MainActivity.this, NotesActivity.class);
+            //startActivity(targetIntent);
+
             return true;
-        }
-       if (id == android.R.id.home) {
-            targetIntent = new Intent(NotesActivity.this, MainActivity.class);
-             startActivity(targetIntent);
         }
 
         return super.onOptionsItemSelected(item);
     }
-
-
 }

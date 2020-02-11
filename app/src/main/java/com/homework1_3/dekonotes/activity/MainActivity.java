@@ -38,6 +38,7 @@ import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Scheduler;
 import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.exceptions.Exceptions;
 import io.reactivex.functions.Consumer;
 import io.reactivex.observers.DisposableSingleObserver;
@@ -82,31 +83,31 @@ public class MainActivity extends AppCompatActivity {
         setSwipe();
 
 
-        appDatabase = App.getInstance().getDatabase();
-        noteDao = appDatabase.noteDao();
-        appDatabase.noteDao().getNoteById(1)
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .subscribe(new DisposableSingleObserver<Note>() {
-                    @Override
-                    public void onSuccess(Note note) {
-                        // ...
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        // ...
-                    }
-                });
-
-        appDatabase.noteDao().getAll()
-                .observeOn(Schedulers.io())
-                .subscribe(new Consumer<List<Note>>() {
-                    @Override
-                    public void accept(List<Note> notes) throws Exception {
-                        //..
-                    }
-                });
+//        appDatabase = App.getInstance().getDatabase();
+//        noteDao = appDatabase.noteDao();
+//        appDatabase.noteDao().getNoteById(1)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new DisposableSingleObserver<Note>() {
+//                    @Override
+//                    public void onSuccess(Note note) {
+//                        // ...
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        // ...
+//                    }
+//                });
+//
+//        appDatabase.noteDao().getAll()
+//                .observeOn(Schedulers.io())
+//                .subscribe(new Consumer<List<Note>>() {
+//                    @Override
+//                    public void accept(List<Note> notes) throws Exception {
+//                        //..
+//                    }
+//                });
 
 
 
@@ -273,9 +274,9 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {
-
-    }
+//    @Override
+//    public void onPointerCaptureChanged(boolean hasCapture) {
+//
+//    }
 
 }

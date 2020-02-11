@@ -35,6 +35,7 @@
     <string name="dialog_title">Опасно</string>
     <string name="ok">Ок</string>
     <string name="cancel">Отмена</string>
+    <string name="toast_database_save">Сохранено.</string>
     <string name="error_enter_newPin">Введите, пожалуйста, 4 символа.</string>
 
 
