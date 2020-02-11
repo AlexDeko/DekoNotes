@@ -20,8 +20,8 @@
 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="88dp"
             android:layout_gravity="start"
+            android:layout_marginTop="@dimen/list_item_margin"
             android:text="TextView"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -31,9 +31,11 @@
             style="@style/TextAppearance.MaterialComponents.Body2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="84dp"
             android:layout_gravity="start"
+            android:layout_marginTop="@dimen/list_item_margin"
             android:text="TextView"
+            android:maxLines="3"
+            android:ellipsize="end"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/titleItem1" />
 
@@ -43,7 +45,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:layout_marginTop="100dp"
+            android:layout_marginTop="@dimen/list_item_margin"
             android:ems="10"
             android:text="TextView"
             app:layout_constraintStart_toStartOf="parent"
