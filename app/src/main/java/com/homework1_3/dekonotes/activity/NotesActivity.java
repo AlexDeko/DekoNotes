@@ -163,7 +163,6 @@ public class NotesActivity extends AppCompatActivity {
         }
 
         try {
-
             appDatabase.noteDao().insertNote(note)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())

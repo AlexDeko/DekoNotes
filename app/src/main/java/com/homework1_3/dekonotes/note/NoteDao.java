@@ -11,13 +11,14 @@ import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
+import io.reactivex.Maybe;
 import io.reactivex.Single;
 
 @Dao
 public interface NoteDao {
    // Flowable
     @Query("SELECT * FROM note")
-    Flowable<List<Note>> getAll();
+    Maybe<List<Note>> getAll();
     @Query("SELECT * FROM note WHERE id = :id")
     Single<Note> getNoteById(long id);
    // Completable

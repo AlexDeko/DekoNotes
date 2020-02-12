@@ -31,15 +31,18 @@ import com.homework1_3.dekonotes.note.NoteDao;
 import java.util.ArrayList;
 import java.util.EmptyStackException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
+import io.reactivex.MaybeObserver;
 import io.reactivex.Scheduler;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.exceptions.Exceptions;
 import io.reactivex.observers.DisposableCompletableObserver;
 import io.reactivex.observers.DisposableSingleObserver;
@@ -61,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
     BaseAdapter listContentAdapter;
 
     AppDatabase appDatabase;
+    List<Note> baseListNote;
    // NoteDao noteDao;
 
     @Override
@@ -227,15 +231,40 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getNotes() {
-        appDatabase.noteDao().getAll()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<List<Note>>() {
-            @Override
-            public void accept(List<Note> notes) throws Exception {
+//        appDatabase.noteDao().getAll()
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Consumer<List<Note>>() {
+//            @Override
+//            public void accept(List<Note> notes) throws Exception {
+//
+//            }
+//        });
 
-            }
-        });
+         appDatabase.noteDao().getAll().subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new MaybeObserver<List<Note>>() {
+
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(List<Note> notes) {
+                        baseListNote = notes;
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 
     @NonNull
@@ -243,7 +272,11 @@ public class MainActivity extends AppCompatActivity {
         list = findViewById(R.id.list);
         simpleAdapterContent = new ArrayList<>();
 
-
+        getNotes();
+        for (Iterator<Note> it = baseListNote.iterator(); it.hasNext(); ) {
+            Note note = it.next();
+            
+        }
 
         for (String value : values) {
             Map<String, String> row = new HashMap<>();
@@ -251,6 +284,7 @@ public class MainActivity extends AppCompatActivity {
             row.put(SUBTITLE, String.valueOf(value.length()));
             simpleAdapterContent.add(row);
         }
+
         return new SimpleAdapter(
                 this,
                 simpleAdapterContent,
