@@ -33,6 +33,7 @@ import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
@@ -40,7 +41,7 @@ import io.reactivex.Scheduler;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.exceptions.Exceptions;
-import io.reactivex.functions.Consumer;
+import io.reactivex.observers.DisposableCompletableObserver;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 
@@ -60,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     BaseAdapter listContentAdapter;
 
     AppDatabase appDatabase;
-    NoteDao noteDao;
+   // NoteDao noteDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,7 +146,8 @@ public class MainActivity extends AppCompatActivity {
     private void setItemClicks(){
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, final View view, final int position, long id) {
+            public void onItemClick(AdapterView<?> parent, final View view, final int position,
+                                    long id) {
                 //final View item = (TextView) parent.getItemAtPosition(position);
 
 
@@ -207,6 +209,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateList() {
+       // appDatabase.noteDao().
         sharedPref = getSharedPreferences(PREF, Context.MODE_PRIVATE);
         // SharedPreferences.Editor myEditor = sharedPref.edit();
         if (sharedPref.contains(TEXT)) {
@@ -223,10 +226,24 @@ public class MainActivity extends AppCompatActivity {
         content = prepareContent();
     }
 
+    public void getNotes() {
+        appDatabase.noteDao().getAll()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<List<Note>>() {
+            @Override
+            public void accept(List<Note> notes) throws Exception {
+
+            }
+        });
+    }
+
     @NonNull
     private BaseAdapter createAdapter(String[] values) {
         list = findViewById(R.id.list);
         simpleAdapterContent = new ArrayList<>();
+
+
 
         for (String value : values) {
             Map<String, String> row = new HashMap<>();
