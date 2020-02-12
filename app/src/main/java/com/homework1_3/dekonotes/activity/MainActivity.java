@@ -8,9 +8,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,29 +32,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.reactivex.MaybeObserver;
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final static String LOG_TAG = "sample";
+    private final static String LOG = "MAIN";
     private final static String TITLE_NOTE = "title";
     private final static String TEXT_NOTE = "subtitle";
     private final static String DEADLINE_NOTE = "deadline";
-    private final static String TEXT = "text";
-    private final static String PREF = "pref";
-    List<Map<String, String>> simpleAdapterContent;
+    List<Map<String, String>> simpleAdapterContent = new ArrayList<>();
     private ListView list;
-    private SharedPreferences sharedPref;
-    private String result;
     private FloatingActionButton addNewNote;
     BaseAdapter listContentAdapter;
-
+    // Контейнер для подписок. См. onDestroy()
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
     AppDatabase appDatabase = App.getInstance().getDatabase();
-    List<Note> baseListNote;
-   // NoteDao noteDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,9 +60,6 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar);
 
         initViews();
-
-
-     //   updateList();
         listContentAdapter = createAdapter();
         list.setAdapter(listContentAdapter);
         listContentAdapter.notifyDataSetChanged();
@@ -77,37 +68,7 @@ public class MainActivity extends AppCompatActivity {
         setItemClicks();
         setSwipe();
 
-
-//        appDatabase = App.getInstance().getDatabase();
-//        noteDao = appDatabase.noteDao();
-//        appDatabase.noteDao().getNoteById(1)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new DisposableSingleObserver<Note>() {
-//                    @Override
-//                    public void onSuccess(Note note) {
-//                        // ...
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        // ...
-//                    }
-//                });
-//
-//        appDatabase.noteDao().getAll()
-//                .observeOn(Schedulers.io())
-//                .subscribe(new Consumer<List<Note>>() {
-//                    @Override
-//                    public void accept(List<Note> notes) throws Exception {
-//                        //..
-//                    }
-//                });
-
-
-
-
-
+        subscribe();
     }
 
     private void setSwipe(){
@@ -116,10 +77,35 @@ public class MainActivity extends AppCompatActivity {
             // Будет вызван, когда пользователь потянет список вниз
             @Override
             public void onRefresh() {
-                updateList();
+                subscribe();
                 swipeLayout.setRefreshing(false);
             }
         });
+    }
+
+    private void subscribe() {
+        appDatabase.noteDao().getAll()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<List<Note>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        // Disposable представляет собой интерфейс для работы с подпиской. Через него можно отписаться
+                        compositeDisposable.add(d);
+                    }
+                    @Override
+                    public void onNext(List<Note> note) {
+                        updateList(note);
+                    }
+                    @Override
+                    public void onError(Throwable e) {
+                        // TODO отобразить ошибку вместо списка или тост
+                    }
+                    @Override
+                    public void onComplete() {
+                        // Ничего не делаем
+                    }
+                });
     }
 
     private void initViews(){
@@ -196,97 +182,42 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void updateList() {
-       // appDatabase.noteDao().
-    }
-
-    public void getNotes() {
-//        appDatabase.noteDao().getAll()
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Consumer<List<Note>>() {
-//            @Override
-//            public void accept(List<Note> notes) throws Exception {
-//
-//            }
-//        });
-
-        try {
-            appDatabase.noteDao().getAll().subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new MaybeObserver<List<Note>>() {
-
-                        @Override
-                        public void onSubscribe(Disposable d) {
-
-                        }
-
-                        @Override
-                        public void onSuccess(List<Note> notes) {
-                            baseListNote = notes;
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            e.printStackTrace();
-                        }
-
-                        @Override
-                        public void onComplete() {
-
-                        }
-                    });
-        } catch (Exception e){
-            Log.e(LOG_TAG, "Error");
+    private void updateList(List<Note >baseListNote) {
+        simpleAdapterContent.clear();
+        for (Note value : baseListNote) {
+            String deadline;
+            if (value.getDayDeadline() == 0) {
+                deadline = null;
+            } else {
+                Date date = new Date();
+                date.setTime(value.getDayDeadline());
+                DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+                deadline = dateFormat.format(date.getTime());
+            }
+            String title;
+            if (value.getTitle().equals(getString(R.string.null_string))) {
+                title = null;
+            } else {
+                title = value.getTitle();
+            }
+            String text;
+            if (value.getText().equals(getString(R.string.null_string))) {
+                text = null;
+            } else {
+                text = value.getText();
+            }
+            Map<String, String> row = new HashMap<>();
+            row.put(TITLE_NOTE, title);
+            row.put(TEXT_NOTE, text);
+            row.put(DEADLINE_NOTE, deadline);
+            simpleAdapterContent.add(row);
         }
-
+        listContentAdapter.notifyDataSetChanged();
     }
 
     @NonNull
     private BaseAdapter createAdapter() {
         list = findViewById(R.id.list);
-        simpleAdapterContent = new ArrayList<>();
-
-        Note note;
-        getNotes();
-        try {
-            for (Note value : baseListNote) {
-                note = value;
-                String deadline;
-                if(note.getDayDeadline() == 0){
-                    deadline = null;
-                } else {
-                    Date date = new Date();
-                    date.setTime(note.getDayDeadline());
-                    DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-                    deadline = dateFormat.format(date.getTime());
-                }
-
-                String title;
-                if(note.getTitle().equals(getString(R.string.null_string))){
-                    title = null;
-                } else {
-                    title = note.getTitle();
-                }
-                String text;
-                if(note.getText().equals(getString(R.string.null_string))){
-                    text = null;
-                } else {
-                    text = note.getText();
-                }
-
-                Map<String, String> row = new HashMap<>();
-                row.put(TITLE_NOTE, title);
-                row.put(TEXT_NOTE, text);
-                row.put(DEADLINE_NOTE, deadline);
-                simpleAdapterContent.add(row);
-
-            }
-        } catch (Exception e){
-            Log.e(LOG_TAG, "Error");
-        }
-
-
 
         return new SimpleAdapter(
                 this,
@@ -303,7 +234,6 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -318,5 +248,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Отписываемся, чтобы не было утечек памяти
+        compositeDisposable.dispose();
     }
 }
