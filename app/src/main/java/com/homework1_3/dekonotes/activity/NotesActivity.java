@@ -54,7 +54,7 @@ public class NotesActivity extends AppCompatActivity {
     private Calendar todayCalendar;
     private Toolbar myToolbar;
     AppDatabase appDatabase;
-    Note myNote;
+    private Note myNote;
 
 
     @Override
@@ -149,11 +149,7 @@ public class NotesActivity extends AppCompatActivity {
             String titleNote = title.getText().toString();
             String textNote = text.getText().toString();
             myNote = new Note(0,titleNote,textNote,checkDeadline.isChecked(), date);
-        } catch (Exception e){
-            Log.e(TAG, "Error");
-        }
 
-        try {
             appDatabase.noteDao().insertNote(myNote)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -161,17 +157,19 @@ public class NotesActivity extends AppCompatActivity {
                         @Override
                         public void onComplete() {
                             Log.i(TAG, "Новая заметка");
+                            Toast.makeText(NotesActivity.this,
+                                    getString(R.string.toast_database_save),
+                                    Toast.LENGTH_LONG).show();
                         }
 
                         @Override
                         public void onError(Throwable e) {
-                            Log.e(TAG, "Ошибка с новой заметкой");
+                            e.printStackTrace();
                         }
                     });
         } catch (Exception e){
             Log.e(TAG, "ERROR_SAVE");
         }
-
     }
 
     @Override
@@ -187,11 +185,9 @@ public class NotesActivity extends AppCompatActivity {
         Intent targetIntent;
        if (id == R.id.action_save) {
             saveNote();
-            Toast.makeText(NotesActivity.this, getString(R.string.toast_database_save),
-                    Toast.LENGTH_LONG).show();
+
             //targetIntent = new Intent(MainActivity.this, NotesActivity.class);
             //startActivity(targetIntent);
-
             return true;
         }
 
