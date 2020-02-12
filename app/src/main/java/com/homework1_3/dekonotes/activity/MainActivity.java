@@ -155,11 +155,7 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, final View view, final int position,
                                     long id) {
                 //final View item = (TextView) parent.getItemAtPosition(position);
-
-
-
                 //  list.removeView(item);
-
                 // listContentAdapter.notifyDataSetChanged();
             }
         });
@@ -178,15 +174,9 @@ public class MainActivity extends AppCompatActivity {
                                         new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         // User clicked OK button
-
-
                                         // list.removeView(item);
-
                                         //   Note note ;
-
                                         //   appDatabase.noteDao().delete().observeOn(App.getInstance());
-
-
 
                                         simpleAdapterContent.remove(position);
                                         listContentAdapter.notifyDataSetChanged();
@@ -216,19 +206,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateList() {
        // appDatabase.noteDao().
-        sharedPref = getSharedPreferences(PREF, Context.MODE_PRIVATE);
-        // SharedPreferences.Editor myEditor = sharedPref.edit();
-        if (sharedPref.contains(TEXT)) {
-            result = sharedPref.getString(TEXT, null);
-
-        } else {
-           // String largeText = getString(R.string.large_text);
-
-//            sharedPref.edit()
-//                    .putString(TEXT, largeText)
-//                    .apply();
-          //  result = largeText;
-        }
     }
 
     public void getNotes() {

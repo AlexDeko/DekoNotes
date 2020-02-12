@@ -67,7 +67,6 @@ public class NotesActivity extends AppCompatActivity {
 
         initViews();
         setClick();
-      //  getDateFromSharedPref();
     }
 
     private void initViews() {
@@ -80,23 +79,6 @@ public class NotesActivity extends AppCompatActivity {
         dateCalendar = findViewById(R.id.editDateDeadline);
         dateCalendar.setClickable(false);
         dateCalendar.setEnabled(false);
-
-
-        //inputNote = findViewById(R.id.inputNote);
-       // btnSaveNote = findViewById(R.id.btnSaveNote);
-       // myNoteSharedPref = getSharedPreferences("MyNote", MODE_PRIVATE);
-
-//        btnSaveNote.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                SharedPreferences.Editor myEditor = myNoteSharedPref.edit();
-//                String noteTxt = inputNote.getText().toString();
-//                myEditor.putString(NOTE_TEXT, noteTxt);
-//                myEditor.apply();
-//                Toast.makeText(NotesActivity.this, getString(R.string.toast_save),
-//                        Toast.LENGTH_LONG).show();
-//            }
-//        });
     }
 
     private void setClick(){
