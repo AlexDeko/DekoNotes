@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,29 +25,18 @@ import com.homework1_3.dekonotes.App;
 import com.homework1_3.dekonotes.R;
 import com.homework1_3.dekonotes.data.AppDatabase;
 import com.homework1_3.dekonotes.note.Note;
-import com.homework1_3.dekonotes.note.NoteDao;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.EmptyStackException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
-import io.reactivex.Completable;
-import io.reactivex.Flowable;
 import io.reactivex.MaybeObserver;
-import io.reactivex.Scheduler;
-import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.exceptions.Exceptions;
-import io.reactivex.observers.DisposableCompletableObserver;
-import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
@@ -66,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton addNewNote;
     BaseAdapter listContentAdapter;
 
-    AppDatabase appDatabase;
+    AppDatabase appDatabase = App.getInstance().getDatabase();
     List<Note> baseListNote;
    // NoteDao noteDao;
 
@@ -80,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         initViews();
 
 
-        updateList();
+     //   updateList();
         listContentAdapter = createAdapter();
         list.setAdapter(listContentAdapter);
         listContentAdapter.notifyDataSetChanged();
@@ -135,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initViews(){
-        addNewNote =findViewById(R.id.FABAddNote);
+        addNewNote = findViewById(R.id.FABAddNote);
     }
 
     private void btnAddNote(){
@@ -162,7 +150,8 @@ public class MainActivity extends AppCompatActivity {
 
         list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, final View view, final int position, final long id) {
+            public boolean onItemLongClick(AdapterView<?> parent, final View view,
+                                           final int position, final long id) {
                 view.animate().setDuration(20).alpha(0)
                         .withEndAction(new Runnable() {
                             @Override
@@ -176,7 +165,10 @@ public class MainActivity extends AppCompatActivity {
                                         // User clicked OK button
                                         // list.removeView(item);
                                         //   Note note ;
-                                        //   appDatabase.noteDao().delete().observeOn(App.getInstance());
+//                                        appDatabase.noteDao().delete()
+//                                                .subscribeOn(Schedulers.io())
+//                                                .observeOn(AndroidSchedulers.mainThread())
+//                                                .subscribe();
 
                                         simpleAdapterContent.remove(position);
                                         listContentAdapter.notifyDataSetChanged();
@@ -236,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
 
                         @Override
                         public void onError(Throwable e) {
-
+                            e.printStackTrace();
                         }
 
                         @Override
@@ -309,13 +301,4 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-
-
-
-//    @Override
-//    public void onPointerCaptureChanged(boolean hasCapture) {
-//
-//    }
-
 }

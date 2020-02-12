@@ -18,6 +18,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.homework1_3.dekonotes.App;
 import com.homework1_3.dekonotes.R;
 import com.homework1_3.dekonotes.data.AppDatabase;
 import com.homework1_3.dekonotes.note.Note;
@@ -40,21 +41,17 @@ import io.reactivex.schedulers.Schedulers;
 
 public class NotesActivity extends AppCompatActivity {
 
-    private EditText inputNote;
-    private Button btnSaveNote;
-    private SharedPreferences myNoteSharedPref;
-    private static String NOTE_TEXT = "note_text";
     private static final String TAG = "Note";
-    private ImageButton imgBtnCalendar;
-    private CheckBox checkDeadline;
-    private EditText title;
-    private EditText text;
-    private EditText dateCalendar;
+    private ImageButton imgBtnCalendar = null;
+    private CheckBox checkDeadline = null;
+    private EditText title = null;
+    private EditText text = null;
+    private EditText dateCalendar = null;
     private DatePickerDialog datePickerDialog;
-    private Calendar todayCalendar;
+    private Calendar todayCalendar = null;
     private Toolbar myToolbar;
-    AppDatabase appDatabase;
-    private Note myNote;
+    AppDatabase appDatabase = App.getInstance().getDatabase();
+    private Note myNote = null;
 
 
     @Override
@@ -145,10 +142,27 @@ public class NotesActivity extends AppCompatActivity {
 
     private void saveNote(){
         try {
-            long date = todayCalendar.getTimeInMillis() ;
-            String titleNote = title.getText().toString();
-            String textNote = text.getText().toString();
-            myNote = new Note(0,titleNote,textNote,checkDeadline.isChecked(), date);
+            long date;
+            if(todayCalendar != null){
+                date = todayCalendar.getTimeInMillis() ;
+            } else {
+                date = 0;
+            }
+
+            String titleNote;
+            if(title != null){
+                titleNote = title.getText().toString();
+            } else {
+                titleNote = getString(R.string.null_string);
+            }
+
+            String textNote;
+            if(text != null){
+                textNote = text.getText().toString();
+            } else {
+                textNote = getString(R.string.null_string);
+            }
+            myNote = new Note(0, titleNote, textNote, checkDeadline.isChecked(), date);
 
             appDatabase.noteDao().insertNote(myNote)
                     .subscribeOn(Schedulers.io())

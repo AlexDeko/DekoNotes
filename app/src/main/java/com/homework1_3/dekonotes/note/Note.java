@@ -24,18 +24,42 @@ public class Note {
         this.check = check;
         this.dayDeadline = dayDeadline;
     }
-    @Ignore
-    public Note(long id, String text, boolean check, int dayDeadline) {
-        this.id = id;
-        this.text = text;
-        this.check = check;
-        this.dayDeadline = dayDeadline;
-    }
-    @Ignore
-    public Note(long id, String text) {
-        this.id = id;
-        this.text = text;
-    }
+//    @Ignore
+//    public Note(long id, String text, boolean check, int dayDeadline) {
+//        this.id = id;
+//        this.text = text;
+//        this.check = check;
+//        this.dayDeadline = dayDeadline;
+//    }
+//
+//    @Ignore
+//    public Note(long id, String text) {
+//        this.id = id;
+//        this.text = text;
+//    }
+//
+//    @Ignore
+//    public Note(long id, String title, String text) {
+//        this.id = id;
+//        this.title = title;
+//        this.text = text;
+//    }
+//    @Ignore
+//    public Note(long id, String title, boolean check) {
+//        this.id = id;
+//        this.title = title;
+//        this.check = check;
+//    }
+//
+//    @Ignore
+//    public Note(long id, String title, boolean check, long dayDeadline) {
+//        this.id = id;
+//        this.title = title;
+//        this.check = check;
+//        this.dayDeadline = dayDeadline;
+//    }
+
+
 
     public String getTitle() {
         return title;
