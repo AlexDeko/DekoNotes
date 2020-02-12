@@ -31,7 +31,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 
+import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableCompletableObserver;
 import io.reactivex.schedulers.Schedulers;
 
@@ -50,16 +52,16 @@ public class NotesActivity extends AppCompatActivity {
     private EditText dateCalendar;
     private DatePickerDialog datePickerDialog;
     private Calendar todayCalendar;
-
+    private Toolbar myToolbar;
     AppDatabase appDatabase;
-    Note note;
+    Note myNote;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notes);
-        Toolbar myToolbar = findViewById(R.id.my_toolbar);
+        myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -98,6 +100,13 @@ public class NotesActivity extends AppCompatActivity {
     }
 
     private void setClick(){
+        myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
         imgBtnCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -157,13 +166,13 @@ public class NotesActivity extends AppCompatActivity {
             long date = todayCalendar.getTimeInMillis() ;
             String titleNote = title.getText().toString();
             String textNote = text.getText().toString();
-            note = new Note(0,titleNote,textNote,checkDeadline.isChecked(), date);
+            myNote = new Note(0,titleNote,textNote,checkDeadline.isChecked(), date);
         } catch (Exception e){
             Log.e(TAG, "Error");
         }
 
         try {
-            appDatabase.noteDao().insertNote(note)
+            appDatabase.noteDao().insertNote(myNote)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new DisposableCompletableObserver() {

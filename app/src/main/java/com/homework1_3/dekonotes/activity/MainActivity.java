@@ -28,7 +28,10 @@ import com.homework1_3.dekonotes.data.AppDatabase;
 import com.homework1_3.dekonotes.note.Note;
 import com.homework1_3.dekonotes.note.NoteDao;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -51,15 +54,15 @@ import io.reactivex.schedulers.Schedulers;
 public class MainActivity extends AppCompatActivity {
 
     private final static String LOG_TAG = "sample";
-    private final static String TITLE = "title";
-    private final static String SUBTITLE = "subtitle";
+    private final static String TITLE_NOTE = "title";
+    private final static String TEXT_NOTE = "subtitle";
+    private final static String DEADLINE_NOTE = "deadline";
     private final static String TEXT = "text";
     private final static String PREF = "pref";
     List<Map<String, String>> simpleAdapterContent;
     private ListView list;
     private SharedPreferences sharedPref;
     private String result;
-    private String[] content;
     private FloatingActionButton addNewNote;
     BaseAdapter listContentAdapter;
 
@@ -78,8 +81,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         updateList();
-        content = prepareContent();
-        listContentAdapter = createAdapter(content);
+        listContentAdapter = createAdapter();
         list.setAdapter(listContentAdapter);
         listContentAdapter.notifyDataSetChanged();
 
@@ -220,14 +222,13 @@ public class MainActivity extends AppCompatActivity {
             result = sharedPref.getString(TEXT, null);
 
         } else {
-            String largeText = getString(R.string.large_text);
+           // String largeText = getString(R.string.large_text);
 
-            sharedPref.edit()
-                    .putString(TEXT, largeText)
-                    .apply();
-            result = largeText;
+//            sharedPref.edit()
+//                    .putString(TEXT, largeText)
+//                    .apply();
+          //  result = largeText;
         }
-        content = prepareContent();
     }
 
     public void getNotes() {
@@ -241,62 +242,72 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
 
-         appDatabase.noteDao().getAll().subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new MaybeObserver<List<Note>>() {
+        try {
+            appDatabase.noteDao().getAll().subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new MaybeObserver<List<Note>>() {
 
-                    @Override
-                    public void onSubscribe(Disposable d) {
+                        @Override
+                        public void onSubscribe(Disposable d) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onSuccess(List<Note> notes) {
-                        baseListNote = notes;
-                    }
+                        @Override
+                        public void onSuccess(List<Note> notes) {
+                            baseListNote = notes;
+                        }
 
-                    @Override
-                    public void onError(Throwable e) {
+                        @Override
+                        public void onError(Throwable e) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onComplete() {
+                        @Override
+                        public void onComplete() {
 
-                    }
-                });
+                        }
+                    });
+        } catch (Exception e){
+            Log.e(LOG_TAG, "Error");
+        }
+
     }
 
     @NonNull
-    private BaseAdapter createAdapter(String[] values) {
+    private BaseAdapter createAdapter() {
         list = findViewById(R.id.list);
         simpleAdapterContent = new ArrayList<>();
 
+        Note note;
         getNotes();
-        for (Iterator<Note> it = baseListNote.iterator(); it.hasNext(); ) {
-            Note note = it.next();
-            
+        try {
+            for (Note value : baseListNote) {
+                note = value;
+                Date date = new Date();
+                date.setTime(note.getDayDeadline());
+                DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+                String deadline = dateFormat.format(date.getTime());
+
+                Map<String, String> row = new HashMap<>();
+                row.put(TITLE_NOTE, note.getTitle());
+                row.put(TEXT_NOTE, note.getText());
+                row.put(DEADLINE_NOTE, deadline);
+                simpleAdapterContent.add(row);
+
+            }
+        } catch (Exception e){
+            Log.e(LOG_TAG, "Error");
         }
 
-        for (String value : values) {
-            Map<String, String> row = new HashMap<>();
-            row.put(TITLE, value);
-            row.put(SUBTITLE, String.valueOf(value.length()));
-            simpleAdapterContent.add(row);
-        }
+
 
         return new SimpleAdapter(
                 this,
                 simpleAdapterContent,
                 R.layout.list_item,
-                new String[]{TITLE, SUBTITLE},
-                new int[]{R.id.titleItem1, R.id.textItem2}
+                new String[]{TITLE_NOTE, TEXT_NOTE, DEADLINE_NOTE},
+                new int[]{R.id.titleItem1, R.id.textItem2, R.id.deadlineItem3}
         );
-    }
-
-    @NonNull
-    private String[] prepareContent() {
-        return result.split("\n\n");
     }
 
     @Override

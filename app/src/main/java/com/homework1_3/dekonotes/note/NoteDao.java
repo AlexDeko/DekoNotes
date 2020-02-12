@@ -22,7 +22,7 @@ public interface NoteDao {
     @Query("SELECT * FROM note WHERE id = :id")
     Single<Note> getNoteById(long id);
    // Completable
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert//(onConflict = OnConflictStrategy.REPLACE)
     Completable insertNote(Note note);
     @Update
     Completable update(Note note);
