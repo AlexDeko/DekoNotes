@@ -17,7 +17,7 @@ public class Note {
     @ColumnInfo(name = "deadline")
     private long dayDeadline;
 
-    public Note(long id, String title, String text,boolean check, long dayDeadline) {
+    public Note(long id, String title, String text, boolean check, long dayDeadline) {
         this.id = id;
         this.title = title;
         this.text = text;

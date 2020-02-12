@@ -252,14 +252,32 @@ public class MainActivity extends AppCompatActivity {
         try {
             for (Note value : baseListNote) {
                 note = value;
-                Date date = new Date();
-                date.setTime(note.getDayDeadline());
-                DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-                String deadline = dateFormat.format(date.getTime());
+                String deadline;
+                if(note.getDayDeadline() == 0){
+                    deadline = null;
+                } else {
+                    Date date = new Date();
+                    date.setTime(note.getDayDeadline());
+                    DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+                    deadline = dateFormat.format(date.getTime());
+                }
+
+                String title;
+                if(note.getTitle().equals(getString(R.string.null_string))){
+                    title = null;
+                } else {
+                    title = note.getTitle();
+                }
+                String text;
+                if(note.getText().equals(getString(R.string.null_string))){
+                    text = null;
+                } else {
+                    text = note.getText();
+                }
 
                 Map<String, String> row = new HashMap<>();
-                row.put(TITLE_NOTE, note.getTitle());
-                row.put(TEXT_NOTE, note.getText());
+                row.put(TITLE_NOTE, title);
+                row.put(TEXT_NOTE, text);
                 row.put(DEADLINE_NOTE, deadline);
                 simpleAdapterContent.add(row);
 
