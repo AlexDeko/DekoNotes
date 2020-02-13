@@ -198,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    
+
     private void updateList(List<Note >baseListNote) {
         simpleAdapterContent.clear();
         for (Note value : baseListNote) {

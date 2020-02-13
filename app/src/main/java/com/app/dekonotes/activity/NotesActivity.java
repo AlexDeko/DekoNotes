@@ -47,6 +47,8 @@ public class NotesActivity extends AppCompatActivity {
     private Toolbar myToolbar;
     AppDatabase appDatabase = App.getInstance().getDatabase();
     private Note myNote = null;
+    Bundle bundleExtra = null;
+    long idNoteBundle;
 
 
     @Override
@@ -184,60 +186,103 @@ public class NotesActivity extends AppCompatActivity {
 
     private void getInfoExtra(){
         Intent intentInfoIdNote = getIntent();
-        Bundle bundleExtra = intentInfoIdNote.getExtras();
-        long id = 0;
+        bundleExtra = intentInfoIdNote.getExtras();
+        idNoteBundle = 0;
         if (bundleExtra != null){
-           id = bundleExtra.getLong("id");
+            idNoteBundle= bundleExtra.getLong("id");
+            appDatabase.noteDao().getNoteById(idNoteBundle)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new SingleObserver<Note>() {
+
+
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onSuccess(Note note) {
+                            if (note.getDayDeadline() == 0) {
+                               // dateCalendar = null;
+                                //todayCalendar = null;
+                            } else {
+                                checkDeadline.setChecked(note.isCheck());
+                                if (checkDeadline.isChecked()){
+                                    Date date = new Date();
+                                    date.setTime(note.getDayDeadline());
+                                    DateFormat dateFormat =
+                                            new SimpleDateFormat("dd.MM.yyyy");
+                                    dateCalendar.setText(dateFormat.format(date.getTime()));
+                                } else {
+                                   // dateCalendar = null;
+                                }
+                            }
+
+                            if (note.getTitle().equals(getString(R.string.null_string))) {
+                                title = null;
+                            } else {
+                                title.setText(note.getTitle());
+                            }
+
+                            if (note.getText().equals(getString(R.string.null_string))) {
+                                text = null;
+                            } else {
+                                text.setText(note.getText());
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable t) {
+                            Toast.makeText(NotesActivity.this, getString(R.string.error_note),
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    });
         }
-        //  if (infoId != null) {
-       // long id = Long.parseLong(infoId);
-        appDatabase.noteDao().getNoteById(id)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SingleObserver<Note>() {
-
-
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onSuccess(Note note) {
-                        if (note.getDayDeadline() == 0) {
-                            checkDeadline = null;
-                            dateCalendar = null;
-                            //todayCalendar = null;
-                        } else {
-                            checkDeadline.setChecked(note.isCheck());
-                            Date date = new Date();
-                            date.setTime(note.getDayDeadline());
-                            DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-                            dateCalendar.setText(dateFormat.format(date.getTime()));
-                        }
-
-                        if (note.getTitle().equals(getString(R.string.null_string))) {
-                            title = null;
-                        } else {
-                            title.setText(note.getTitle());
-                        }
-
-                        if (note.getText().equals(getString(R.string.null_string))) {
-                            text = null;
-                        } else {
-                            text.setText(note.getText());
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable t) {
-                        Toast.makeText(NotesActivity.this, getString(R.string.error_note),
-                                Toast.LENGTH_LONG).show();
-                    }
-                });
-       // }
     }
 
+    private void update(Note note){
+        try {
+            long date;
+            if (todayCalendar != null) {
+                date = todayCalendar.getTimeInMillis();
+            } else {
+                date = 0;
+            }
+            String titleNote;
+            if (title != null) {
+                titleNote = title.getText().toString();
+            } else {
+                titleNote = getString(R.string.null_string);
+            }
+            String textNote;
+            if (text != null) {
+                textNote = text.getText().toString();
+            } else {
+                textNote = getString(R.string.null_string);
+            }
+            myNote = new Note(idNoteBundle, titleNote, textNote, checkDeadline.isChecked(), date);
+
+            appDatabase.noteDao().update(note)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new DisposableCompletableObserver() {
+                        @Override
+                        public void onComplete() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Toast.makeText(NotesActivity.this,
+                                    getString(R.string.error_note),
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    });
+        } catch (Exception e){
+
+        }
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_notes, menu);
@@ -248,9 +293,13 @@ public class NotesActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
-        Intent targetIntent;
+       // Intent targetIntent;
        if (id == R.id.action_save) {
-            saveNote();
+           if (bundleExtra == null){
+               saveNote();
+           } else {
+               update(myNote);
+           }
             return true;
         }
         return super.onOptionsItemSelected(item);
