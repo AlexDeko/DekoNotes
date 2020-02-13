@@ -35,9 +35,12 @@ import java.util.Map;
 
 import io.reactivex.MaybeObserver;
 import io.reactivex.Observer;
+import io.reactivex.SingleEmitter;
+import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Cancellable;
 import io.reactivex.observers.DisposableCompletableObserver;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
@@ -53,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton addNewNote;
     BaseAdapter listContentAdapter;
     Note noteId;
+    List<Note> myList;
     // Контейнер для подписок. См. onDestroy()
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     AppDatabase appDatabase = App.getInstance().getDatabase();
@@ -101,16 +105,15 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onNext(List<Note> note) {
                         updateList(note);
+                        myList = note;
                     }
                     @Override
                     public void onError(Throwable e) {
-                        // TODO отобразить ошибку вместо списка или тост
                         Toast.makeText(MainActivity.this, getString(R.string.error_notes),
                                 Toast.LENGTH_LONG).show();
                     }
                     @Override
                     public void onComplete() {
-                        // Ничего не делаем
                     }
                 });
     }
@@ -135,6 +138,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, final int position,
                                     long id) {
+                Intent reWriteNote = new Intent(MainActivity.this,
+                        NotesActivity.class);
+                startActivity(reWriteNote);
+
                 //final View item = (TextView) parent.getItemAtPosition(position);
                 //  list.removeView(item);
                 // listContentAdapter.notifyDataSetChanged();
@@ -150,7 +157,9 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 //final Note targetIdNote = (Note) list.getSelectedItem();
-                                getNoteId(id);
+                               // listContentAdapter.registerDataSetObserver();
+                                getNoteList(position);
+                               // getNoteId(id);
 
 
                                 AlertDialog.Builder builderDialogDelete = new AlertDialog
@@ -167,6 +176,9 @@ public class MainActivity extends AppCompatActivity {
                                                     @Override
                                                     public void onComplete() {
                                                         Log.i(LOG, "Удалена заметка");
+                                                        subscribe();
+                                                        listContentAdapter.notifyDataSetChanged();
+                                                        view.setAlpha(1);
                                                     }
 
                                                     @Override
@@ -176,8 +188,7 @@ public class MainActivity extends AppCompatActivity {
                                                 });
 
                                     //    simpleAdapterContent.remove(position);
-                                        listContentAdapter.notifyDataSetChanged();
-                                        view.setAlpha(1);
+
                                     }
                                 });
 
@@ -203,30 +214,30 @@ public class MainActivity extends AppCompatActivity {
 
     private void getNoteId(long id){
         // TODO Observable
-        appDatabase.noteDao().getNoteById(id)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Note>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        // Disposable представляет собой интерфейс для работы с подпиской. Через него можно отписаться
-                     //   compositeDisposable.add(d);
-                    }
-                    @Override
-                    public void onNext(Note note) {
-                        noteId = note;
-                    }
-                    @Override
-                    public void onError(Throwable e) {
-                        Toast.makeText(MainActivity.this, getString(R.string.error_note),
-                                Toast.LENGTH_LONG).show();
-                        // TODO отобразить ошибку вместо списка или тост
-                    }
-                    @Override
-                    public void onComplete() {
-                        // Ничего не делаем
-                    }
-                });
+//        appDatabase.noteDao().getNoteById(id)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Observer<Note>() {
+//                    @Override
+//                    public void onSubscribe(Disposable d) {
+//                        // Disposable представляет собой интерфейс для работы с подпиской. Через него можно отписаться
+//                     //   compositeDisposable.add(d);
+//                    }
+//                    @Override
+//                    public void onNext(Note note) {
+//                        noteId = note;
+//                    }
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        Toast.makeText(MainActivity.this, getString(R.string.error_note),
+//                                Toast.LENGTH_LONG).show();
+//                        // TODO отобразить ошибку вместо списка или тост
+//                    }
+//                    @Override
+//                    public void onComplete() {
+//                        // Ничего не делаем
+//                    }
+//                });
 
         // TODO Maybe
 //        appDatabase.noteDao().getNoteById(id)
@@ -255,8 +266,31 @@ public class MainActivity extends AppCompatActivity {
 //                    }
 //                });
 
+//        // TODO Single
+//        appDatabase.noteDao().getNoteById(id)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new SingleObserver<Note>() {
+//
+//
+//                    @Override
+//                    public void onSubscribe(Disposable d) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onSuccess(Note note) {
+//                        noteId = note;
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable t) {
+//                        Toast.makeText(MainActivity.this, getString(R.string.error_note),
+//                                Toast.LENGTH_LONG).show();
+//                    }
+//                });
 
-        // TODO Single
+//        // TODO Single
 //        appDatabase.noteDao().getNoteById(id)
 //                .subscribeOn(Schedulers.io())
 //                .observeOn(AndroidSchedulers.mainThread())
@@ -271,7 +305,17 @@ public class MainActivity extends AppCompatActivity {
 //                        Toast.makeText(MainActivity.this, getString(R.string.error_note),
 //                                Toast.LENGTH_LONG).show();
 //                    }
-//                });
+ //               });
+    }
+
+    private void getNoteList(int position){
+        int count = 0;
+        for(Note myNote : myList){
+            if(count == position){
+                noteId = myNote;
+            }
+            count += 1;
+        }
     }
 
     private void updateList(List<Note >baseListNote) {

@@ -20,7 +20,7 @@ public interface NoteDao {
     @Query("SELECT * FROM note")
     Observable<List<Note>> getAll();
     @Query("SELECT * FROM note WHERE id = :id")
-    Observable<Note> getNoteById(long id);
+    Single<Note> getNoteById(long id);
    // Completable
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     Completable insertNote(Note note);
