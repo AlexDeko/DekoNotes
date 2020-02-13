@@ -1,13 +1,12 @@
-package com.homework1_3.dekonotes.activity;
+package com.app.dekonotes.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
-import com.homework1_3.dekonotes.R;
+import com.app.dekonotes.R;
 
 public class EnterPinActivity extends AppCompatActivity {
     private Button number0;

@@ -1,4 +1,4 @@
-package com.homework1_3.dekonotes.note;
+package com.app.dekonotes.note;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -10,7 +10,6 @@ import androidx.room.Update;
 import java.util.List;
 
 import io.reactivex.Completable;
-import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
@@ -21,9 +20,9 @@ public interface NoteDao {
     @Query("SELECT * FROM note")
     Observable<List<Note>> getAll();
     @Query("SELECT * FROM note WHERE id = :id")
-    Single<Note> getNoteById(long id);
+    Observable<Note> getNoteById(long id);
    // Completable
-    @Insert//(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     Completable insertNote(Note note);
     @Update
     Completable update(Note note);

@@ -1,10 +1,10 @@
-package com.homework1_3.dekonotes.data;
+package com.app.dekonotes.data;
 
 import androidx.room.Database;
 import androidx.room.RoomDatabase;
 
-import com.homework1_3.dekonotes.note.Note;
-import com.homework1_3.dekonotes.note.NoteDao;
+import com.app.dekonotes.note.Note;
+import com.app.dekonotes.note.NoteDao;
 
 
 

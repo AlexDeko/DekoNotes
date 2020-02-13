@@ -1,14 +1,12 @@
-package com.homework1_3.dekonotes.activity;
+package com.app.dekonotes.activity;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -18,10 +16,10 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.homework1_3.dekonotes.App;
-import com.homework1_3.dekonotes.R;
-import com.homework1_3.dekonotes.data.AppDatabase;
-import com.homework1_3.dekonotes.note.Note;
+import com.app.dekonotes.App;
+import com.app.dekonotes.R;
+import com.app.dekonotes.data.AppDatabase;
+import com.app.dekonotes.note.Note;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

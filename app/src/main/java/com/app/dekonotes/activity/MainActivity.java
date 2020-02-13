@@ -1,4 +1,4 @@
-package com.homework1_3.dekonotes.activity;
+package com.app.dekonotes.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -9,6 +9,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,10 +20,10 @@ import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.homework1_3.dekonotes.App;
-import com.homework1_3.dekonotes.R;
-import com.homework1_3.dekonotes.data.AppDatabase;
-import com.homework1_3.dekonotes.note.Note;
+import com.app.dekonotes.App;
+import com.app.dekonotes.R;
+import com.app.dekonotes.data.AppDatabase;
+import com.app.dekonotes.note.Note;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -32,10 +33,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.reactivex.MaybeObserver;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.observers.DisposableCompletableObserver;
+import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
@@ -48,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private ListView list;
     private FloatingActionButton addNewNote;
     BaseAdapter listContentAdapter;
+    Note noteId;
     // Контейнер для подписок. См. onDestroy()
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     AppDatabase appDatabase = App.getInstance().getDatabase();
@@ -100,6 +105,8 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onError(Throwable e) {
                         // TODO отобразить ошибку вместо списка или тост
+                        Toast.makeText(MainActivity.this, getString(R.string.error_notes),
+                                Toast.LENGTH_LONG).show();
                     }
                     @Override
                     public void onComplete() {
@@ -142,21 +149,33 @@ public class MainActivity extends AppCompatActivity {
                         .withEndAction(new Runnable() {
                             @Override
                             public void run() {
+                                //final Note targetIdNote = (Note) list.getSelectedItem();
+                                getNoteId(id);
+
+
                                 AlertDialog.Builder builderDialogDelete = new AlertDialog
                                         .Builder(MainActivity.this );
 
                                 builderDialogDelete.setPositiveButton(R.string.ok,
                                         new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
-                                        // User clicked OK button
-                                        // list.removeView(item);
-                                        //   Note note ;
-//                                        appDatabase.noteDao().delete()
-//                                                .subscribeOn(Schedulers.io())
-//                                                .observeOn(AndroidSchedulers.mainThread())
-//                                                .subscribe();
 
-                                        simpleAdapterContent.remove(position);
+                                        appDatabase.noteDao().delete(noteId)
+                                                .subscribeOn(Schedulers.io())
+                                                .observeOn(AndroidSchedulers.mainThread())
+                                                .subscribe(new DisposableCompletableObserver() {
+                                                    @Override
+                                                    public void onComplete() {
+                                                        Log.i(LOG, "Удалена заметка");
+                                                    }
+
+                                                    @Override
+                                                    public void onError(Throwable e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                });
+
+                                    //    simpleAdapterContent.remove(position);
                                         listContentAdapter.notifyDataSetChanged();
                                         view.setAlpha(1);
                                     }
@@ -180,6 +199,79 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    private void getNoteId(long id){
+        // TODO Observable
+        appDatabase.noteDao().getNoteById(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Note>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        // Disposable представляет собой интерфейс для работы с подпиской. Через него можно отписаться
+                     //   compositeDisposable.add(d);
+                    }
+                    @Override
+                    public void onNext(Note note) {
+                        noteId = note;
+                    }
+                    @Override
+                    public void onError(Throwable e) {
+                        Toast.makeText(MainActivity.this, getString(R.string.error_note),
+                                Toast.LENGTH_LONG).show();
+                        // TODO отобразить ошибку вместо списка или тост
+                    }
+                    @Override
+                    public void onComplete() {
+                        // Ничего не делаем
+                    }
+                });
+
+        // TODO Maybe
+//        appDatabase.noteDao().getNoteById(id)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new MaybeObserver<Note>() {
+//
+//                    @Override
+//                    public void onSubscribe(Disposable d) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onSuccess(Note note) {
+//                        noteId = note;
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                    @Override
+//                    public void onComplete() {
+//
+//                    }
+//                });
+
+
+        // TODO Single
+//        appDatabase.noteDao().getNoteById(id)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new DisposableSingleObserver<Note>() {
+//                    @Override
+//                    public void onSuccess(Note note) {
+//                        noteId = note;
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        Toast.makeText(MainActivity.this, getString(R.string.error_note),
+//                                Toast.LENGTH_LONG).show();
+//                    }
+//                });
     }
 
     private void updateList(List<Note >baseListNote) {

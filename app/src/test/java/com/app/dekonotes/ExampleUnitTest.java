@@ -1,4 +1,4 @@
-package com.homework1_3.dekonotes;
+package com.app.dekonotes;
 
 import org.junit.Test;
 

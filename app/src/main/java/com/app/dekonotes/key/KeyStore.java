@@ -1,4 +1,4 @@
-package com.homework1_3.dekonotes.key;
+package com.app.dekonotes.key;
 
 public interface KeyStore {
     boolean hasPin();

@@ -1,8 +1,7 @@
-package com.homework1_3.dekonotes.note;
+package com.app.dekonotes.note;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity

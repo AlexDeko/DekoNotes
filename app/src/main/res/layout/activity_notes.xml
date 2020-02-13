@@ -30,7 +30,7 @@
             android:layout_margin="@dimen/notes_liner_margin"
             android:ems="10"
             android:hint="@string/text_notes"
-            android:inputType="textPersonName" />
+            android:inputType="textMultiLine"/>
 
         <CheckBox
             android:id="@+id/checkDeadline"

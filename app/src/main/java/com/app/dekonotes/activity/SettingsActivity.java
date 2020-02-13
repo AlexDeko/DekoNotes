@@ -1,4 +1,4 @@
-package com.homework1_3.dekonotes.activity;
+package com.app.dekonotes.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -10,7 +10,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.homework1_3.dekonotes.R;
+import com.app.dekonotes.R;
 
 public class SettingsActivity extends AppCompatActivity {
 
