@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
     private ListView list;
     private FloatingActionButton addNewNote;
     BaseAdapter listContentAdapter;
-    Note noteId;
     List<Note> myList;
     // Контейнер для подписок. См. onDestroy()
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
@@ -140,11 +139,8 @@ public class MainActivity extends AppCompatActivity {
                                     long id) {
                 Intent reWriteNote = new Intent(MainActivity.this,
                         NotesActivity.class);
+                reWriteNote.putExtra("id", myList.get(position).getId());
                 startActivity(reWriteNote);
-
-                //final View item = (TextView) parent.getItemAtPosition(position);
-                //  list.removeView(item);
-                // listContentAdapter.notifyDataSetChanged();
             }
         });
 
@@ -156,20 +152,14 @@ public class MainActivity extends AppCompatActivity {
                         .withEndAction(new Runnable() {
                             @Override
                             public void run() {
-                                //final Note targetIdNote = (Note) list.getSelectedItem();
-                               // listContentAdapter.registerDataSetObserver();
-                                getNoteList(position);
-                               // getNoteId(id);
-
-
                                 AlertDialog.Builder builderDialogDelete = new AlertDialog
                                         .Builder(MainActivity.this );
 
                                 builderDialogDelete.setPositiveButton(R.string.ok,
                                         new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
-
-                                        appDatabase.noteDao().delete(noteId)
+                                        Note note = myList.get(position);
+                                        appDatabase.noteDao().delete(note)
                                                 .subscribeOn(Schedulers.io())
                                                 .observeOn(AndroidSchedulers.mainThread())
                                                 .subscribe(new DisposableCompletableObserver() {
@@ -186,9 +176,6 @@ public class MainActivity extends AppCompatActivity {
                                                         e.printStackTrace();
                                                     }
                                                 });
-
-                                    //    simpleAdapterContent.remove(position);
-
                                     }
                                 });
 
@@ -211,113 +198,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-    private void getNoteId(long id){
-        // TODO Observable
-//        appDatabase.noteDao().getNoteById(id)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Observer<Note>() {
-//                    @Override
-//                    public void onSubscribe(Disposable d) {
-//                        // Disposable представляет собой интерфейс для работы с подпиской. Через него можно отписаться
-//                     //   compositeDisposable.add(d);
-//                    }
-//                    @Override
-//                    public void onNext(Note note) {
-//                        noteId = note;
-//                    }
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        Toast.makeText(MainActivity.this, getString(R.string.error_note),
-//                                Toast.LENGTH_LONG).show();
-//                        // TODO отобразить ошибку вместо списка или тост
-//                    }
-//                    @Override
-//                    public void onComplete() {
-//                        // Ничего не делаем
-//                    }
-//                });
-
-        // TODO Maybe
-//        appDatabase.noteDao().getNoteById(id)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new MaybeObserver<Note>() {
-//
-//                    @Override
-//                    public void onSubscribe(Disposable d) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onSuccess(Note note) {
-//                        noteId = note;
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        e.printStackTrace();
-//                    }
-//
-//                    @Override
-//                    public void onComplete() {
-//
-//                    }
-//                });
-
-//        // TODO Single
-//        appDatabase.noteDao().getNoteById(id)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new SingleObserver<Note>() {
-//
-//
-//                    @Override
-//                    public void onSubscribe(Disposable d) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onSuccess(Note note) {
-//                        noteId = note;
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable t) {
-//                        Toast.makeText(MainActivity.this, getString(R.string.error_note),
-//                                Toast.LENGTH_LONG).show();
-//                    }
-//                });
-
-//        // TODO Single
-//        appDatabase.noteDao().getNoteById(id)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new DisposableSingleObserver<Note>() {
-//                    @Override
-//                    public void onSuccess(Note note) {
-//                        noteId = note;
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        Toast.makeText(MainActivity.this, getString(R.string.error_note),
-//                                Toast.LENGTH_LONG).show();
-//                    }
- //               });
-    }
-
-    private void getNoteList(int position){
-        int count = 0;
-        for(Note myNote : myList){
-            if(count == position){
-                noteId = myNote;
-            }
-            count += 1;
-        }
-    }
-
+    
     private void updateList(List<Note >baseListNote) {
         simpleAdapterContent.clear();
         for (Note value : baseListNote) {

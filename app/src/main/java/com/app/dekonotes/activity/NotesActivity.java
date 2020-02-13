@@ -27,7 +27,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableCompletableObserver;
 import io.reactivex.schedulers.Schedulers;
 
@@ -57,6 +59,7 @@ public class NotesActivity extends AppCompatActivity {
 
         initViews();
         setClick();
+        getInfoExtra();
     }
 
     private void initViews() {
@@ -179,6 +182,62 @@ public class NotesActivity extends AppCompatActivity {
         }
     }
 
+    private void getInfoExtra(){
+        Intent intentInfoIdNote = getIntent();
+        Bundle bundleExtra = intentInfoIdNote.getExtras();
+        long id = 0;
+        if (bundleExtra != null){
+           id = bundleExtra.getLong("id");
+        }
+        //  if (infoId != null) {
+       // long id = Long.parseLong(infoId);
+        appDatabase.noteDao().getNoteById(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleObserver<Note>() {
+
+
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(Note note) {
+                        if (note.getDayDeadline() == 0) {
+                            checkDeadline = null;
+                            dateCalendar = null;
+                            //todayCalendar = null;
+                        } else {
+                            checkDeadline.setChecked(note.isCheck());
+                            Date date = new Date();
+                            date.setTime(note.getDayDeadline());
+                            DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+                            dateCalendar.setText(dateFormat.format(date.getTime()));
+                        }
+
+                        if (note.getTitle().equals(getString(R.string.null_string))) {
+                            title = null;
+                        } else {
+                            title.setText(note.getTitle());
+                        }
+
+                        if (note.getText().equals(getString(R.string.null_string))) {
+                            text = null;
+                        } else {
+                            text.setText(note.getText());
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+                        Toast.makeText(NotesActivity.this, getString(R.string.error_note),
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
+       // }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_notes, menu);
@@ -192,12 +251,8 @@ public class NotesActivity extends AppCompatActivity {
         Intent targetIntent;
        if (id == R.id.action_save) {
             saveNote();
-
-            //targetIntent = new Intent(MainActivity.this, NotesActivity.class);
-            //startActivity(targetIntent);
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 }
