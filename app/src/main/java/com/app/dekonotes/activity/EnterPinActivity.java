@@ -2,11 +2,15 @@ package com.app.dekonotes.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
+import com.app.dekonotes.App;
 import com.app.dekonotes.R;
+import com.app.dekonotes.key.KeyStore;
 
 public class EnterPinActivity extends AppCompatActivity {
     private Button number0;
@@ -29,6 +33,8 @@ public class EnterPinActivity extends AppCompatActivity {
     private static final int MAX_ENTER = 4;
     private static final int MIN_ENTER = 0;
     int countShape = 0;
+    KeyStore keyStore = App.getInstance().getSharedDatabaseKey();
+    String pin;
 
 
     @Override
@@ -36,16 +42,28 @@ public class EnterPinActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enter_pin);
 
-        storePin();
+        hasPin();
         initViews();
         setClickNumberOnKeyboard();
         setClickDeleteLastInput();
 
+    }
 
-
+    private void hasPin(){
+        if (!keyStore.hasPin()){
+            Intent startSettings = new Intent(EnterPinActivity.this,
+                    SettingsActivity.class);
+            startActivity(startSettings);
+        }
     }
 
     private void storePin(){
+        if (keyStore.checkPin(pin)){
+            Intent startMain = new Intent(EnterPinActivity.this, MainActivity.class);
+            startActivity(startMain);
+        } else {
+            Toast.makeText(this, getString(R.string.error_pin), Toast.LENGTH_SHORT).show();
+        }
 
     }
 
@@ -74,6 +92,7 @@ public class EnterPinActivity extends AppCompatActivity {
 
                 if(countShape < MAX_ENTER){
                     setShape();
+                    pin += "0";
                     countShape += 1;
                 }
             }
@@ -84,6 +103,18 @@ public class EnterPinActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(countShape < MAX_ENTER){
                     setShape();
+                    pin += "1";
+                    countShape += 1;
+                }
+            }
+        });
+
+        number2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(countShape < MAX_ENTER){
+                    setShape();
+                    pin += "2";
                     countShape += 1;
                 }
             }
@@ -94,6 +125,7 @@ public class EnterPinActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(countShape < MAX_ENTER){
                     setShape();
+                    pin += "3";
                     countShape += 1;
                 }
             }
@@ -104,6 +136,7 @@ public class EnterPinActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(countShape < MAX_ENTER){
                     setShape();
+                    pin += "4";
                     countShape += 1;
                 }
             }
@@ -114,6 +147,7 @@ public class EnterPinActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(countShape < MAX_ENTER){
                     setShape();
+                    pin += "5";
                     countShape += 1;
                 }
             }
@@ -124,17 +158,7 @@ public class EnterPinActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(countShape < MAX_ENTER){
                     setShape();
-                    countShape += 1;
-                }
-
-            }
-        });
-
-        number6.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(countShape < MAX_ENTER){
-                    setShape();
+                    pin += "6";
                     countShape += 1;
                 }
 
@@ -146,6 +170,7 @@ public class EnterPinActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(countShape < MAX_ENTER){
                     setShape();
+                    pin += "7";
                     countShape += 1;
                 }
 
@@ -157,6 +182,7 @@ public class EnterPinActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(countShape < MAX_ENTER){
                     setShape();
+                    pin += "8";
                     countShape += 1;
                 }
             }
@@ -167,6 +193,7 @@ public class EnterPinActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(countShape < MAX_ENTER){
                     setShape();
+                    pin += "9";
                     countShape += 1;
                 }
             }
@@ -179,7 +206,6 @@ public class EnterPinActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(countShape > MIN_ENTER){
                     deleteShape();
-                    countShape -= 1;
                 }
             }
         });
@@ -205,6 +231,13 @@ public class EnterPinActivity extends AppCompatActivity {
 
             case 3:
                 thirdOval.setBackgroundResource(R.drawable.shape);
+//                if(pin_entry.getText().toString().equals( pins_pref.getString("user_pin", null).toString())) {
+//                    Toast.makeText(this, "Authorization Right", Toast.LENGTH_SHORT).show();
+//                }
+//                else {
+//                    Toast.makeText(this, "Authorization Wrong", Toast.LENGTH_SHORT).show();
+//                }
+                storePin();
 
                 break;
         }
@@ -215,22 +248,23 @@ public class EnterPinActivity extends AppCompatActivity {
         switch (countShape){
             case 1:
                 zeroOval.setBackgroundResource(R.drawable.shape_tint);
-
+                pin = pin.substring(0, pin.length() - 1);
                 break;
 
             case 2:
                 firstOval.setBackgroundResource(R.drawable.shape_tint);
-
+                pin = pin.substring(0, pin.length() - 1);
                 break;
 
             case 3:
                 secondOval.setBackgroundResource(R.drawable.shape_tint);
-
+                pin = pin.substring(0, pin.length() - 1);
                 break;
 
             case 4:
                 thirdOval.setBackgroundResource(R.drawable.shape_tint);
-
+                    pin = pin.substring(0, pin.length() - 1);
+               // pin.replace(4, null);
                 break;
         }
     }

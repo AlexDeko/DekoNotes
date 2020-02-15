@@ -35,8 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/shape_tint"
-            android:backgroundTint="#3C3F41" />
+            android:background="@drawable/shape_tint" />
 
         <View
             android:id="@+id/viewNull0"
@@ -49,8 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/shape_tint"
-            android:backgroundTint="#3C3F41" />
+            android:background="@drawable/shape_tint" />
 
         <View
             android:id="@+id/viewNull1"

@@ -10,18 +10,16 @@ import androidx.room.Update;
 import java.util.List;
 
 import io.reactivex.Completable;
-import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
 @Dao
 public interface NoteDao {
-   // Flowable
+   
     @Query("SELECT * FROM note")
     Observable<List<Note>> getAll();
     @Query("SELECT * FROM note WHERE id = :id")
     Single<Note> getNoteById(long id);
-   // Completable
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     Completable insertNote(Note note);
     @Update
@@ -29,4 +27,3 @@ public interface NoteDao {
     @Delete
     Completable delete(Note note);
 }
-

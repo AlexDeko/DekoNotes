@@ -10,7 +10,9 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.app.dekonotes.App;
 import com.app.dekonotes.R;
+import com.app.dekonotes.key.KeyStore;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -20,6 +22,10 @@ public class SettingsActivity extends AppCompatActivity {
     TextView error;
     int close = 1;
     Toolbar myToolbar;
+   // private static String PIN = "pin";
+  //  AppDatabase appDatabaseKey = App.getInstance().getDatabaseKey();
+  //  String salt = "wdq3a3oxz4";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,8 +79,34 @@ public class SettingsActivity extends AppCompatActivity {
                     error.setVisibility(View.VISIBLE);
                 } else {
                     error.setVisibility(View.INVISIBLE);
+                  //  SharedPreferences sharedPreferences = App.getInstance().getSharedDatabaseKey();
 
-                }
+                  //  appDatabaseKey.keyDao().saveNew();
+
+                   // KeyStore keyDao = App.getInstance().getSharedDatabaseKey();
+
+                    KeyStore keyStore = App.getInstance().getSharedDatabaseKey();
+                    keyStore.saveNew(editNewPin.getText().toString());
+
+
+
+                 //   AppSharedPreferences appSharedPreferences = App.getInstance()
+                 //           .getShar
+//                    public static final String md5 (final String s) {
+//                        final String MD5 = "MD5";
+//                    try { // Create MD5 Hash
+//                         MessageDigest digest = java.security.MessageDigest .getInstance(MD5);
+//                         digest.update(s.getBytes());
+//                         byte messageDigest[] = digest.digest(); // Create Hex String
+//                         StringBuilder hexString = new StringBuilder();
+//                         for (byte aMessageDigest : messageDigest) {
+//                             String h = Integer.toHexString(0xFF & aMessageDigest);
+//                             while (h.length() < 2) h = "0" + h; hexString.append(h); }
+//                         return hexString.toString();
+//                         } catch (NoSuchAlgorithmException e) { e.printStackTrace(); }
+//                    return "";
+//                    }
+                    }
             }
         });
     }

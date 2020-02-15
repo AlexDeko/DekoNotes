@@ -1,19 +1,23 @@
 package com.app.dekonotes.key;
 
-public class Key implements KeyStore{
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
-    @Override
-    public boolean hasPin() {
-        return false;
+//@Entity
+public class Key {
+
+  //  @PrimaryKey
+    private String pin;
+
+    public Key(String pin) {
+        this.pin = pin;
     }
 
-    @Override
-    public boolean checkPin(String pin) {
-        return false;
+    public String getPin() {
+        return pin;
     }
 
-    @Override
-    public void saveNew(String pin) {
-
+    public void setPin(String pin) {
+        this.pin = pin;
     }
 }

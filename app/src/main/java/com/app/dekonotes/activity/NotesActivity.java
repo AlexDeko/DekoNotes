@@ -46,7 +46,6 @@ public class NotesActivity extends AppCompatActivity {
     private Calendar todayCalendar = null;
     private Toolbar myToolbar;
     AppDatabase appDatabase = App.getInstance().getDatabase();
-    private Note myNote = null;
     Bundle bundleExtra = null;
     long idNoteBundle;
 
@@ -160,7 +159,7 @@ public class NotesActivity extends AppCompatActivity {
             } else {
                 textNote = getString(R.string.null_string);
             }
-            myNote = new Note(0, titleNote, textNote, checkDeadline.isChecked(), date);
+            Note myNote = new Note(0, titleNote, textNote, checkDeadline.isChecked(), date);
 
             appDatabase.noteDao().insertNote(myNote)
                     .subscribeOn(Schedulers.io())
@@ -241,7 +240,7 @@ public class NotesActivity extends AppCompatActivity {
         }
     }
 
-    private void update(Note note){
+    private void update(){
         try {
             long date;
             if (todayCalendar != null) {
@@ -261,9 +260,9 @@ public class NotesActivity extends AppCompatActivity {
             } else {
                 textNote = getString(R.string.null_string);
             }
-            myNote = new Note(idNoteBundle, titleNote, textNote, checkDeadline.isChecked(), date);
+            Note myNote = new Note(idNoteBundle, titleNote, textNote, checkDeadline.isChecked(), date);
 
-            appDatabase.noteDao().update(note)
+            appDatabase.noteDao().update(myNote)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new DisposableCompletableObserver() {
@@ -280,7 +279,7 @@ public class NotesActivity extends AppCompatActivity {
                         }
                     });
         } catch (Exception e){
-
+            e.printStackTrace();
         }
     }
     @Override
@@ -298,7 +297,7 @@ public class NotesActivity extends AppCompatActivity {
            if (bundleExtra == null){
                saveNote();
            } else {
-               update(myNote);
+               update();
            }
             return true;
         }
