@@ -33,7 +33,7 @@ public class EnterPinActivity extends AppCompatActivity {
     private static final int MAX_ENTER = 4;
     private static final int MIN_ENTER = 0;
     int countShape = 0;
-    KeyStore keyStore = App.getInstance().getSharedDatabaseKey();
+    KeyStore keyStore = App.getInstance().getKeyStore();
     String pin;
 
 
@@ -42,14 +42,16 @@ public class EnterPinActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enter_pin);
 
-        hasPin();
+
         initViews();
         setClickNumberOnKeyboard();
         setClickDeleteLastInput();
+        hasPin();
 
     }
 
     private void hasPin(){
+
         if (!keyStore.hasPin()){
             Intent startSettings = new Intent(EnterPinActivity.this,
                     SettingsActivity.class);
@@ -64,7 +66,6 @@ public class EnterPinActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, getString(R.string.error_pin), Toast.LENGTH_SHORT).show();
         }
-
     }
 
     private void initViews(){
@@ -231,12 +232,6 @@ public class EnterPinActivity extends AppCompatActivity {
 
             case 3:
                 thirdOval.setBackgroundResource(R.drawable.shape);
-//                if(pin_entry.getText().toString().equals( pins_pref.getString("user_pin", null).toString())) {
-//                    Toast.makeText(this, "Authorization Right", Toast.LENGTH_SHORT).show();
-//                }
-//                else {
-//                    Toast.makeText(this, "Authorization Wrong", Toast.LENGTH_SHORT).show();
-//                }
                 storePin();
 
                 break;
