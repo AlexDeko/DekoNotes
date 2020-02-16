@@ -22,10 +22,6 @@ public class SettingsActivity extends AppCompatActivity {
     TextView error;
     int close = 1;
     Toolbar myToolbar;
-   // private static String PIN = "pin";
-  //  AppDatabase appDatabaseKey = App.getInstance().getDatabaseKey();
-  //  String salt = "wdq3a3oxz4";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,11 +57,13 @@ public class SettingsActivity extends AppCompatActivity {
                 if(close == 1){
 
                     btnVisiblePin.setImageResource(R.drawable.ic_open_eye);
+                    editNewPin.setInputType(R.string.inputType_number);
                     close -= 1;
                 } else{
                     //btnVisiblePin.setImageDrawable(getDrawable(R.drawable.ic_close_eye));
                     close +=1;
                     btnVisiblePin.setImageResource(R.drawable.ic_close_eye);
+                    editNewPin.setInputType(R.string.inputType_password);
                 }
 
             }
@@ -81,10 +79,9 @@ public class SettingsActivity extends AppCompatActivity {
                     error.setVisibility(View.INVISIBLE);
                     KeyStore keyStore = App.getInstance().getKeyStore();
                     keyStore.saveNew(editNewPin.getText().toString());
+
                 }
             }
         });
     }
-
-
 }

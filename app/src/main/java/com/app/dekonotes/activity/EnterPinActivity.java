@@ -42,11 +42,10 @@ public class EnterPinActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enter_pin);
 
-
+        hasPin();
         initViews();
         setClickNumberOnKeyboard();
         setClickDeleteLastInput();
-        hasPin();
 
     }
 
@@ -244,22 +243,25 @@ public class EnterPinActivity extends AppCompatActivity {
             case 1:
                 zeroOval.setBackgroundResource(R.drawable.shape_tint);
                 pin = pin.substring(0, pin.length() - 1);
+                countShape -= 1;
                 break;
 
             case 2:
                 firstOval.setBackgroundResource(R.drawable.shape_tint);
                 pin = pin.substring(0, pin.length() - 1);
+                countShape -= 1;
                 break;
 
             case 3:
                 secondOval.setBackgroundResource(R.drawable.shape_tint);
                 pin = pin.substring(0, pin.length() - 1);
+                countShape -= 1;
                 break;
 
             case 4:
                 thirdOval.setBackgroundResource(R.drawable.shape_tint);
-                    pin = pin.substring(0, pin.length() - 1);
-               // pin.replace(4, null);
+                countShape -= 1;
+                pin = pin.substring(0, pin.length() - 1);
                 break;
         }
     }
