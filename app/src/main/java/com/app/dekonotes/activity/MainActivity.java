@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -61,16 +62,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
-
         initViews();
         listContentAdapter = createAdapter();
         list.setAdapter(listContentAdapter);
         listContentAdapter.notifyDataSetChanged();
-
         btnAddNote();
         setItemClicks();
         setSwipe();
-
         subscribe();
     }
 
@@ -114,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initViews(){
         addNewNote = findViewById(R.id.FABAddNote);
+        list = findViewById(R.id.list);
     }
 
     private void btnAddNote(){
@@ -197,14 +196,20 @@ public class MainActivity extends AppCompatActivity {
     private void updateList(List<Note >baseListNote) {
         simpleAdapterContent.clear();
         for (Note value : baseListNote) {
+            //TextView deadlineView = list.findViewById(R.id.deadlineItem3);
             String deadline;
             if (value.getDayDeadline() == 0) {
                 deadline = null;
+//                deadlineView.setVisibility(View.GONE);
+
             } else {
                 Date date = new Date();
                 date.setTime(value.getDayDeadline());
                 DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
                 deadline = dateFormat.format(date.getTime());
+//                if (deadlineView.getVisibility() == View.GONE){
+//                    deadlineView.setVisibility(View.VISIBLE);
+//                }
             }
             String title;
             if (value.getTitle().equals(getString(R.string.null_string))) {
@@ -229,8 +234,7 @@ public class MainActivity extends AppCompatActivity {
 
     @NonNull
     private BaseAdapter createAdapter() {
-        list = findViewById(R.id.list);
-
+       // list
         return new SimpleAdapter(
                 this,
                 simpleAdapterContent,
@@ -267,5 +271,14 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         // Отписываемся, чтобы не было утечек памяти
         compositeDisposable.dispose();
+    }
+
+    @Override
+    public void onBackPressed(){
+    //эмулируем нажатие на HOME, сворачивая приложение
+    Intent endWork = new Intent(Intent.ACTION_MAIN);
+    endWork.addCategory(Intent.CATEGORY_HOME);
+    endWork.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    startActivity(endWork);
     }
 }

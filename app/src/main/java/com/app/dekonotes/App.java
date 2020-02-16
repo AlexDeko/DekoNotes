@@ -13,7 +13,6 @@ public class App extends Application {
     private AppDatabase database;
     private KeyStore keyStore;
 
-
     @Override
     public void onCreate() {
         super.onCreate();

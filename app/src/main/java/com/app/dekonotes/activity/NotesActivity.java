@@ -2,6 +2,7 @@ package com.app.dekonotes.activity;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.icu.util.LocaleData;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -23,6 +24,7 @@ import com.app.dekonotes.note.Note;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -159,7 +161,19 @@ public class NotesActivity extends AppCompatActivity {
             } else {
                 textNote = getString(R.string.null_string);
             }
-            Note myNote = new Note(0, titleNote, textNote, checkDeadline.isChecked(), date);
+
+            Date dateChange = new Date();
+            long lastChange = dateChange.getTime();
+
+            int containsDeadline ;
+            if (date == 0){
+                containsDeadline = 0;
+            } else {
+                containsDeadline = 1;
+            }
+
+            Note myNote = new Note(0, titleNote, textNote, checkDeadline.isChecked(), date,
+                    lastChange, containsDeadline);
 
             appDatabase.noteDao().insertNote(myNote)
                     .subscribeOn(Schedulers.io())
@@ -202,10 +216,7 @@ public class NotesActivity extends AppCompatActivity {
 
                         @Override
                         public void onSuccess(Note note) {
-                            if (note.getDayDeadline() == 0) {
-                               // dateCalendar = null;
-                                //todayCalendar = null;
-                            } else {
+                            if (note.getDayDeadline() != 0) {
                                 checkDeadline.setChecked(note.isCheck());
                                 if (checkDeadline.isChecked()){
                                     Date date = new Date();
@@ -213,8 +224,6 @@ public class NotesActivity extends AppCompatActivity {
                                     DateFormat dateFormat =
                                             new SimpleDateFormat("dd.MM.yyyy");
                                     dateCalendar.setText(dateFormat.format(date.getTime()));
-                                } else {
-                                   // dateCalendar = null;
                                 }
                             }
 
@@ -260,8 +269,16 @@ public class NotesActivity extends AppCompatActivity {
             } else {
                 textNote = getString(R.string.null_string);
             }
-            Note myNote = new Note(idNoteBundle, titleNote, textNote, checkDeadline.isChecked(), date);
-
+            Date dateChange = new Date();
+            long lastChange = dateChange.getTime();
+            int containsDeadline ;
+            if (date == 0){
+                containsDeadline = 0;
+            } else {
+                containsDeadline = 1;
+            }
+            Note myNote = new Note(idNoteBundle, titleNote, textNote, checkDeadline.isChecked(),
+                    date, lastChange, containsDeadline);
             appDatabase.noteDao().update(myNote)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -303,4 +320,28 @@ public class NotesActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+//    @Override
+//    public void onBackPressed(){
+//        super.onBackPressed();
+//        if (bundleExtra == null){
+//            MenuItem item = menu_notes.findItem(R.id.action_dog);
+//            if ()
+//            saveNote();
+//
+//        } else {
+//            update();
+//        }
+//       // onBackPressed();
+//    }
+//
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        if (bundleExtra == null){
+//            saveNote();
+//        } else {
+//            update();
+//        }
+//    }
 }

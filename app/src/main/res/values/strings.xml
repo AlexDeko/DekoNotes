@@ -37,8 +37,6 @@
     <string name="null_string">Пусто</string>
     <string name="cancel">Отмена</string>
     <string name="toast_database_save">Сохранено.</string>
-    <string name="inputType_password">textPassword</string>
-    <string name="inputType_number">number</string>
     <string name="error_note">Ошибка с заметкой</string>
     <string name="error_pin">Введён некоректный пин-код</string>
     <string name="error_notes">Ошибка c получением заметок</string>
