@@ -19,6 +19,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.app.dekonotes.adapter.ListAdapterNotes;
+import com.app.dekonotes.data.RepositoryNotes;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.app.dekonotes.App;
 import com.app.dekonotes.R;
@@ -47,8 +48,9 @@ public class MainActivity extends AppCompatActivity {
     List<Note> myList;
     // Контейнер для подписок. См. onDestroy()
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
-    AppDatabase appDatabase = App.getInstance().getDatabase();
+   // AppDatabase appDatabase = App.getInstance().getDatabase();
     ListAdapterNotes listAdapterNotes;
+    RepositoryNotes repositoryNotes = new RepositoryNotes();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,33 +83,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void subscribe() {
-        appDatabase.noteDao().getAll()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<Note>>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        // Disposable представляет собой интерфейс для работы с подпиской. Через него можно отписаться
-                        compositeDisposable.add(d);
-                    }
-
-                    @Override
-                    public void onNext(List<Note> note) {
-                        updateList(note);
-                        myList = note;
-                        listAdapterNotes.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Toast.makeText(MainActivity.this, getString(R.string.error_notes),
-                                Toast.LENGTH_LONG).show();
-                    }
-
-                    @Override
-                    public void onComplete() {
-                    }
-                });
+        try {
+            myList = repositoryNotes.getAll();
+            updateList(myList);
+            listAdapterNotes.notifyDataSetChanged();
+        }catch (Exception e){
+            Toast.makeText(MainActivity.this,
+                    getString(R.string.error_note),
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
     private void initViews() {
@@ -148,23 +132,15 @@ public class MainActivity extends AppCompatActivity {
                 builderDialogDelete.setPositiveButton(R.string.ok,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                Note note = myList.get(position);
-                                appDatabase.noteDao().delete(note)
-                                        .subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribe(new DisposableCompletableObserver() {
-                                            @Override
-                                            public void onComplete() {
-                                                Log.i(LOG, "Удалена заметка");
-                                                subscribe();
-                                                listAdapterNotes.notifyDataSetChanged();
-                                            }
-
-                                            @Override
-                                            public void onError(Throwable e) {
-                                                e.printStackTrace();
-                                            }
-                                        });
+                                try {
+                                    Note note = myList.get(position);
+                                    repositoryNotes.delete(note);
+                                    Log.i(LOG, "Удалена заметка");
+                                    subscribe();
+                                    listAdapterNotes.notifyDataSetChanged();
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
                             }
                         });
 
@@ -186,7 +162,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateList(List<Note> baseListNote) {
-
         listAdapterNotes.setItems(baseListNote);
         listAdapterNotes.notifyDataSetChanged();
     }
@@ -203,8 +178,6 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         Intent targetIntent;
         if (id == R.id.action_settings) {
-            Toast.makeText(MainActivity.this, getString(R.string.toast_settings),
-                    Toast.LENGTH_LONG).show();
             targetIntent = new Intent(MainActivity.this, SettingsActivity.class);
             startActivity(targetIntent);
             return true;

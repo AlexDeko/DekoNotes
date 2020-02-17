@@ -23,6 +23,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.app.dekonotes.App;
 import com.app.dekonotes.R;
 import com.app.dekonotes.data.AppDatabase;
+import com.app.dekonotes.data.RepositoryNotes;
 import com.app.dekonotes.note.Note;
 
 import java.text.DateFormat;
@@ -53,6 +54,7 @@ public class NotesActivity extends AppCompatActivity {
     AppDatabase appDatabase = App.getInstance().getDatabase();
     Bundle bundleExtra = null;
     long idNoteBundle;
+    RepositoryNotes repositoryNotes = new RepositoryNotes();
 
 
     @Override
@@ -66,6 +68,7 @@ public class NotesActivity extends AppCompatActivity {
         initViews();
         setClick();
         getInfoExtra();
+
     }
 
     private void initViews() {
@@ -198,23 +201,11 @@ public class NotesActivity extends AppCompatActivity {
             Note myNote = new Note(0, titleNote, textNote, checkDeadline.isChecked(), date,
                     lastChange, containsDeadline);
 
-            appDatabase.noteDao().insertNote(myNote)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new DisposableCompletableObserver() {
-                        @Override
-                        public void onComplete() {
-                            Log.i(TAG, "Новая заметка");
-                            Toast.makeText(NotesActivity.this,
+
+            repositoryNotes.insert(myNote);
+            Toast.makeText(NotesActivity.this,
                                     getString(R.string.toast_database_save),
                                     Toast.LENGTH_LONG).show();
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            e.printStackTrace();
-                        }
-                    });
         } catch (Exception e){
             Log.e(TAG, "ERROR_SAVE");
         }
@@ -226,49 +217,34 @@ public class NotesActivity extends AppCompatActivity {
         idNoteBundle = 0;
         if (bundleExtra != null){
             idNoteBundle= bundleExtra.getLong("id");
-            appDatabase.noteDao().getNoteById(idNoteBundle)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new SingleObserver<Note>() {
+            try {
+                Note note = repositoryNotes.getById(idNoteBundle);
+                if (note.getDayDeadline() != 0) {
+                    checkDeadline.setChecked(note.isCheck());
+                    if (checkDeadline.isChecked()){
+                        Date date = new Date();
+                        date.setTime(note.getDayDeadline());
+                        DateFormat dateFormat =
+                                new SimpleDateFormat("dd.MM.yyyy HH:mm");
+                        dateCalendar.setText(dateFormat.format(date.getTime()));
+                    }
+                }
 
+                if (note.getTitle().equals(getString(R.string.null_string))) {
+                    title = null;
+                } else {
+                    title.setText(note.getTitle());
+                }
 
-                        @Override
-                        public void onSubscribe(Disposable d) {
-
-                        }
-
-                        @Override
-                        public void onSuccess(Note note) {
-                            if (note.getDayDeadline() != 0) {
-                                checkDeadline.setChecked(note.isCheck());
-                                if (checkDeadline.isChecked()){
-                                    Date date = new Date();
-                                    date.setTime(note.getDayDeadline());
-                                    DateFormat dateFormat =
-                                            new SimpleDateFormat("dd.MM.yyyy HH:mm");
-                                    dateCalendar.setText(dateFormat.format(date.getTime()));
-                                }
-                            }
-
-                            if (note.getTitle().equals(getString(R.string.null_string))) {
-                                title = null;
-                            } else {
-                                title.setText(note.getTitle());
-                            }
-
-                            if (note.getText().equals(getString(R.string.null_string))) {
-                                text = null;
-                            } else {
-                                text.setText(note.getText());
-                            }
-                        }
-
-                        @Override
-                        public void onError(Throwable t) {
-                            Toast.makeText(NotesActivity.this, getString(R.string.error_note),
-                                    Toast.LENGTH_LONG).show();
-                        }
-                    });
+                if (note.getText().equals(getString(R.string.null_string))) {
+                    text = null;
+                } else {
+                    text.setText(note.getText());
+                }
+            } catch (Exception e) {
+                Toast.makeText(NotesActivity.this, getString(R.string.error_note),
+                        Toast.LENGTH_LONG).show();
+            }
         }
     }
 
@@ -302,22 +278,11 @@ public class NotesActivity extends AppCompatActivity {
             }
             Note myNote = new Note(idNoteBundle, titleNote, textNote, checkDeadline.isChecked(),
                     date, lastChange, containsDeadline);
-            appDatabase.noteDao().update(myNote)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new DisposableCompletableObserver() {
-                        @Override
-                        public void onComplete() {
 
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            Toast.makeText(NotesActivity.this,
-                                    getString(R.string.error_note),
-                                    Toast.LENGTH_LONG).show();
-                        }
-                    });
+            repositoryNotes.update(myNote);
+            Toast.makeText(NotesActivity.this,
+                    getString(R.string.toast_database_save),
+                    Toast.LENGTH_LONG).show();
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -344,6 +309,7 @@ public class NotesActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    //toDO Сохранение заметки при любом случае
 //    @Override
 //    public void onBackPressed(){
 //        super.onBackPressed();

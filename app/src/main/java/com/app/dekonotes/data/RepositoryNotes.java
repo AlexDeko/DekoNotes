@@ -1,5 +1,6 @@
 package com.app.dekonotes.data;
 
+import android.content.Context;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,16 +32,19 @@ import io.reactivex.schedulers.Schedulers;
 
 public class RepositoryNotes {
 
-    AppDatabase appDatabase = App.getInstance().getDatabase();
+    private AppDatabase appDatabase = App.getInstance().getDatabase();
 
+    public RepositoryNotes()  {
 
-    private Note getById(long idNoteBundle){
+    }
+
+    public Note getById(long idNoteBundle){
         final Note[] myNote = new Note[1];
         appDatabase.noteDao().getNoteById(idNoteBundle)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SingleObserver<Note>() {
-                    
+
                     @Override
                     public void onSubscribe(Disposable d) {
 
@@ -60,11 +64,8 @@ public class RepositoryNotes {
         return  myNote[0];
     }
 
-    private void update(long idNoteBundle, String titleNote, String textNote,
-                        boolean checkDeadline, long date, long lastChange, int containsDeadline){
+    public void update(Note myNote){
         try {
-            Note myNote = new Note(idNoteBundle, titleNote, textNote, checkDeadline,
-                    date, lastChange, containsDeadline);
             appDatabase.noteDao().update(myNote)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -83,36 +84,41 @@ public class RepositoryNotes {
         }
     }
 
-    private List<Note> getAll(){
-        final List<Note>[] notes = new List[]{};
-        appDatabase.noteDao().getAll()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<Note>>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        // Disposable представляет собой интерфейс для работы с подпиской. Через него можно отписаться
-                        //compositeDisposable.add(d);
-                    }
-
-                    @Override
-                    public void onNext(List<Note> note) {
-                        notes[0] = note;
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                    }
-
-                    @Override
-                    public void onComplete() {
-                    }
-                });
-        return notes[0];
+    public List<Note> getAll(){
+//        final List<Note>[] notes = new List[]{};
+//        try {
+//            appDatabase.noteDao().getAll()
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(new Observer<List<Note>>() {
+//                        @Override
+//                        public void onSubscribe(Disposable d) {
+//                            // Disposable представляет собой интерфейс для работы с подпиской. Через него можно отписаться
+//                            //compositeDisposable.add(d);
+//                        }
+//
+//                        @Override
+//                        public void onNext(List<Note> note) {
+//                            notes[0] = note;
+//
+//                        }
+//
+//                        @Override
+//                        public void onError(Throwable e) {
+//                        }
+//
+//                        @Override
+//                        public void onComplete() {
+//                        }
+//                    });
+//        } catch (Exception e){
+//            e.printStackTrace();
+//        }
+//
+        return null;
     }
 
-    private void delete(Note note){
+    public void delete(Note note){
         appDatabase.noteDao().delete(note)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -129,17 +135,14 @@ public class RepositoryNotes {
                 });
     }
 
-    private void insert(Note myNote){
+    public void insert(Note myNote){
         appDatabase.noteDao().insertNote(myNote)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DisposableCompletableObserver() {
                     @Override
                     public void onComplete() {
-                      //  Log.i(TAG, "Новая заметка");
-                        //Toast.makeText(this,
-                         //       getString(R.string.toast_database_save),
-                        //        Toast.LENGTH_LONG).show();
+
                     }
 
                     @Override
