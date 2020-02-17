@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void setSwipe(){
+    private void setSwipe() {
         final SwipeRefreshLayout swipeLayout = findViewById(R.id.swiperefresh);
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             // Будет вызван, когда пользователь потянет список вниз
@@ -90,29 +90,32 @@ public class MainActivity extends AppCompatActivity {
                         // Disposable представляет собой интерфейс для работы с подпиской. Через него можно отписаться
                         compositeDisposable.add(d);
                     }
+
                     @Override
                     public void onNext(List<Note> note) {
                         updateList(note);
                         myList = note;
                         listAdapterNotes.notifyDataSetChanged();
                     }
+
                     @Override
                     public void onError(Throwable e) {
                         Toast.makeText(MainActivity.this, getString(R.string.error_notes),
                                 Toast.LENGTH_LONG).show();
                     }
+
                     @Override
                     public void onComplete() {
                     }
                 });
     }
 
-    private void initViews(){
+    private void initViews() {
         addNewNote = findViewById(R.id.FABAddNote);
         list = findViewById(R.id.list);
     }
 
-    private void btnAddNote(){
+    private void btnAddNote() {
         addNewNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -123,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void setItemClicks(){
+    private void setItemClicks() {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, final int position,
@@ -139,58 +142,50 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, final View view,
                                            final int position, final long id) {
-                view.animate().setDuration(20).alpha(0)
-                        .withEndAction(new Runnable() {
-                            @Override
-                            public void run() {
-                                AlertDialog.Builder builderDialogDelete = new AlertDialog
-                                        .Builder(MainActivity.this );
+                AlertDialog.Builder builderDialogDelete = new AlertDialog
+                        .Builder(MainActivity.this);
 
-                                builderDialogDelete.setPositiveButton(R.string.ok,
-                                        new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        Note note = myList.get(position);
-                                        appDatabase.noteDao().delete(note)
-                                                .subscribeOn(Schedulers.io())
-                                                .observeOn(AndroidSchedulers.mainThread())
-                                                .subscribe(new DisposableCompletableObserver() {
-                                                    @Override
-                                                    public void onComplete() {
-                                                        Log.i(LOG, "Удалена заметка");
-                                                        subscribe();
-                                                        listAdapterNotes.notifyDataSetChanged();
-                                                        view.setAlpha(1);
-                                                    }
+                builderDialogDelete.setPositiveButton(R.string.ok,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Note note = myList.get(position);
+                                appDatabase.noteDao().delete(note)
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(new DisposableCompletableObserver() {
+                                            @Override
+                                            public void onComplete() {
+                                                Log.i(LOG, "Удалена заметка");
+                                                subscribe();
+                                                listAdapterNotes.notifyDataSetChanged();
+                                            }
 
-                                                    @Override
-                                                    public void onError(Throwable e) {
-                                                        e.printStackTrace();
-                                                    }
-                                                });
-                                    }
-                                });
-
-                                builderDialogDelete.setNegativeButton(R.string.cancel,
-                                        new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        // User cancelled the dialog
-                                    }
-                                });
-
-                                builderDialogDelete.setMessage(R.string.dialog_message)
-                                        .setTitle(R.string.dialog_title)
-                                        .setIcon(R.drawable.ic_delete3d);
-                                AlertDialog dialogDelete = builderDialogDelete.create();
-                                dialogDelete.show();
+                                            @Override
+                                            public void onError(Throwable e) {
+                                                e.printStackTrace();
+                                            }
+                                        });
                             }
                         });
 
+                builderDialogDelete.setNegativeButton(R.string.cancel,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // User cancelled the dialog
+                            }
+                        });
+
+                builderDialogDelete.setMessage(R.string.dialog_message)
+                        .setTitle(R.string.dialog_title)
+                        .setIcon(R.drawable.ic_delete3d);
+                AlertDialog dialogDelete = builderDialogDelete.create();
+                dialogDelete.show();
                 return true;
             }
         });
     }
 
-    private void updateList(List<Note >baseListNote) {
+    private void updateList(List<Note> baseListNote) {
 
         listAdapterNotes.setItems(baseListNote);
         listAdapterNotes.notifyDataSetChanged();
@@ -219,6 +214,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        subscribe();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         // Отписываемся, чтобы не было утечек памяти
@@ -226,11 +227,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed(){
-    //эмулируем нажатие на HOME, сворачивая приложение
-    Intent endWork = new Intent(Intent.ACTION_MAIN);
-    endWork.addCategory(Intent.CATEGORY_HOME);
-    endWork.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-    startActivity(endWork);
+    public void onBackPressed() {
+        //эмулируем нажатие на HOME, сворачивая приложение
+        Intent endWork = new Intent(Intent.ACTION_MAIN);
+        endWork.addCategory(Intent.CATEGORY_HOME);
+        endWork.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(endWork);
     }
 }

@@ -122,14 +122,6 @@ public class NotesActivity extends AppCompatActivity {
         });
     }
 
-    private void setInitialDateTime() {
-
-        dateCalendar.setText(DateUtils.formatDateTime(this,
-                todayCalendar.getTimeInMillis(),
-                DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR
-                        | DateUtils.FORMAT_SHOW_TIME));
-    }
-
     private void setDateCalendar(){
         todayCalendar = Calendar.getInstance();
         datePickerDialog = new DatePickerDialog(
