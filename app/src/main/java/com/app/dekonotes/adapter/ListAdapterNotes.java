@@ -7,27 +7,33 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import com.app.dekonotes.R;
 import com.app.dekonotes.note.Note;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 public class ListAdapterNotes extends BaseAdapter {
 
-    private List<Note> listNotes;
+    private List<Note> listNotes = Collections.emptyList();
     private LayoutInflater inflater;
 
-    public ListAdapterNotes(List<Note> listNotes, Context context) {
-        this.listNotes = listNotes;
+    public ListAdapterNotes(Context context) {
         inflater = LayoutInflater.from(context);
     }
 
     @Override
     public int getCount() {
         return listNotes != null ? listNotes.size() : 0;
+    }
+
+    public void setItems(final @NonNull List<Note> listNotes) {
+        this.listNotes = listNotes;
     }
 
     @Override
@@ -52,22 +58,25 @@ public class ListAdapterNotes extends BaseAdapter {
 
         Note note = getItem(position);
         if(note != null){
-            TextView tittleView = currentView.findViewById(R.id.titleItem1);
+            TextView titleView = currentView.findViewById(R.id.titleItem1);
             TextView textView = currentView.findViewById(R.id.textItem2);
             TextView deadlineView = currentView.findViewById(R.id.deadlineItem3);
             if (note.getTitle().equals("Пусто")){
-                tittleView.setVisibility(View.GONE);
+                titleView.setVisibility(View.GONE);
             } else {
-                tittleView.setText(note.getTitle());
+                titleView.setVisibility(View.GONE);
+                titleView.setText(note.getTitle());
             }
             if (note.getText().equals("Пусто")){
                 textView.setVisibility(View.GONE);
             } else {
+                textView.setVisibility(View.VISIBLE);
                 textView.setText(note.getText());
             }
             if (note.getDayDeadline() == 0){
                 deadlineView.setVisibility(View.GONE);
             } else {
+                deadlineView.setVisibility(View.VISIBLE);
                 Date date = new Date();
                 date.setTime(note.getDayDeadline());
                 DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm");

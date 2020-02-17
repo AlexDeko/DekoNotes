@@ -57,13 +57,15 @@ public class MainActivity extends AppCompatActivity {
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
         initViews();
-        listAdapterNotes = new ListAdapterNotes(myList, this);
+        subscribe();
+        listAdapterNotes = new ListAdapterNotes(this);
+        listAdapterNotes.notifyDataSetChanged();
         list.setAdapter(listAdapterNotes);
         listAdapterNotes.notifyDataSetChanged();
         btnAddNote();
         setItemClicks();
         setSwipe();
-        subscribe();
+
     }
 
     private void setSwipe(){
@@ -92,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onNext(List<Note> note) {
                         updateList(note);
                         myList = note;
+                        listAdapterNotes.notifyDataSetChanged();
                     }
                     @Override
                     public void onError(Throwable e) {
@@ -155,7 +158,6 @@ public class MainActivity extends AppCompatActivity {
                                                     public void onComplete() {
                                                         Log.i(LOG, "Удалена заметка");
                                                         subscribe();
-                                                    //    listContentAdapter.notifyDataSetChanged();
                                                         listAdapterNotes.notifyDataSetChanged();
                                                         view.setAlpha(1);
                                                     }
@@ -189,8 +191,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateList(List<Note >baseListNote) {
-      //  listAdapterNotes.;
-        listAdapterNotes = new ListAdapterNotes(baseListNote, this);
+
+        listAdapterNotes.setItems(baseListNote);
         listAdapterNotes.notifyDataSetChanged();
     }
 
