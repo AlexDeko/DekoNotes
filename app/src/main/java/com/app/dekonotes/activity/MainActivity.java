@@ -16,21 +16,16 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.app.dekonotes.adapter.ListAdapterNotes;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.app.dekonotes.App;
 import com.app.dekonotes.R;
 import com.app.dekonotes.data.AppDatabase;
 import com.app.dekonotes.note.Note;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,14 +42,13 @@ public class MainActivity extends AppCompatActivity {
     private final static String TITLE_NOTE = "title";
     private final static String TEXT_NOTE = "subtitle";
     private final static String DEADLINE_NOTE = "deadline";
-    List<Map<String, String>> simpleAdapterContent = new ArrayList<>();
     private ListView list;
     private FloatingActionButton addNewNote;
-    BaseAdapter listContentAdapter;
     List<Note> myList;
     // Контейнер для подписок. См. onDestroy()
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     AppDatabase appDatabase = App.getInstance().getDatabase();
+    ListAdapterNotes listAdapterNotes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,9 +57,9 @@ public class MainActivity extends AppCompatActivity {
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
         initViews();
-        listContentAdapter = createAdapter();
-        list.setAdapter(listContentAdapter);
-        listContentAdapter.notifyDataSetChanged();
+        listAdapterNotes = new ListAdapterNotes(myList, this);
+        list.setAdapter(listAdapterNotes);
+        listAdapterNotes.notifyDataSetChanged();
         btnAddNote();
         setItemClicks();
         setSwipe();
@@ -161,7 +155,8 @@ public class MainActivity extends AppCompatActivity {
                                                     public void onComplete() {
                                                         Log.i(LOG, "Удалена заметка");
                                                         subscribe();
-                                                        listContentAdapter.notifyDataSetChanged();
+                                                    //    listContentAdapter.notifyDataSetChanged();
+                                                        listAdapterNotes.notifyDataSetChanged();
                                                         view.setAlpha(1);
                                                     }
 
@@ -194,54 +189,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateList(List<Note >baseListNote) {
-        simpleAdapterContent.clear();
-        for (Note value : baseListNote) {
-            //TextView deadlineView = list.findViewById(R.id.deadlineItem3);
-            String deadline;
-            if (value.getDayDeadline() == 0) {
-                deadline = null;
-//                deadlineView.setVisibility(View.GONE);
-
-            } else {
-                Date date = new Date();
-                date.setTime(value.getDayDeadline());
-                DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-                deadline = dateFormat.format(date.getTime());
-//                if (deadlineView.getVisibility() == View.GONE){
-//                    deadlineView.setVisibility(View.VISIBLE);
-//                }
-            }
-            String title;
-            if (value.getTitle().equals(getString(R.string.null_string))) {
-                title = null;
-            } else {
-                title = value.getTitle();
-            }
-            String text;
-            if (value.getText().equals(getString(R.string.null_string))) {
-                text = null;
-            } else {
-                text = value.getText();
-            }
-            Map<String, String> row = new HashMap<>();
-            row.put(TITLE_NOTE, title);
-            row.put(TEXT_NOTE, text);
-            row.put(DEADLINE_NOTE, deadline);
-            simpleAdapterContent.add(row);
-        }
-        listContentAdapter.notifyDataSetChanged();
-    }
-
-    @NonNull
-    private BaseAdapter createAdapter() {
-       // list
-        return new SimpleAdapter(
-                this,
-                simpleAdapterContent,
-                R.layout.list_item,
-                new String[]{TITLE_NOTE, TEXT_NOTE, DEADLINE_NOTE},
-                new int[]{R.id.titleItem1, R.id.textItem2, R.id.deadlineItem3}
-        );
+      //  listAdapterNotes.;
+        listAdapterNotes = new ListAdapterNotes(baseListNote, this);
+        listAdapterNotes.notifyDataSetChanged();
     }
 
     @Override

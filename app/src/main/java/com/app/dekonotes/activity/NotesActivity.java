@@ -1,9 +1,11 @@
 package com.app.dekonotes.activity;
 
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.icu.util.LocaleData;
 import android.os.Bundle;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,6 +14,7 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -89,6 +92,10 @@ public class NotesActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 setDateCalendar();
+                setTimeCalendar();
+
+
+                //setInitialDateTime();
             }
         });
 
@@ -101,7 +108,7 @@ public class NotesActivity extends AppCompatActivity {
                     dateCalendar.setClickable(true);
                     dateCalendar.setEnabled(true);
                     Date date = new Date();
-                    DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy",
+                    DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm",
                             Locale.getDefault());
                     dateCalendar.setText(dateFormat.format(date));
                 } else {
@@ -113,6 +120,14 @@ public class NotesActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void setInitialDateTime() {
+
+        dateCalendar.setText(DateUtils.formatDateTime(this,
+                todayCalendar.getTimeInMillis(),
+                DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR
+                        | DateUtils.FORMAT_SHOW_TIME));
     }
 
     private void setDateCalendar(){
@@ -127,6 +142,21 @@ public class NotesActivity extends AppCompatActivity {
         datePickerDialog.show();
     }
 
+    public void setTimeCalendar() {
+        new TimePickerDialog(this, onTimeSet,
+                todayCalendar.get(Calendar.HOUR_OF_DAY),
+                todayCalendar.get(Calendar.MINUTE), true)
+                .show();
+    }
+
+    TimePickerDialog.OnTimeSetListener onTimeSet= new TimePickerDialog.OnTimeSetListener() {
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+            todayCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+            todayCalendar.set(Calendar.MINUTE, minute);
+
+        }
+    };
+
     DatePickerDialog.OnDateSetListener onDateSet = new DatePickerDialog.OnDateSetListener() {
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
             todayCalendar.set(Calendar.YEAR, year);
@@ -134,10 +164,11 @@ public class NotesActivity extends AppCompatActivity {
             todayCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
             Date date = new Date();
             date.setTime(todayCalendar.getTimeInMillis());
-            DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+            DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm");
             dateCalendar.setText(dateFormat.format(date.getTime()));
         }
     };
+
 
     private void saveNote(){
         try {
@@ -222,7 +253,7 @@ public class NotesActivity extends AppCompatActivity {
                                     Date date = new Date();
                                     date.setTime(note.getDayDeadline());
                                     DateFormat dateFormat =
-                                            new SimpleDateFormat("dd.MM.yyyy");
+                                            new SimpleDateFormat("dd.MM.yyyy HH:mm");
                                     dateCalendar.setText(dateFormat.format(date.getTime()));
                                 }
                             }
@@ -325,14 +356,15 @@ public class NotesActivity extends AppCompatActivity {
 //    public void onBackPressed(){
 //        super.onBackPressed();
 //        if (bundleExtra == null){
-//            MenuItem item = menu_notes.findItem(R.id.action_dog);
-//            if ()
-//            saveNote();
 //
+//            MenuItem item = getMenuInflater().inflate(R.menu.menu_notes, );findItem(R.id.action_save);
+//            if (item.isChecked()){
+//            saveNote();
+//            }
 //        } else {
 //            update();
 //        }
-//       // onBackPressed();
+//        onBackPressed();
 //    }
 //
 //    @Override
