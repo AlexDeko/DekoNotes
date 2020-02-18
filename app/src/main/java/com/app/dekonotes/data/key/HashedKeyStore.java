@@ -1,4 +1,4 @@
-package com.app.dekonotes.key;
+package com.app.dekonotes.data.key;
 
 import android.content.Context;
 import android.content.SharedPreferences;

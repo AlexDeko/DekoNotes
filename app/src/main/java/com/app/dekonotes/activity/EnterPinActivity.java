@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 import com.app.dekonotes.App;
 import com.app.dekonotes.R;
-import com.app.dekonotes.key.KeyStore;
+import com.app.dekonotes.data.key.KeyStore;
 
 public class EnterPinActivity extends AppCompatActivity {
 
@@ -40,12 +40,10 @@ public class EnterPinActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enter_pin);
-
         hasPin();
         initViews();
         setClickNumberOnKeyboard();
         setClickDeleteLastInput();
-
     }
 
     private void hasPin(){

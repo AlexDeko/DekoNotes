@@ -3,8 +3,8 @@ package com.app.dekonotes.data;
 import androidx.room.Database;
 import androidx.room.RoomDatabase;
 
-import com.app.dekonotes.note.Note;
-import com.app.dekonotes.note.NoteDao;
+import com.app.dekonotes.data.note.Note;
+import com.app.dekonotes.data.note.NoteDao;
 
 
 

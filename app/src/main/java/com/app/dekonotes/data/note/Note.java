@@ -1,4 +1,4 @@
-package com.app.dekonotes.note;
+package com.app.dekonotes.data.note;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;

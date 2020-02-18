@@ -1,6 +1,5 @@
 package com.app.dekonotes.activity;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -14,43 +13,41 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.app.dekonotes.adapter.ListAdapterNotes;
-import com.app.dekonotes.data.RepositoryNotes;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.app.dekonotes.App;
-import com.app.dekonotes.R;
+import com.app.dekonotes.adapter.ListAdapterNotes;
 import com.app.dekonotes.data.AppDatabase;
-import com.app.dekonotes.note.Note;
+import com.app.dekonotes.data.note.RepositoryNotesImpl;
+import com.app.dekonotes.data.note.RepositoryNotesImplEx;
+import com.app.dekonotes.data.note.Note;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.app.dekonotes.R;
 
-import java.util.ArrayList;
+
 import java.util.List;
-import java.util.Map;
 
+import io.reactivex.Completable;
+import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableCompletableObserver;
-import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
     private final static String LOG = "MAIN";
-    private final static String TITLE_NOTE = "title";
-    private final static String TEXT_NOTE = "subtitle";
-    private final static String DEADLINE_NOTE = "deadline";
     private ListView list;
     private FloatingActionButton addNewNote;
     List<Note> myList;
     // Контейнер для подписок. См. onDestroy()
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
-   // AppDatabase appDatabase = App.getInstance().getDatabase();
+    AppDatabase appDatabase = App.getInstance().getDatabase();
     ListAdapterNotes listAdapterNotes;
-    RepositoryNotes repositoryNotes = new RepositoryNotes();
+   // RepositoryNotesImplEx repositoryNotes = new RepositoryNotesImplEx();
+    RepositoryNotesImpl repositoryNotes = new RepositoryNotesImpl(appDatabase.noteDao());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,15 +80,32 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void subscribe() {
-        try {
-            myList = repositoryNotes.getAll();
-            updateList(myList);
-            listAdapterNotes.notifyDataSetChanged();
-        }catch (Exception e){
-            Toast.makeText(MainActivity.this,
-                    getString(R.string.error_note),
-                    Toast.LENGTH_LONG).show();
-        }
+        Observable<List<Note>> listObservable = repositoryNotes.getAll();
+        listObservable.observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<List<Note>>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                            // Disposable представляет собой интерфейс для работы с подпиской. Через него можно отписаться
+                            compositeDisposable.add(d);
+                        }
+
+                        @Override
+                        public void onNext(List<Note> note) {
+                            myList = note;
+                            updateList(myList);
+                            listAdapterNotes.notifyDataSetChanged();
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Toast.makeText(MainActivity.this,
+                            getString(R.string.error_note), Toast.LENGTH_LONG).show();
+                        }
+
+                        @Override
+                        public void onComplete() {
+                        }
+                    });
     }
 
     private void initViews() {
@@ -134,10 +148,22 @@ public class MainActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int id) {
                                 try {
                                     Note note = myList.get(position);
-                                    repositoryNotes.delete(note);
-                                    Log.i(LOG, "Удалена заметка");
-                                    subscribe();
-                                    listAdapterNotes.notifyDataSetChanged();
+                                    Completable completable = repositoryNotes.delete(note);
+                                    completable.observeOn(AndroidSchedulers.mainThread())
+                                            .subscribe(new DisposableCompletableObserver() {
+                                                @Override
+                                                public void onComplete() {
+                                                    Log.i(LOG, "Удалена заметка");
+                                                    subscribe();
+                                                    listAdapterNotes.notifyDataSetChanged();
+                                                }
+
+                                                @Override
+                                                public void onError(Throwable e) {
+                                                    e.printStackTrace();
+                                                }
+                                            });
+
                                 }catch (Exception e){
                                     e.printStackTrace();
                                 }

@@ -5,15 +5,13 @@ import android.app.Application;
 import androidx.room.Room;
 
 import com.app.dekonotes.data.AppDatabase;
-import com.app.dekonotes.data.RepositoryNotes;
-import com.app.dekonotes.key.HashedKeyStore;
-import com.app.dekonotes.key.KeyStore;
+import com.app.dekonotes.data.key.HashedKeyStore;
+import com.app.dekonotes.data.key.KeyStore;
 
 public class App extends Application {
     public static App instance;
     private AppDatabase database;
     private KeyStore keyStore;
-  //  private RepositoryNotes repositoryNotes;
 
     @Override
     public void onCreate() {

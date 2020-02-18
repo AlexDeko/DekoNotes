@@ -1,9 +1,7 @@
-package com.app.dekonotes.key;
+package com.app.dekonotes.data.key;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-
-import com.app.dekonotes.key.KeyStore;
 
 import static java.util.Objects.hash;
 

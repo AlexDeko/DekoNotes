@@ -24,7 +24,6 @@
         <activity android:name="com.app.dekonotes.activity.SettingsActivity" />
         <activity android:name="com.app.dekonotes.activity.NotesActivity" />
         <activity android:name="com.app.dekonotes.activity.MainActivity">
-
         </activity>
     </application>
 

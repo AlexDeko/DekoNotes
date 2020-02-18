@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.app.dekonotes.R;
-import com.app.dekonotes.note.Note;
+import com.app.dekonotes.data.note.Note;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

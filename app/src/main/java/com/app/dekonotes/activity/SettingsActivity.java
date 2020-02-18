@@ -3,11 +3,9 @@ package com.app.dekonotes.activity;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
-import android.text.method.TransformationMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,7 +15,7 @@ import android.widget.Toast;
 
 import com.app.dekonotes.App;
 import com.app.dekonotes.R;
-import com.app.dekonotes.key.KeyStore;
+import com.app.dekonotes.data.key.KeyStore;
 
 public class SettingsActivity extends AppCompatActivity {
 

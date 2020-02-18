@@ -1,40 +1,25 @@
-package com.app.dekonotes.data;
+package com.app.dekonotes.data.note;
 
-import android.content.Context;
-import android.util.Log;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import android.provider.ContactsContract;
 
 import com.app.dekonotes.App;
-import com.app.dekonotes.R;
-import com.app.dekonotes.activity.MainActivity;
-import com.app.dekonotes.activity.NotesActivity;
-import com.app.dekonotes.note.Note;
+import com.app.dekonotes.data.AppDatabase;
+import com.app.dekonotes.data.note.Note;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
+
 import java.util.List;
-import java.util.ListIterator;
 
-import io.reactivex.Observer;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableCompletableObserver;
 import io.reactivex.schedulers.Schedulers;
 
-public class RepositoryNotes {
+public class RepositoryNotesImplEx {
 
     private AppDatabase appDatabase = App.getInstance().getDatabase();
 
-    public RepositoryNotes()  {
+    public RepositoryNotesImplEx()  {
 
     }
 
@@ -84,7 +69,7 @@ public class RepositoryNotes {
         }
     }
 
-    public List<Note> getAll(){
+//    public List<Note> getAll(Disposable disposable){
 //        final List<Note>[] notes = new List[]{};
 //        try {
 //            appDatabase.noteDao().getAll()
@@ -94,7 +79,7 @@ public class RepositoryNotes {
 //                        @Override
 //                        public void onSubscribe(Disposable d) {
 //                            // Disposable представляет собой интерфейс для работы с подпиской. Через него можно отписаться
-//                            //compositeDisposable.add(d);
+//                            compositeDisposable.add(d);
 //                        }
 //
 //                        @Override
@@ -115,8 +100,8 @@ public class RepositoryNotes {
 //            e.printStackTrace();
 //        }
 //
-        return null;
-    }
+//        return null;
+//    }
 
     public void delete(Note note){
         appDatabase.noteDao().delete(note)

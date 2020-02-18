@@ -3,9 +3,7 @@ package com.app.dekonotes.activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.icu.util.LocaleData;
 import android.os.Bundle;
-import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,22 +21,21 @@ import androidx.appcompat.widget.Toolbar;
 import com.app.dekonotes.App;
 import com.app.dekonotes.R;
 import com.app.dekonotes.data.AppDatabase;
-import com.app.dekonotes.data.RepositoryNotes;
-import com.app.dekonotes.note.Note;
+import com.app.dekonotes.data.note.RepositoryNotesImpl;
+import com.app.dekonotes.data.note.Note;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import io.reactivex.Completable;
+import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableCompletableObserver;
-import io.reactivex.schedulers.Schedulers;
-
 
 public class NotesActivity extends AppCompatActivity {
 
@@ -54,7 +51,7 @@ public class NotesActivity extends AppCompatActivity {
     AppDatabase appDatabase = App.getInstance().getDatabase();
     Bundle bundleExtra = null;
     long idNoteBundle;
-    RepositoryNotes repositoryNotes = new RepositoryNotes();
+    RepositoryNotesImpl repositoryNotes = new RepositoryNotesImpl(appDatabase.noteDao());
 
 
     @Override
@@ -94,11 +91,10 @@ public class NotesActivity extends AppCompatActivity {
         imgBtnCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                todayCalendar = Calendar.getInstance();
                 setDateCalendar();
                 setTimeCalendar();
-
-
-                //setInitialDateTime();
+//                Calendar
             }
         });
 
@@ -126,7 +122,7 @@ public class NotesActivity extends AppCompatActivity {
     }
 
     private void setDateCalendar(){
-        todayCalendar = Calendar.getInstance();
+      //  todayCalendar = Calendar.getInstance();
         datePickerDialog = new DatePickerDialog(
                 this,
                 onDateSet,
@@ -201,11 +197,22 @@ public class NotesActivity extends AppCompatActivity {
             Note myNote = new Note(0, titleNote, textNote, checkDeadline.isChecked(), date,
                     lastChange, containsDeadline);
 
-
-            repositoryNotes.insert(myNote);
-            Toast.makeText(NotesActivity.this,
+            Completable completable = repositoryNotes.insert(myNote);
+            completable.observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new DisposableCompletableObserver() {
+                        @Override
+                        public void onComplete() {
+                            Toast.makeText(NotesActivity.this,
                                     getString(R.string.toast_database_save),
                                     Toast.LENGTH_LONG).show();
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            e.printStackTrace();
+                        }
+                    });
+
         } catch (Exception e){
             Log.e(TAG, "ERROR_SAVE");
         }
@@ -218,35 +225,55 @@ public class NotesActivity extends AppCompatActivity {
         if (bundleExtra != null){
             idNoteBundle= bundleExtra.getLong("id");
             try {
-                Note note = repositoryNotes.getById(idNoteBundle);
-                if (note.getDayDeadline() != 0) {
-                    checkDeadline.setChecked(note.isCheck());
-                    if (checkDeadline.isChecked()){
-                        Date date = new Date();
-                        date.setTime(note.getDayDeadline());
-                        DateFormat dateFormat =
-                                new SimpleDateFormat("dd.MM.yyyy HH:mm");
-                        dateCalendar.setText(dateFormat.format(date.getTime()));
-                    }
-                }
+                Single<Note> subscribeNote = repositoryNotes.getById(idNoteBundle);
 
-                if (note.getTitle().equals(getString(R.string.null_string))) {
-                    title = null;
-                } else {
-                    title.setText(note.getTitle());
-                }
+                subscribeNote.observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new SingleObserver<Note>() {
 
-                if (note.getText().equals(getString(R.string.null_string))) {
-                    text = null;
-                } else {
-                    text.setText(note.getText());
-                }
+                            @Override
+                            public void onSubscribe(Disposable d) {
+
+
+                            }
+
+                            @Override
+                            public void onSuccess(Note note) {
+                                if (note.getDayDeadline() != 0) {
+                                    checkDeadline.setChecked(note.isCheck());
+                                    if (checkDeadline.isChecked()) {
+                                        Date date = new Date();
+                                        date.setTime(note.getDayDeadline());
+                                        DateFormat dateFormat =
+                                                new SimpleDateFormat("dd.MM.yyyy HH:mm");
+                                        dateCalendar.setText(dateFormat.format(date.getTime()));
+                                    }
+                                }
+
+                                if (note.getTitle().equals(getString(R.string.null_string))) {
+                                    title = null;
+                                } else {
+                                    title.setText(note.getTitle());
+                                }
+
+                                if (note.getText().equals(getString(R.string.null_string))) {
+                                    text = null;
+                                } else {
+                                    text.setText(note.getText());
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+                        });
             } catch (Exception e) {
                 Toast.makeText(NotesActivity.this, getString(R.string.error_note),
                         Toast.LENGTH_LONG).show();
             }
         }
     }
+
 
     private void update(){
         try {
@@ -279,10 +306,21 @@ public class NotesActivity extends AppCompatActivity {
             Note myNote = new Note(idNoteBundle, titleNote, textNote, checkDeadline.isChecked(),
                     date, lastChange, containsDeadline);
 
-            repositoryNotes.update(myNote);
-            Toast.makeText(NotesActivity.this,
-                    getString(R.string.toast_database_save),
-                    Toast.LENGTH_LONG).show();
+            Completable completable = repositoryNotes.update(myNote);
+            completable.observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new DisposableCompletableObserver() {
+                        @Override
+                        public void onComplete() {
+                            Toast.makeText(NotesActivity.this,
+                                    getString(R.string.toast_database_save),
+                                    Toast.LENGTH_LONG).show();
+                        }
+                        @Override
+                        public void onError(Throwable e) {
+                            e.printStackTrace();
+                        }
+                    });
+
         } catch (Exception e){
             e.printStackTrace();
         }
