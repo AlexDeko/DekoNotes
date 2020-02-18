@@ -64,7 +64,7 @@ public class ListAdapterNotes extends BaseAdapter {
             if (note.getTitle().equals("Пусто")){
                 titleView.setVisibility(View.GONE);
             } else {
-                titleView.setVisibility(View.GONE);
+                titleView.setVisibility(View.VISIBLE);
                 titleView.setText(note.getTitle());
             }
             if (note.getText().equals("Пусто")){

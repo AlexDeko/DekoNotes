@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     AppDatabase appDatabase = App.getInstance().getDatabase();
     ListAdapterNotes listAdapterNotes;
-   // RepositoryNotesImplEx repositoryNotes = new RepositoryNotesImplEx();
+    // RepositoryNotesImplEx repositoryNotes = new RepositoryNotesImplEx();
     RepositoryNotesImpl repositoryNotes = new RepositoryNotesImpl(appDatabase.noteDao());
 
     @Override
