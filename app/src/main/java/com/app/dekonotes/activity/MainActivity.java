@@ -46,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     AppDatabase appDatabase = App.getInstance().getDatabase();
     ListAdapterNotes listAdapterNotes;
-    // RepositoryNotesImplEx repositoryNotes = new RepositoryNotesImplEx();
     RepositoryNotesImpl repositoryNotes = new RepositoryNotesImpl(appDatabase.noteDao());
 
     @Override
@@ -91,8 +90,9 @@ public class MainActivity extends AppCompatActivity {
 
                         @Override
                         public void onNext(List<Note> note) {
-                            myList = note;
                             updateList(myList);
+                            myList = note;
+
                             listAdapterNotes.notifyDataSetChanged();
                         }
 
@@ -188,6 +188,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateList(List<Note> baseListNote) {
+
         listAdapterNotes.setItems(baseListNote);
         listAdapterNotes.notifyDataSetChanged();
     }

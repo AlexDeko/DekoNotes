@@ -87,5 +87,4 @@ public class ListAdapterNotes extends BaseAdapter {
         return currentView;
     }
 
-
 }
