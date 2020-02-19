@@ -27,4 +27,9 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+<!--    <style name="Base.Widget.AppCompat.ListView." parent="Widget.AppCompat.ListView">-->
+<!--        <item name="android:divider">@drawable/list_divider</item>-->
+<!--        <item name="android:dividerHeight">1px</item>-->
+<!--    </style>-->
+
 </resources>

@@ -3,7 +3,6 @@ package com.app.dekonotes.activity;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,7 +19,6 @@ import com.app.dekonotes.App;
 import com.app.dekonotes.adapter.ListAdapterNotes;
 import com.app.dekonotes.data.AppDatabase;
 import com.app.dekonotes.data.note.RepositoryNotesImpl;
-import com.app.dekonotes.data.note.RepositoryNotesImplEx;
 import com.app.dekonotes.data.note.Note;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.app.dekonotes.R;
@@ -62,20 +60,7 @@ public class MainActivity extends AppCompatActivity {
         listAdapterNotes.notifyDataSetChanged();
         btnAddNote();
         setItemClicks();
-        setSwipe();
 
-    }
-
-    private void setSwipe() {
-        final SwipeRefreshLayout swipeLayout = findViewById(R.id.swiperefresh);
-        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            // Будет вызван, когда пользователь потянет список вниз
-            @Override
-            public void onRefresh() {
-                subscribe();
-                swipeLayout.setRefreshing(false);
-            }
-        });
     }
 
     private void subscribe() {

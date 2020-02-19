@@ -5,4 +5,5 @@
     <color name="colorAccent">#D81B60</color>
     <color name="colorWhiteToolText">#B6E6FA</color>
     <color name="colorBlueToolBar">#2196F3</color>
+    <color name="colorNull">#00000000</color>
 </resources>
