@@ -3,9 +3,16 @@ package com.app.dekonotes.activity;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -20,10 +27,14 @@ import com.app.dekonotes.adapter.ListAdapterNotes;
 import com.app.dekonotes.data.AppDatabase;
 import com.app.dekonotes.data.note.RepositoryNotesImpl;
 import com.app.dekonotes.data.note.Note;
+import com.app.dekonotes.notification.ServiceNotification;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.app.dekonotes.R;
 
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import io.reactivex.Completable;
@@ -34,7 +45,14 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableCompletableObserver;
 
+import static android.telephony.AvailableNetworkInfo.PRIORITY_HIGH;
+import static android.telephony.AvailableNetworkInfo.PRIORITY_LOW;
+
 public class MainActivity extends AppCompatActivity {
+
+    private NotificationManager notificationManager;
+    private static final int NOTIFY_ID = 1;
+    private static final String CHANNEL_ID = "CHANNEL_ID";
 
     private final static String TAG = "Main";
     private static long back_pressed;
@@ -61,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
         listAdapterNotes.notifyDataSetChanged();
         btnAddNote();
         setItemClicks();
-
     }
 
     private void subscribe() {
@@ -78,8 +95,8 @@ public class MainActivity extends AppCompatActivity {
                     public void onNext(List<Note> note) {
                         updateList(myList);
                         myList = note;
-
                         listAdapterNotes.notifyDataSetChanged();
+                       //toDo ServiceNotification.checkList(myList);
                     }
 
                     @Override
@@ -179,6 +196,16 @@ public class MainActivity extends AppCompatActivity {
         listAdapterNotes.notifyDataSetChanged();
     }
 
+    // TODO нужен новый поток
+//    public void onClickStart() {
+//        startService(new Intent(this, ServiceNotification.class));
+//    }
+//
+//
+//    public void onClickStop() {
+//        stopService(new Intent(this, ServiceNotification.class));
+//    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -203,6 +230,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         subscribe();
+        //onClickStart();
         Log.i(TAG, "onStart()");
     }
 

@@ -3,28 +3,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.app.dekonotes">
 
-
-
     <application
-        android:name="com.app.dekonotes.App"
-        tools:ignore="GoogleAppIndexingWarning"
+        android:name=".App"
         android:allowBackup="false"
         android:icon="@drawable/ic_notepad_12"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name="com.app.dekonotes.activity.EnterPinActivity">
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
+        <service
+            android:name=".notification.ServiceNotification"
+            android:enabled="true"
+            android:exported="true"></service>
+
+        <activity android:name=".activity.EnterPinActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.app.dekonotes.activity.SettingsActivity" />
-        <activity android:name="com.app.dekonotes.activity.NotesActivity" />
-        <activity android:name="com.app.dekonotes.activity.MainActivity">
-        </activity>
+        <activity android:name=".activity.SettingsActivity" />
+        <activity android:name=".activity.NotesActivity" />
+        <activity android:name=".activity.MainActivity"></activity>
     </application>
 
 </manifest>

@@ -48,7 +48,6 @@ public class NotesActivity extends AppCompatActivity {
     private DatePickerDialog datePickerDialog;
     private Calendar todayCalendar = null;
     private Toolbar myToolbar;
-    private boolean saveNoteInMenu = false;
     AppDatabase appDatabase = App.getInstance().getDatabase();
     Bundle bundleExtra = null;
     long idNoteBundle;
@@ -343,14 +342,13 @@ public class NotesActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
-        // Intent targetIntent;
         if (id == R.id.action_save) {
-            if (bundleExtra == null && !saveNoteInMenu) {
-                saveNote();
-                saveNoteInMenu = true;
+            if (bundleExtra == null) {
+                onBackPressed();
+
             } else {
-                update();
-                saveNoteInMenu = true;
+                onBackPressed();
+
             }
             return true;
         }
@@ -360,7 +358,7 @@ public class NotesActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if (bundleExtra == null && !saveNoteInMenu) {
+        if (bundleExtra == null) {
             saveNote();
         } else {
             update();

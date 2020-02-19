@@ -42,5 +42,6 @@
     <string name="error_pin">Введён некоректный пин-код</string>
     <string name="error_notes">Ошибка c получением заметок</string>
     <string name="error_enter_newPin">Введите, пожалуйста, 4 символа.</string>
-
+    <string name="notification_deadline_end_title">Где-то истёк deadline.</string>
+    <string name="notification_deadline_end_text">Нажмите, чтобы перейти к заметкам.</string>
 </resources>
