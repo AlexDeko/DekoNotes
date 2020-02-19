@@ -48,6 +48,7 @@ public class NotesActivity extends AppCompatActivity {
     private DatePickerDialog datePickerDialog;
     private Calendar todayCalendar = null;
     private Toolbar myToolbar;
+    private boolean saveNoteInMenu = false;
     AppDatabase appDatabase = App.getInstance().getDatabase();
     Bundle bundleExtra = null;
     long idNoteBundle;
@@ -344,39 +345,25 @@ public class NotesActivity extends AppCompatActivity {
         int id = item.getItemId();
         // Intent targetIntent;
         if (id == R.id.action_save) {
-            if (bundleExtra == null) {
+            if (bundleExtra == null && !saveNoteInMenu) {
                 saveNote();
+                saveNoteInMenu = true;
             } else {
                 update();
+                saveNoteInMenu = true;
             }
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
-
-    //toDO Сохранение заметки при любом случае
-//    @Override
-//    public void onBackPressed(){
-//        super.onBackPressed();
-//        if (bundleExtra == null){
-//
-//            MenuItem item = getMenuInflater().inflate(R.menu.menu_notes, );findItem(R.id.action_save);
-//            if (item.isChecked()){
-//            saveNote();
-//            }
-//        } else {
-//            update();
-//        }
-//        onBackPressed();
-//    }
-//
-//    @Override
-//    protected void onDestroy() {
-//        super.onDestroy();
-//        if (bundleExtra == null){
-//            saveNote();
-//        } else {
-//            update();
-//        }
-//    }
+    
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (bundleExtra == null && !saveNoteInMenu) {
+            saveNote();
+        } else {
+            update();
+        }
+    }
 }
