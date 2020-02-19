@@ -1,7 +1,5 @@
 package com.app.dekonotes.data.note;
 
-import com.app.dekonotes.data.note.Note;
-
 import java.util.List;
 
 import io.reactivex.Completable;

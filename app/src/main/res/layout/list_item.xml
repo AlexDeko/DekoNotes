@@ -12,16 +12,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="@dimen/list_item_padding">
 
         <TextView
             android:id="@+id/titleItem1"
             style="@style/TextAppearance.MaterialComponents.Headline6"
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:layout_marginTop="@dimen/list_item_margin"
+            android:visibility="visible"
             android:text="TextView"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -32,12 +31,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:layout_marginTop="@dimen/list_item_margin"
+            android:visibility="visible"
             android:text="TextView"
             android:maxLines="3"
             android:ellipsize="end"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/titleItem1" />
+            app:layout_constraintTop_toBottomOf="@id/titleItem1" />
 
         <TextView
             android:id="@+id/deadlineItem3"
@@ -45,11 +44,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:layout_marginTop="@dimen/list_item_margin"
             android:ems="10"
+            android:visibility="visible"
             android:text="TextView"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textItem2" />
+            app:layout_constraintTop_toBottomOf="@id/textItem2" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import com.app.dekonotes.R;
 import com.app.dekonotes.data.note.Note;
@@ -17,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
 
 public class ListAdapterNotes extends BaseAdapter {
 
@@ -69,6 +71,7 @@ public class ListAdapterNotes extends BaseAdapter {
             }
             if (note.getText().equals("Пусто")){
                 textView.setVisibility(View.GONE);
+               // textView;
             } else {
                 textView.setVisibility(View.VISIBLE);
                 textView.setText(note.getText());
@@ -82,7 +85,13 @@ public class ListAdapterNotes extends BaseAdapter {
                 DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm");
                 String deadline = dateFormat.format(date.getTime());
                 deadlineView.setText(deadline);
+                Date dateNow = new Date();
+                if (date.getTime() < dateNow.getTime()){
+                    deadlineView.setTextColor((ContextCompat.getColor(deadlineView.getContext(),
+                            R.color.colorAccent)));
+                }
             }
+
         }
         return currentView;
     }
