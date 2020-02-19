@@ -10,7 +10,8 @@ import javax.crypto.spec.PBEKeySpec;
 
 public class PasswordEncoder {
 
-    private PasswordEncoder() {}
+    private PasswordEncoder() {
+    }
 
     private static String ALGORITHM = "PBKDF2WithHmacSHA1";
 
@@ -27,6 +28,7 @@ public class PasswordEncoder {
             return password;
         }
     }
+
     private static byte[] getSalt() {
         SecureRandom sr;
         try {
@@ -38,6 +40,7 @@ public class PasswordEncoder {
         sr.nextBytes(salt);
         return salt;
     }
+
     private static String toHex(byte[] array) {
         BigInteger bi = new BigInteger(1, array);
         String hex = bi.toString(16);
@@ -48,6 +51,7 @@ public class PasswordEncoder {
             return hex;
         }
     }
+
     public static boolean validatePassword(String originalPassword, String storedPassword) {
         String[] parts = storedPassword.split(":");
         int iterations = Integer.parseInt(parts[0]);
@@ -67,6 +71,7 @@ public class PasswordEncoder {
             return false;
         }
     }
+
     private static byte[] fromHex(String hex) {
         byte[] bytes = new byte[hex.length() / 2];
         for (int i = 0; i < bytes.length; i++) {

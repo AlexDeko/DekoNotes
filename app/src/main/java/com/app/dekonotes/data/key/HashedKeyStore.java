@@ -11,14 +11,17 @@ public class HashedKeyStore implements KeyStore {
     public HashedKeyStore(Context context) {
         this.preferences = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
     }
+
     @Override
     public boolean hasPin() {
         return preferences.contains(KEY);
     }
+
     @Override
     public boolean checkPin(String pin) {
         return PasswordEncoder.validatePassword(pin, preferences.getString(KEY, ""));
     }
+
     @Override
     public void saveNew(String pin) {
         preferences.edit()

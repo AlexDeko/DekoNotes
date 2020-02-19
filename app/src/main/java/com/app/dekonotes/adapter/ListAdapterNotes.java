@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-
 public class ListAdapterNotes extends BaseAdapter {
 
     private List<Note> listNotes = Collections.emptyList();
@@ -50,50 +49,48 @@ public class ListAdapterNotes extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        final  View currentView;
+        final View currentView;
 
-        if(convertView != null){
+        if (convertView != null) {
             currentView = convertView;
         } else {
             currentView = inflater.inflate(R.layout.list_item, parent, false);
         }
 
         Note note = getItem(position);
-        if(note != null){
+        if (note != null) {
             TextView titleView = currentView.findViewById(R.id.titleItem1);
             TextView textView = currentView.findViewById(R.id.textItem2);
             TextView deadlineView = currentView.findViewById(R.id.deadlineItem3);
-            if (note.getTitle().equals("Пусто")){
+            if (note.getTitle().equals("Пусто")) {
                 titleView.setVisibility(View.GONE);
             } else {
                 titleView.setVisibility(View.VISIBLE);
                 titleView.setText(note.getTitle());
             }
-            if (note.getText().equals("Пусто")){
+            if (note.getText().equals("Пусто")) {
                 textView.setVisibility(View.GONE);
-               // textView;
             } else {
                 textView.setVisibility(View.VISIBLE);
                 textView.setText(note.getText());
             }
-            if (note.getDayDeadline() == 0){
+            if (note.getDayDeadline() == 0) {
                 deadlineView.setVisibility(View.GONE);
             } else {
                 deadlineView.setVisibility(View.VISIBLE);
-                Date date = new Date();
-                date.setTime(note.getDayDeadline());
                 DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-                String deadline = dateFormat.format(date.getTime());
+                String deadline = dateFormat.format(note.getDayDeadline());
                 deadlineView.setText(deadline);
-                Date dateNow = new Date();
-                if (date.getTime() < dateNow.getTime()){
+                if (note.getDayDeadline() < new Date().getTime()) {
                     deadlineView.setTextColor((ContextCompat.getColor(deadlineView.getContext(),
                             R.color.colorAccent)));
+                } else {
+                    deadlineView.setTextColor((ContextCompat.getColor(deadlineView.getContext(),
+                            R.color.colorBlackText)));
                 }
             }
 
         }
         return currentView;
     }
-
 }

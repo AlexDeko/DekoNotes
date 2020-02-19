@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <include layout="@layout/toolbar"/>
+        <include layout="@layout/toolbar" />
 
         <EditText
             android:id="@+id/editTitle"
@@ -30,7 +30,7 @@
             android:layout_margin="@dimen/notes_liner_margin"
             android:ems="10"
             android:hint="@string/text_notes"
-            android:inputType="textMultiLine"/>
+            android:inputType="textMultiLine" />
 
         <CheckBox
             android:id="@+id/checkDeadline"

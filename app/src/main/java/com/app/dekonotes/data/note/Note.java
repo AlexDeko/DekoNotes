@@ -51,39 +51,15 @@ public class Note {
         this.id = id;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
     public boolean isCheck() {
         return check;
-    }
-
-    public void setCheck(boolean check) {
-        this.check = check;
-    }
-
-    public void setDayDeadline(long dayDeadline) {
-        this.dayDeadline = dayDeadline;
     }
 
     public long getLastChange() {
         return lastChange;
     }
 
-    public void setLastChange(long lastChange) {
-        this.lastChange = lastChange;
-    }
-
     public int getContainsDeadline() {
         return containsDeadline;
-    }
-
-    public void setContainsDeadline(int containsDeadline) {
-        this.containsDeadline = containsDeadline;
     }
 }

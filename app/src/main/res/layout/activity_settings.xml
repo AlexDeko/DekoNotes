@@ -32,12 +32,12 @@
             android:id="@+id/editPassword"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:maxLength="4"
-            android:hint="@string/pin"
             android:digits="0123456789"
+            android:ems="10"
+            android:hint="@string/pin"
             android:inputType="numberPassword"
-            android:singleLine="true"/>
+            android:maxLength="4"
+            android:singleLine="true" />
 
         <ImageButton
             android:id="@+id/imgBtnVisible"

@@ -80,7 +80,7 @@ public class NotesActivity extends AppCompatActivity {
         dateCalendar.setEnabled(false);
     }
 
-    private void setClick(){
+    private void setClick() {
         myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,18 +94,14 @@ public class NotesActivity extends AppCompatActivity {
                 todayCalendar = Calendar.getInstance();
                 setDateCalendar();
                 setTimeCalendar();
-//                Calendar
             }
         });
 
         checkDeadline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(checkDeadline.isChecked()){
-                    imgBtnCalendar.setClickable(true);
-                    imgBtnCalendar.setEnabled(true);
-                    dateCalendar.setClickable(true);
-                    dateCalendar.setEnabled(true);
+                if (checkDeadline.isChecked()) {
+                    deadlineSetEnabledAndClickable();
                     Date date = new Date();
                     DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm",
                             Locale.getDefault());
@@ -121,8 +117,8 @@ public class NotesActivity extends AppCompatActivity {
         });
     }
 
-    private void setDateCalendar(){
-      //  todayCalendar = Calendar.getInstance();
+    private void setDateCalendar() {
+        //  todayCalendar = Calendar.getInstance();
         datePickerDialog = new DatePickerDialog(
                 this,
                 onDateSet,
@@ -140,7 +136,7 @@ public class NotesActivity extends AppCompatActivity {
                 .show();
     }
 
-    TimePickerDialog.OnTimeSetListener onTimeSet= new TimePickerDialog.OnTimeSetListener() {
+    TimePickerDialog.OnTimeSetListener onTimeSet = new TimePickerDialog.OnTimeSetListener() {
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
             todayCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
             todayCalendar.set(Calendar.MINUTE, minute);
@@ -161,24 +157,24 @@ public class NotesActivity extends AppCompatActivity {
     };
 
 
-    private void saveNote(){
+    private void saveNote() {
         try {
             long date;
-            if(todayCalendar != null){
-                date = todayCalendar.getTimeInMillis() ;
+            if (todayCalendar != null) {
+                date = todayCalendar.getTimeInMillis();
             } else {
                 date = 0;
             }
 
             String titleNote;
-            if(title != null){
+            if (title != null) {
                 titleNote = title.getText().toString();
             } else {
                 titleNote = getString(R.string.null_string);
             }
 
             String textNote;
-            if(text != null){
+            if (text != null) {
                 textNote = text.getText().toString();
             } else {
                 textNote = getString(R.string.null_string);
@@ -187,8 +183,8 @@ public class NotesActivity extends AppCompatActivity {
             Date dateChange = new Date();
             long lastChange = dateChange.getTime();
 
-            int containsDeadline ;
-            if (date == 0){
+            int containsDeadline;
+            if (date == 0) {
                 containsDeadline = 0;
             } else {
                 containsDeadline = 1;
@@ -213,17 +209,17 @@ public class NotesActivity extends AppCompatActivity {
                         }
                     });
 
-        } catch (Exception e){
+        } catch (Exception e) {
             Log.e(TAG, "ERROR_SAVE");
         }
     }
 
-    private void getInfoExtra(){
+    private void getInfoExtra() {
         Intent intentInfoIdNote = getIntent();
         bundleExtra = intentInfoIdNote.getExtras();
         idNoteBundle = 0;
-        if (bundleExtra != null){
-            idNoteBundle= bundleExtra.getLong("id");
+        if (bundleExtra != null) {
+            idNoteBundle = bundleExtra.getLong("id");
             try {
                 Single<Note> subscribeNote = repositoryNotes.getById(idNoteBundle);
 
@@ -240,12 +236,14 @@ public class NotesActivity extends AppCompatActivity {
                             public void onSuccess(Note note) {
                                 if (note.getDayDeadline() != 0) {
                                     checkDeadline.setChecked(note.isCheck());
+
                                     if (checkDeadline.isChecked()) {
                                         Date date = new Date();
                                         date.setTime(note.getDayDeadline());
                                         DateFormat dateFormat =
                                                 new SimpleDateFormat("dd.MM.yyyy HH:mm");
                                         dateCalendar.setText(dateFormat.format(date.getTime()));
+                                        deadlineSetEnabledAndClickable();
                                     }
                                 }
 
@@ -275,7 +273,7 @@ public class NotesActivity extends AppCompatActivity {
     }
 
 
-    private void update(){
+    private void update() {
         try {
             long date;
             if (todayCalendar != null) {
@@ -297,8 +295,8 @@ public class NotesActivity extends AppCompatActivity {
             }
             Date dateChange = new Date();
             long lastChange = dateChange.getTime();
-            int containsDeadline ;
-            if (date == 0){
+            int containsDeadline;
+            if (date == 0) {
                 containsDeadline = 0;
             } else {
                 containsDeadline = 1;
@@ -315,16 +313,25 @@ public class NotesActivity extends AppCompatActivity {
                                     getString(R.string.toast_database_save),
                                     Toast.LENGTH_LONG).show();
                         }
+
                         @Override
                         public void onError(Throwable e) {
                             e.printStackTrace();
                         }
                     });
 
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    private void deadlineSetEnabledAndClickable() {
+        imgBtnCalendar.setClickable(true);
+        imgBtnCalendar.setEnabled(true);
+        dateCalendar.setClickable(true);
+        dateCalendar.setEnabled(true);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_notes, menu);
@@ -335,13 +342,13 @@ public class NotesActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
-       // Intent targetIntent;
-       if (id == R.id.action_save) {
-           if (bundleExtra == null){
-               saveNote();
-           } else {
-               update();
-           }
+        // Intent targetIntent;
+        if (id == R.id.action_save) {
+            if (bundleExtra == null) {
+                saveNote();
+            } else {
+                update();
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);

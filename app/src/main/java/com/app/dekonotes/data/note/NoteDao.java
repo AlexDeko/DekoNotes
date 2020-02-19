@@ -15,15 +15,19 @@ import io.reactivex.Single;
 
 @Dao
 public interface NoteDao {
-   
+
     @Query("SELECT * FROM note ORDER BY contains_deadline DESC, deadline ASC, last_change DESC")
     Observable<List<Note>> getAll();
+
     @Query("SELECT * FROM note WHERE id = :id")
     Single<Note> getNoteById(long id);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     Completable insertNote(Note note);
+
     @Update
     Completable update(Note note);
+
     @Delete
     Completable delete(Note note);
 }

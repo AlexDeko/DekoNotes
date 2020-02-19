@@ -46,16 +46,16 @@ public class EnterPinActivity extends AppCompatActivity {
         setClickDeleteLastInput();
     }
 
-    private void hasPin(){
-        if (!keyStore.hasPin()){
+    private void hasPin() {
+        if (!keyStore.hasPin()) {
             Intent startSettings = new Intent(EnterPinActivity.this,
                     SettingsActivity.class);
             startActivity(startSettings);
         }
     }
 
-    private void storePin(){
-        if (keyStore.checkPin(pin.toString())){
+    private void storePin() {
+        if (keyStore.checkPin(pin.toString())) {
             Intent startMain = new Intent(EnterPinActivity.this, MainActivity.class);
             startActivity(startMain);
         } else {
@@ -63,7 +63,7 @@ public class EnterPinActivity extends AppCompatActivity {
         }
     }
 
-    private void initViews(){
+    private void initViews() {
         number0 = findViewById(R.id.btnNumber0);
         number1 = findViewById(R.id.btnNumber1);
         number2 = findViewById(R.id.btnNumber2);
@@ -81,12 +81,12 @@ public class EnterPinActivity extends AppCompatActivity {
         thirdOval = findViewById(R.id.viewThirdOval);
     }
 
-    private void setClickNumberOnKeyboard(){
+    private void setClickNumberOnKeyboard() {
         number0.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if(countShape < MAX_ENTER){
+                if (countShape < MAX_ENTER) {
                     pin.append("0");
                     setShape();
                     countShape += 1;
@@ -97,7 +97,7 @@ public class EnterPinActivity extends AppCompatActivity {
         number1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(countShape < MAX_ENTER){
+                if (countShape < MAX_ENTER) {
                     pin.append("1");
                     setShape();
                     countShape += 1;
@@ -108,7 +108,7 @@ public class EnterPinActivity extends AppCompatActivity {
         number2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(countShape < MAX_ENTER){
+                if (countShape < MAX_ENTER) {
                     pin.append("2");
                     setShape();
                     countShape += 1;
@@ -119,7 +119,7 @@ public class EnterPinActivity extends AppCompatActivity {
         number3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(countShape < MAX_ENTER){
+                if (countShape < MAX_ENTER) {
                     pin.append("3");
                     setShape();
                     countShape += 1;
@@ -130,7 +130,7 @@ public class EnterPinActivity extends AppCompatActivity {
         number4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(countShape < MAX_ENTER){
+                if (countShape < MAX_ENTER) {
                     pin.append("4");
                     setShape();
                     countShape += 1;
@@ -141,7 +141,7 @@ public class EnterPinActivity extends AppCompatActivity {
         number5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(countShape < MAX_ENTER){
+                if (countShape < MAX_ENTER) {
                     pin.append("5");
                     setShape();
                     countShape += 1;
@@ -152,7 +152,7 @@ public class EnterPinActivity extends AppCompatActivity {
         number6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(countShape < MAX_ENTER){
+                if (countShape < MAX_ENTER) {
                     pin.append("6");
                     setShape();
                     countShape += 1;
@@ -164,7 +164,7 @@ public class EnterPinActivity extends AppCompatActivity {
         number7.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(countShape < MAX_ENTER){
+                if (countShape < MAX_ENTER) {
                     pin.append("7");
                     setShape();
                     countShape += 1;
@@ -176,7 +176,7 @@ public class EnterPinActivity extends AppCompatActivity {
         number8.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(countShape < MAX_ENTER){
+                if (countShape < MAX_ENTER) {
                     pin.append("8");
                     setShape();
                     countShape += 1;
@@ -187,7 +187,7 @@ public class EnterPinActivity extends AppCompatActivity {
         number9.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(countShape < MAX_ENTER){
+                if (countShape < MAX_ENTER) {
                     pin.append("9");
                     setShape();
                     countShape += 1;
@@ -196,20 +196,20 @@ public class EnterPinActivity extends AppCompatActivity {
         });
     }
 
-    private void setClickDeleteLastInput(){
+    private void setClickDeleteLastInput() {
         deleteLastInput.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(countShape > MIN_ENTER){
+                if (countShape > MIN_ENTER) {
                     deleteShape();
                 }
             }
         });
     }
 
-    private void setShape(){
+    private void setShape() {
 
-        switch (countShape){
+        switch (countShape) {
             case 0:
                 zeroOval.setBackgroundResource(R.drawable.shape);
 
@@ -233,13 +233,13 @@ public class EnterPinActivity extends AppCompatActivity {
         }
     }
 
-    private void deleteShape(){
+    private void deleteShape() {
         int length = pin.length();
         if (length > 0) {
             pin.deleteCharAt(length - 1);
         }
 
-        switch (countShape){
+        switch (countShape) {
             case 1:
                 zeroOval.setBackgroundResource(R.drawable.shape_tint);
                 countShape -= 1;

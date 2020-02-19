@@ -66,31 +66,31 @@ public class MainActivity extends AppCompatActivity {
     private void subscribe() {
         Observable<List<Note>> listObservable = repositoryNotes.getAll();
         listObservable.observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<List<Note>>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
-                            // Disposable представляет собой интерфейс для работы с подпиской. Через него можно отписаться
-                            compositeDisposable.add(d);
-                        }
+                .subscribe(new Observer<List<Note>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        // Disposable представляет собой интерфейс для работы с подпиской. Через него можно отписаться
+                        compositeDisposable.add(d);
+                    }
 
-                        @Override
-                        public void onNext(List<Note> note) {
-                            updateList(myList);
-                            myList = note;
+                    @Override
+                    public void onNext(List<Note> note) {
+                        updateList(myList);
+                        myList = note;
 
-                            listAdapterNotes.notifyDataSetChanged();
-                        }
+                        listAdapterNotes.notifyDataSetChanged();
+                    }
 
-                        @Override
-                        public void onError(Throwable e) {
-                            Toast.makeText(MainActivity.this,
-                            getString(R.string.error_note), Toast.LENGTH_LONG).show();
-                        }
+                    @Override
+                    public void onError(Throwable e) {
+                        Toast.makeText(MainActivity.this,
+                                getString(R.string.error_note), Toast.LENGTH_LONG).show();
+                    }
 
-                        @Override
-                        public void onComplete() {
-                        }
-                    });
+                    @Override
+                    public void onComplete() {
+                    }
+                });
     }
 
     private void initViews() {
@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
                                                 }
                                             });
 
-                                }catch (Exception e){
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             }

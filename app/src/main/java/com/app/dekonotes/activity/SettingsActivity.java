@@ -41,7 +41,7 @@ public class SettingsActivity extends AppCompatActivity {
         setBtn();
     }
 
-    private void setBtn(){
+    private void setBtn() {
 
         myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,17 +53,17 @@ public class SettingsActivity extends AppCompatActivity {
         btnVisiblePin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(close == 1){
+                if (close == 1) {
 
                     btnVisiblePin.setImageResource(R.drawable.ic_open_eye);
                     editNewPin.setTransformationMethod(HideReturnsTransformationMethod
                             .getInstance());
                     close -= 1;
-                } else{
+                } else {
                     btnVisiblePin.setImageResource(R.drawable.ic_close_eye);
                     editNewPin.setTransformationMethod(PasswordTransformationMethod
                             .getInstance());
-                    close +=1;
+                    close += 1;
                 }
             }
         });
@@ -72,7 +72,7 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String pin = editNewPin.getText().toString();
-                if(pin.length() < 4){
+                if (pin.length() < 4) {
                     error.setVisibility(View.VISIBLE);
                 } else {
                     error.setVisibility(View.INVISIBLE);
