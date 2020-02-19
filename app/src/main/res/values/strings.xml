@@ -37,6 +37,7 @@
     <string name="toast_settings">Отркыты настройки</string>
     <string name="toast_main">Отркыть начальную страницу</string>
     <string name="toast_database_save">Сохранено.</string>
+    <string name="toast_againOnBackPressed">Нажмите ещё раз, чтобы выйти.</string>
     <string name="error_note">Ошибка с заметкой</string>
     <string name="error_pin">Введён некоректный пин-код</string>
     <string name="error_notes">Ошибка c получением заметок</string>

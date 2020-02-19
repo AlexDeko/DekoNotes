@@ -39,7 +39,7 @@ import io.reactivex.observers.DisposableCompletableObserver;
 
 public class NotesActivity extends AppCompatActivity {
 
-    private static final String TAG = "Note";
+    private static final String TAG = "Notes";
     private ImageButton imgBtnCalendar = null;
     private CheckBox checkDeadline = null;
     private EditText title = null;
@@ -356,7 +356,7 @@ public class NotesActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-    
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -365,5 +365,36 @@ public class NotesActivity extends AppCompatActivity {
         } else {
             update();
         }
+        Log.i(TAG, "onStop()");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.i(TAG, "onStart()");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i(TAG, "onResume()");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.i(TAG, "onPause()");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.i(TAG, "onRestart()");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i(TAG, "onDestroy()");
     }
 }

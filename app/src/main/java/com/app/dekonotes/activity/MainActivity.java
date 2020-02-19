@@ -36,7 +36,8 @@ import io.reactivex.observers.DisposableCompletableObserver;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final static String LOG = "MAIN";
+    private final static String TAG = "Main";
+    private static long back_pressed;
     private ListView list;
     private FloatingActionButton addNewNote;
     List<Note> myList;
@@ -138,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
                                             .subscribe(new DisposableCompletableObserver() {
                                                 @Override
                                                 public void onComplete() {
-                                                    Log.i(LOG, "Удалена заметка");
+                                                    Log.i(TAG, "Удалена заметка");
                                                     subscribe();
                                                     listAdapterNotes.notifyDataSetChanged();
                                                 }
@@ -202,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         subscribe();
+        Log.i(TAG, "onStart()");
     }
 
     @Override
@@ -209,14 +211,46 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         // Отписываемся, чтобы не было утечек памяти
         compositeDisposable.dispose();
+        Log.i(TAG, "onDestroy()");
     }
 
     @Override
     public void onBackPressed() {
-        //эмулируем нажатие на HOME, сворачивая приложение
-        Intent endWork = new Intent(Intent.ACTION_MAIN);
-        endWork.addCategory(Intent.CATEGORY_HOME);
-        endWork.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(endWork);
+        if (back_pressed + 2000 > System.currentTimeMillis()) {
+            //эмулируем нажатие на HOME, сворачивая приложение
+            Intent endWork = new Intent(Intent.ACTION_MAIN);
+            endWork.addCategory(Intent.CATEGORY_HOME);
+            endWork.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(endWork);
+        } else {
+            Toast.makeText(getBaseContext(), getString(R.string.toast_againOnBackPressed),
+                    Toast.LENGTH_SHORT).show();
+        }
+        back_pressed = System.currentTimeMillis();
+        Log.i(TAG, "onBackPressed()");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i(TAG, "onResume()");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.i(TAG, "onPause()");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.i(TAG, "onStop()");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.i(TAG, "onRestart()");
     }
 }
