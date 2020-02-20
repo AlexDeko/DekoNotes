@@ -12,6 +12,7 @@ import android.os.IBinder;
 import androidx.core.app.NotificationCompat;
 
 import com.app.dekonotes.R;
+import com.app.dekonotes.activity.EnterPinActivity;
 import com.app.dekonotes.activity.MainActivity;
 import com.app.dekonotes.data.note.Note;
 
@@ -37,7 +38,7 @@ public class ServiceNotification extends Service {
     }
 
     void sendNotification(){
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        Intent intent = new Intent(getApplicationContext(), EnterPinActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),
@@ -64,6 +65,7 @@ public class ServiceNotification extends Service {
         // TODO: Return the communication channel to the service.
 
         throw new UnsupportedOperationException("Not yet implemented");
+
     }
 
     public void createChannelIfNeeded(NotificationManager manager) {
@@ -116,14 +118,14 @@ public class ServiceNotification extends Service {
 //        createChannelIfNeeded(notificationManager);
 //        notificationManager.notify(NOTIFY_ID, notificationBuilder.build());
 //
-//        if ((flags & START_FLAG_RETRY) == 0) {
-//            // TODO Если это повторный запуск, выполнить какие-то действия.
-//        }
-//        else {
-//
-//            // TODO Альтернативные действия в фоновом режиме.
-//        }
-//        return Service.START_STICKY;
+        if ((flags & START_FLAG_RETRY) == 0) {
+            // TODO Если это повторный запуск, выполнить какие-то действия.
+            checkDeadlineEnd = false;
+        }
+        else {
+
+            // TODO Альтернативные действия в фоновом режиме.
+        }
         try {
             TimeUnit.SECONDS.sleep(5);
         } catch (InterruptedException e) {

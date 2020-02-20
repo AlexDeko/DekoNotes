@@ -96,7 +96,6 @@ public class MainActivity extends AppCompatActivity {
                         updateList(myList);
                         myList = note;
                         listAdapterNotes.notifyDataSetChanged();
-                       //toDo ServiceNotification.checkList(myList);
                     }
 
                     @Override
@@ -197,14 +196,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // TODO нужен новый поток
-//    public void onClickStart() {
-//        startService(new Intent(this, ServiceNotification.class));
-//    }
-//
-//
-//    public void onClickStop() {
-//        stopService(new Intent(this, ServiceNotification.class));
-//    }
+    public void onClickStart() {
+        startService(new Intent(this, ServiceNotification.class));
+    }
+
+
+    public void onClickStop() {
+        stopService(new Intent(this, ServiceNotification.class));
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -231,6 +230,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         subscribe();
         //onClickStart();
+        onClickStop();
         Log.i(TAG, "onStart()");
     }
 
@@ -238,6 +238,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         // Отписываемся, чтобы не было утечек памяти
+
         compositeDisposable.dispose();
         Log.i(TAG, "onDestroy()");
     }
@@ -258,6 +259,8 @@ public class MainActivity extends AppCompatActivity {
         Log.i(TAG, "onBackPressed()");
     }
 
+
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -273,6 +276,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        ServiceNotification.checkList(myList);
+        onClickStart();
+        //toDo
+
         Log.i(TAG, "onStop()");
     }
 
