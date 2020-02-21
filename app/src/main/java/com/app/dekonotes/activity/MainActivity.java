@@ -3,15 +3,9 @@ package com.app.dekonotes.activity;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.NotificationCompat;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,11 +13,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Toast;
 
 import com.app.dekonotes.App;
-import com.app.dekonotes.adapter.ListAdapterNotes;
 import com.app.dekonotes.adapter.RecyclerAdapterNotes;
 import com.app.dekonotes.data.AppDatabase;
 import com.app.dekonotes.data.note.RepositoryNotesImpl;
@@ -31,6 +23,7 @@ import com.app.dekonotes.data.note.Note;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.app.dekonotes.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Completable;
@@ -46,11 +39,9 @@ public class MainActivity extends AppCompatActivity {
     private final static String TAG = "Main";
     private static long back_pressed;
     private RecyclerView recyclerView;
- //   private RecyclerView.Adapter recyclerAdapter;
     private RecyclerAdapterNotes recyclerAdapter;
-    private RecyclerView.LayoutManager layoutManager;
     private FloatingActionButton addNewNote;
-    List<Note> myList;
+    List<Note> myList = new ArrayList<>();
     // Контейнер для подписок. См. onDestroy()
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     AppDatabase appDatabase = App.getInstance().getDatabase();
@@ -66,14 +57,72 @@ public class MainActivity extends AppCompatActivity {
         setRecycler();
         subscribe();
         btnAddNote();
-        setItemClicks();
     }
 
-    private void setRecycler(){
-        layoutManager = new LinearLayoutManager(this);
+    private void setRecycler() {
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        recyclerAdapter = new RecyclerAdapterNotes();
+        recyclerAdapter = new RecyclerAdapterNotes(myList,
+
+                new RecyclerAdapterNotes.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(Note item) {
+                        Intent reWriteNote = new Intent(MainActivity.this,
+                                NotesActivity.class);
+                        reWriteNote.putExtra("id", item.getId());
+                        startActivity(reWriteNote);
+                    }
+                },
+
+                new RecyclerAdapterNotes.OnItemLongClickListener() {
+                    @Override
+                    public void onItemLongClick(final Note item) {
+                        AlertDialog.Builder builderDialogDelete = new AlertDialog
+                                .Builder(MainActivity.this);
+
+                        builderDialogDelete.setPositiveButton(R.string.ok,
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        try {
+                                            Note note = item;
+                                            Completable completable = repositoryNotes.delete(note);
+                                            completable.observeOn(AndroidSchedulers.mainThread())
+                                                    .subscribe(new DisposableCompletableObserver() {
+                                                        @Override
+                                                        public void onComplete() {
+                                                            Log.i(TAG, "Удалена заметка");
+                                                            subscribe();
+                                                            recyclerAdapter.notifyDataSetChanged();
+                                                        }
+
+                                                        @Override
+                                                        public void onError(Throwable e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                    });
+
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                });
+
+                        builderDialogDelete.setNegativeButton(R.string.cancel,
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        // User cancelled the dialog
+                                    }
+                                });
+
+                        builderDialogDelete.setMessage(R.string.dialog_message)
+                                .setTitle(R.string.dialog_title)
+                                .setIcon(R.drawable.ic_delete3d);
+                        AlertDialog dialogDelete = builderDialogDelete.create();
+                        dialogDelete.show();
+                    }
+                });
+
         recyclerView.setAdapter(recyclerAdapter);
     }
 
@@ -89,8 +138,9 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onNext(List<Note> note) {
-                        updateList(note);
                         myList = note;
+                        updateList(note);
+
 //                        listAdapterNotes.notifyDataSetChanged();
                     }
 
@@ -122,73 +172,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void setItemClicks() {
-
-
-//        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, final View view, final int position,
-//                                    long id) {
-//                Intent reWriteNote = new Intent(MainActivity.this,
-//                        NotesActivity.class);
-//                reWriteNote.putExtra("id", myList.get(position).getId());
-//                startActivity(reWriteNote);
-//            }
-//        });
-//
-//        recyclerView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-//            @Override
-//            public boolean onItemLongClick(AdapterView<?> parent, final View view,
-//                                           final int position, final long id) {
-//                AlertDialog.Builder builderDialogDelete = new AlertDialog
-//                        .Builder(MainActivity.this);
-//
-//                builderDialogDelete.setPositiveButton(R.string.ok,
-//                        new DialogInterface.OnClickListener() {
-//                            public void onClick(DialogInterface dialog, int id) {
-//                                try {
-//                                    Note note = myList.get(position);
-//                                    Completable completable = repositoryNotes.delete(note);
-//                                    completable.observeOn(AndroidSchedulers.mainThread())
-//                                            .subscribe(new DisposableCompletableObserver() {
-//                                                @Override
-//                                                public void onComplete() {
-//                                                    Log.i(TAG, "Удалена заметка");
-//                                                    subscribe();
-//                                                    listAdapterNotes.notifyDataSetChanged();
-//                                                }
-//
-//                                                @Override
-//                                                public void onError(Throwable e) {
-//                                                    e.printStackTrace();
-//                                                }
-//                                            });
-//
-//                                } catch (Exception e) {
-//                                    e.printStackTrace();
-//                                }
-//                            }
-//                        });
-//
-//                builderDialogDelete.setNegativeButton(R.string.cancel,
-//                        new DialogInterface.OnClickListener() {
-//                            public void onClick(DialogInterface dialog, int id) {
-//                                // User cancelled the dialog
-//                            }
-//                        });
-//
-//                builderDialogDelete.setMessage(R.string.dialog_message)
-//                        .setTitle(R.string.dialog_title)
-//                        .setIcon(R.drawable.ic_delete3d);
-//                AlertDialog dialogDelete = builderDialogDelete.create();
-//                dialogDelete.show();
-//                return true;
-//            }
-//        });
-    }
-
     private void updateList(List<Note> baseListNote) {
-      //  RecyclerAdapterNotes recyclerAdapter = new RecyclerAdapterNotes();
+        //  RecyclerAdapterNotes recyclerAdapter = new RecyclerAdapterNotes();
         recyclerAdapter.clearItems();
         recyclerAdapter.setItems(baseListNote);
     }
