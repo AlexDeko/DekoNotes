@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:gravity="top|center_horizontal"
-            app:layout_constraintBottom_toTopOf="@+id/list"
+            app:layout_constraintBottom_toTopOf="@+id/recycler"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -28,11 +28,12 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <ListView
-        android:id="@+id/list"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
+        android:scrollbars="vertical"
         android:cacheColorHint="@color/colorNull"
         android:divider="@drawable/list_divider"
         android:dividerHeight="12dp"
@@ -47,6 +48,7 @@
         android:layout_margin="@dimen/fab_margin"
         android:background="@null"
         android:clickable="true"
+        android:focusable="true"
         app:backgroundTint="@color/colorBlueToolBar"
         app:borderWidth="0dp"
         app:elevation="6dp"

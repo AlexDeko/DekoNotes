@@ -8,5 +8,5 @@
     <dimen name="activity_horizontal_margin">20dp</dimen>
     <dimen name="list_miniMargin">10dp</dimen>
     <dimen name="list_item_margin">4dp</dimen>
-    <dimen name="list_item_padding">20dp</dimen>
+    <dimen name="list_item_padding">10dp</dimen>
 </resources>

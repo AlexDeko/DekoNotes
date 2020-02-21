@@ -4,6 +4,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.util.Objects;
+
 @Entity
 public class Note {
     @PrimaryKey(autoGenerate = true)
@@ -61,5 +63,23 @@ public class Note {
 
     public int getContainsDeadline() {
         return containsDeadline;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Note note = (Note) o;
+        return id == note.id &&
+                check == note.check &&
+                dayDeadline == note.dayDeadline &&
+                lastChange == note.lastChange &&
+                containsDeadline == note.containsDeadline &&
+                Objects.equals(title, note.title) &&
+                Objects.equals(text, note.text);
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, text, check, dayDeadline, lastChange, containsDeadline);
     }
 }

@@ -348,7 +348,6 @@ public class NotesActivity extends AppCompatActivity {
 
             } else {
                 onBackPressed();
-
             }
             return true;
         }

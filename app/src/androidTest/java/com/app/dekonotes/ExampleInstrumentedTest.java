@@ -22,6 +22,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        assertEquals("com.homework1_3.dekonotes", appContext.getPackageName());
+        assertEquals("com.app.dekonotes", appContext.getPackageName());
     }
 }
