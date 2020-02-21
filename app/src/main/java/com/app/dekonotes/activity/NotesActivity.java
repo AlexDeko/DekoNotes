@@ -29,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 import io.reactivex.Completable;
 import io.reactivex.Single;
@@ -190,7 +191,7 @@ public class NotesActivity extends AppCompatActivity {
                 containsDeadline = 1;
             }
 
-            Note myNote = new Note(0, titleNote, textNote, checkDeadline.isChecked(), date,
+            final Note myNote = new Note(0, titleNote, textNote, checkDeadline.isChecked(), date,
                     lastChange, containsDeadline);
 
             Completable completable = repositoryNotes.insert(myNote);
@@ -208,6 +209,7 @@ public class NotesActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                     });
+
 
         } catch (Exception e) {
             Log.e(TAG, "ERROR_SAVE");
@@ -236,7 +238,6 @@ public class NotesActivity extends AppCompatActivity {
                             public void onSuccess(Note note) {
                                 if (note.getDayDeadline() != 0) {
                                     checkDeadline.setChecked(note.isCheck());
-
                                     if (checkDeadline.isChecked()) {
                                         Date date = new Date();
                                         date.setTime(note.getDayDeadline());
@@ -301,8 +302,8 @@ public class NotesActivity extends AppCompatActivity {
             } else {
                 containsDeadline = 1;
             }
-            Note myNote = new Note(idNoteBundle, titleNote, textNote, checkDeadline.isChecked(),
-                    date, lastChange, containsDeadline);
+            final Note myNote = new Note(idNoteBundle, titleNote, textNote,
+                    checkDeadline.isChecked(), date, lastChange, containsDeadline);
 
             Completable completable = repositoryNotes.update(myNote);
             completable.observeOn(AndroidSchedulers.mainThread())

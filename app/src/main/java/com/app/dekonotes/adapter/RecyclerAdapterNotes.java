@@ -1,6 +1,7 @@
 package com.app.dekonotes.adapter;
 
 import android.content.Intent;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,13 +50,13 @@ public class RecyclerAdapterNotes extends RecyclerView.Adapter<RecyclerAdapterNo
         private void bind(final Note note, final OnItemClickListener listener,
                           final OnItemLongClickListener listenerLong) {
 
-            if (note.getTitle().equals("Пусто")) {
+            if (TextUtils.isEmpty(note.getTitle())) {
                 titleView.setVisibility(View.GONE);
             } else {
                 titleView.setVisibility(View.VISIBLE);
                 titleView.setText(note.getTitle());
             }
-            if (note.getText().equals("Пусто")) {
+            if (TextUtils.isEmpty(note.getText())) {
                 textView.setVisibility(View.GONE);
             } else {
                 textView.setVisibility(View.VISIBLE);
