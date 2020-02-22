@@ -6,6 +6,10 @@ import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.util.List;
+
+import io.reactivex.Completable;
+import io.reactivex.Observable;
 import io.reactivex.Single;
 
 import static org.mockito.Mockito.mock;
@@ -53,17 +57,39 @@ public class RepositoryNotesImplTest {
         verify(dao).getNoteById(TestData.TEST_NOTE.getId());
 
 
-        // Моделируем поведение
-        when(dao.insertNote(TestData.TEST_NOTE.insert()))
-                .thenReturn(Completable.just(TestData.TEST_NOTE));
 
-        repository.insertNote(TestData.TEST_NOTE.insert())
-                // Вызываем метод у Rx для тестов. Можно проверить в каком состоянии Completable
-                .test()
-                // Ожидаем все заметки. В случае ошибки можно вызвать assertError
-                .assertValue(TestData.TEST_NOTE);
-
-        // Проверяем, что вызвали метод у чучела
-        verify(dao).getAll(TestData.TEST_NOTE.getAll());
     }
+
+//    @Test
+//    public void insert_EXPECT_note_in_repository() {
+//        // Моделируем поведение
+//        when(dao.getAll(Observable<List<TestData.TEST_NOTE>>))
+//                .thenReturn(Observabl);
+//
+//        repository.insert(TestData.TEST_NOTE)
+//                // Вызываем метод у Rx для тестов. Можно проверить в каком состоянии Completable
+//                .test()
+//                // Ожидаем добавленее новой заметки. В случае ошибки можно вызвать assertError
+//                .assertValue(TestData.TEST_NOTE);
+//
+//        // Проверяем, что вызвали метод у чучела
+//        verify(dao).getAll();
+//    }
+//
+//    @Test
+//    public void insert_EXPECT_note_in_repository() {
+//        // Моделируем поведение
+//        when(dao.insertNote(TestData.TEST_NOTE))
+//                .thenReturn(Completable.complete());
+//
+//        repository.insert(TestData.TEST_NOTE)
+//                // Вызываем метод у Rx для тестов. Можно проверить в каком состоянии Completable
+//                .test()
+//                // Ожидаем добавленее новой заметки. В случае ошибки можно вызвать assertError
+//                .assertValue(TestData.TEST_NOTE);
+//
+//        // Проверяем, что вызвали метод у чучела
+//        verify(dao).insertNote(TestData.TEST_NOTE);
+//    }
+
 }

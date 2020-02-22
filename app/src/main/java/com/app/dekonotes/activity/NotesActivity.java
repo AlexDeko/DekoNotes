@@ -21,6 +21,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.app.dekonotes.App;
 import com.app.dekonotes.R;
 import com.app.dekonotes.data.AppDatabase;
+import com.app.dekonotes.data.note.CreatorNotes;
 import com.app.dekonotes.data.note.RepositoryNotesImpl;
 import com.app.dekonotes.data.note.Note;
 
@@ -29,7 +30,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Objects;
 
 import io.reactivex.Completable;
 import io.reactivex.Single;
@@ -160,39 +160,9 @@ public class NotesActivity extends AppCompatActivity {
 
     private void saveNote() {
         try {
-            long date;
-            if (todayCalendar != null) {
-                date = todayCalendar.getTimeInMillis();
-            } else {
-                date = 0;
-            }
-
-            String titleNote;
-            if (title != null) {
-                titleNote = title.getText().toString();
-            } else {
-                titleNote = getString(R.string.null_string);
-            }
-
-            String textNote;
-            if (text != null) {
-                textNote = text.getText().toString();
-            } else {
-                textNote = getString(R.string.null_string);
-            }
-
-            Date dateChange = new Date();
-            long lastChange = dateChange.getTime();
-
-            int containsDeadline;
-            if (date == 0) {
-                containsDeadline = 0;
-            } else {
-                containsDeadline = 1;
-            }
-
-            final Note myNote = new Note(0, titleNote, textNote, checkDeadline.isChecked(), date,
-                    lastChange, containsDeadline);
+            CreatorNotes creatorNotes = new CreatorNotes();
+            Note myNote = creatorNotes.createNote(idNoteBundle, title, text,
+                    checkDeadline.isChecked(), todayCalendar);
 
             Completable completable = repositoryNotes.insert(myNote);
             completable.observeOn(AndroidSchedulers.mainThread())
@@ -276,34 +246,10 @@ public class NotesActivity extends AppCompatActivity {
 
     private void update() {
         try {
-            long date;
-            if (todayCalendar != null) {
-                date = todayCalendar.getTimeInMillis();
-            } else {
-                date = 0;
-            }
-            String titleNote;
-            if (title != null) {
-                titleNote = title.getText().toString();
-            } else {
-                titleNote = getString(R.string.null_string);
-            }
-            String textNote;
-            if (text != null) {
-                textNote = text.getText().toString();
-            } else {
-                textNote = getString(R.string.null_string);
-            }
-            Date dateChange = new Date();
-            long lastChange = dateChange.getTime();
-            int containsDeadline;
-            if (date == 0) {
-                containsDeadline = 0;
-            } else {
-                containsDeadline = 1;
-            }
-            final Note myNote = new Note(idNoteBundle, titleNote, textNote,
-                    checkDeadline.isChecked(), date, lastChange, containsDeadline);
+
+            CreatorNotes creatorNotes = new CreatorNotes();
+            Note myNote = creatorNotes.createNote(idNoteBundle, title, text,
+                    checkDeadline.isChecked(), todayCalendar);
 
             Completable completable = repositoryNotes.update(myNote);
             completable.observeOn(AndroidSchedulers.mainThread())
