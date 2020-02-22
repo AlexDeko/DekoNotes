@@ -46,7 +46,6 @@ public class NotesActivity extends AppCompatActivity {
     private EditText title = null;
     private EditText text = null;
     private EditText dateCalendar = null;
-    private DatePickerDialog datePickerDialog;
     private Calendar todayCalendar = null;
     private Toolbar myToolbar;
     AppDatabase appDatabase = App.getInstance().getDatabase();
@@ -66,7 +65,6 @@ public class NotesActivity extends AppCompatActivity {
         initViews();
         setClick();
         getInfoExtra();
-
     }
 
     private void initViews() {
@@ -119,8 +117,7 @@ public class NotesActivity extends AppCompatActivity {
     }
 
     private void setDateCalendar() {
-        //  todayCalendar = Calendar.getInstance();
-        datePickerDialog = new DatePickerDialog(
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
                 this,
                 onDateSet,
                 todayCalendar.get(Calendar.YEAR),
@@ -217,18 +214,8 @@ public class NotesActivity extends AppCompatActivity {
                                         deadlineSetEnabledAndClickable();
                                     }
                                 }
-
-                                if (note.getTitle().equals(getString(R.string.null_string))) {
-                                    title = null;
-                                } else {
-                                    title.setText(note.getTitle());
-                                }
-
-                                if (note.getText().equals(getString(R.string.null_string))) {
-                                    text = null;
-                                } else {
-                                    text.setText(note.getText());
-                                }
+                                title.setText(note.getTitle());
+                                text.setText(note.getText());
                             }
 
                             @Override

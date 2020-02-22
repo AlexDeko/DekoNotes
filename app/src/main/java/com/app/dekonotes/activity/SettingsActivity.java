@@ -32,15 +32,23 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        myToolbar = findViewById(R.id.my_toolbar);
-        myToolbar.setTitle(R.string.settings);
-        setSupportActionBar(myToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setMyToolbar();
+        initViews();
+        setBtn();
+    }
+
+    private void initViews() {
         editNewPin = findViewById(R.id.editPassword);
         btnSave = findViewById(R.id.btnSavePin);
         btnVisiblePin = findViewById(R.id.imgBtnVisible);
         error = findViewById(R.id.textError);
-        setBtn();
+    }
+
+    private void setMyToolbar() {
+        myToolbar = findViewById(R.id.my_toolbar);
+        myToolbar.setTitle(R.string.settings);
+        setSupportActionBar(myToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void setBtn() {
@@ -56,7 +64,6 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (close == 1) {
-
                     btnVisiblePin.setImageResource(R.drawable.ic_open_eye);
                     editNewPin.setTransformationMethod(HideReturnsTransformationMethod
                             .getInstance());

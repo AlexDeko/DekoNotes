@@ -12,7 +12,12 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <include layout="@layout/toolbar" />
+        <include
+            style="@style/Toolbar"
+            layout="@layout/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay" />
 
         <EditText
             android:id="@+id/editTitle"
@@ -64,6 +69,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@null"
+                android:contentDescription="@string/description_image_save_deadline"
                 app:srcCompat="@drawable/ic_calendar_20" />
 
         </LinearLayout>

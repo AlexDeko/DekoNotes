@@ -51,12 +51,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar myToolbar = findViewById(R.id.my_toolbar);
-        setSupportActionBar(myToolbar);
+        setMyToolbar();
         initViews();
         setRecycler();
         subscribe();
         btnAddNote();
+    }
+
+    private void setMyToolbar() {
+        Toolbar myToolbar = findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
     }
 
     private void setRecycler() {
@@ -85,8 +89,7 @@ public class MainActivity extends AppCompatActivity {
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         try {
-                                            Note note = item;
-                                            Completable completable = repositoryNotes.delete(note);
+                                            Completable completable = repositoryNotes.delete(item);
                                             completable.observeOn(AndroidSchedulers.mainThread())
                                                     .subscribe(new DisposableCompletableObserver() {
                                                         @Override
@@ -140,8 +143,6 @@ public class MainActivity extends AppCompatActivity {
                     public void onNext(List<Note> note) {
                         myList = note;
                         updateList(note);
-
-//                        listAdapterNotes.notifyDataSetChanged();
                     }
 
                     @Override
@@ -173,7 +174,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateList(List<Note> baseListNote) {
-        //  RecyclerAdapterNotes recyclerAdapter = new RecyclerAdapterNotes();
         recyclerAdapter.clearItems();
         recyclerAdapter.setItems(baseListNote);
     }
