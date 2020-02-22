@@ -1,5 +1,5 @@
 # DekoNotes
-## ___Заметки с deadline(bold italic)___
+## ___Заметки с deadline___
 
 **Фунционал приложения:**
 
