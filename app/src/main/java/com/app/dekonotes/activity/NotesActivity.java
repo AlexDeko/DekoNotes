@@ -46,11 +46,12 @@ public class NotesActivity extends AppCompatActivity {
     private EditText title = null;
     private EditText text = null;
     private EditText dateCalendar = null;
-    private Calendar todayCalendar = null;
+    private Calendar todayCalendar = Calendar.getInstance();
     private Toolbar myToolbar;
     AppDatabase appDatabase = App.getInstance().getDatabase();
     Bundle bundleExtra = null;
     long idNoteBundle;
+    long dateBundle;
     RepositoryNotesImpl repositoryNotes = new RepositoryNotesImpl(appDatabase.noteDao());
 
 
@@ -90,7 +91,6 @@ public class NotesActivity extends AppCompatActivity {
         imgBtnCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                todayCalendar = Calendar.getInstance();
                 setDateCalendar();
                 setTimeCalendar();
             }
@@ -208,14 +208,17 @@ public class NotesActivity extends AppCompatActivity {
                                     if (checkDeadline.isChecked()) {
                                         Date date = new Date();
                                         date.setTime(note.getDayDeadline());
+                                        todayCalendar.setTime(date);
                                         DateFormat dateFormat =
                                                 new SimpleDateFormat("dd.MM.yyyy HH:mm");
                                         dateCalendar.setText(dateFormat.format(date.getTime()));
                                         deadlineSetEnabledAndClickable();
+
                                     }
                                 }
                                 title.setText(note.getTitle());
                                 text.setText(note.getText());
+
                             }
 
                             @Override

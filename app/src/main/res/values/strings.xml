@@ -27,7 +27,7 @@
     <string name="number9">9</string>
     <string name="numberS">0</string>
     <string name="dialog_message">Вы уверены, что хотите безвозратно удалить
-        свою великолепную заметку</string>
+        свою великолепную заметку?</string>
     <string name="dialog_title">Опасно</string>
     <string name="ok">Ок</string>
     <string name="null_string">Пусто</string>

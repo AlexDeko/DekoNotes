@@ -68,6 +68,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/notes_liner_margin"
-        android:text="@string/save" />
+        android:backgroundTint="@color/colorWhiteToolText"
+        android:elevation="6dp"
+        android:stateListAnimator="@null"
+        android:text="@string/save"
+        android:textColor="@color/colorBlackText"
+        android:translationZ="4dp" />
 
 </LinearLayout>

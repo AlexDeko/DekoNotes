@@ -68,7 +68,7 @@ public class RepositoryNotesImplTest {
 
 
     }
-    
+
     @Test
     public void get_all_EXPECT_note_in_repository() {
         // Моделируем поведение

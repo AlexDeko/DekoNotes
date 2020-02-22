@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -16,6 +18,7 @@ import com.app.dekonotes.data.key.KeyStore;
 public class EnterPinActivity extends AppCompatActivity {
 
     private final static String TAG = "EnterPin";
+    Animation animAlpha;
     private Button number0;
     private Button number1;
     private Button number2;
@@ -66,6 +69,7 @@ public class EnterPinActivity extends AppCompatActivity {
     }
 
     private void initViews() {
+        animAlpha = AnimationUtils.loadAnimation(this, R.anim.alpha);
         number0 = findViewById(R.id.btnNumber0);
         number1 = findViewById(R.id.btnNumber1);
         number2 = findViewById(R.id.btnNumber2);
@@ -201,7 +205,8 @@ public class EnterPinActivity extends AppCompatActivity {
     private void setClickDeleteLastInput() {
         deleteLastInput.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+                view.startAnimation(animAlpha);
                 if (countShape > MIN_ENTER) {
                     deleteShape();
                 }
