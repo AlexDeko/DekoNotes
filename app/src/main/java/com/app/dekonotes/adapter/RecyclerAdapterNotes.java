@@ -11,10 +11,9 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.dekonotes.R;
+import com.app.dekonotes.data.formatter.DateDeadlineFormatter;
 import com.app.dekonotes.data.note.Note;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -65,9 +64,8 @@ public class RecyclerAdapterNotes extends RecyclerView.Adapter<RecyclerAdapterNo
                 deadlineView.setVisibility(View.GONE);
             } else {
                 deadlineView.setVisibility(View.VISIBLE);
-                DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-                String deadline = dateFormat.format(note.getDayDeadline());
-                deadlineView.setText(deadline);
+                deadlineView.setText(new DateDeadlineFormatter()
+                        .getFormatDate(note.getDayDeadline()));
                 if (note.getDayDeadline() < new Date().getTime()) {
                     deadlineView.setTextColor((ContextCompat.getColor(deadlineView.getContext(),
                             R.color.colorAccent)));

@@ -21,15 +21,13 @@ import androidx.appcompat.widget.Toolbar;
 import com.app.dekonotes.App;
 import com.app.dekonotes.R;
 import com.app.dekonotes.data.AppDatabase;
+import com.app.dekonotes.data.formatter.DateDeadlineFormatter;
 import com.app.dekonotes.data.note.CreatorNotes;
 import com.app.dekonotes.data.note.RepositoryNotesImpl;
 import com.app.dekonotes.data.note.Note;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
 import io.reactivex.Completable;
 import io.reactivex.Single;
@@ -46,12 +44,11 @@ public class NotesActivity extends AppCompatActivity {
     private EditText title = null;
     private EditText text = null;
     private EditText dateCalendar = null;
-    private Calendar todayCalendar = Calendar.getInstance();
+    private Calendar deadlineCalendar = Calendar.getInstance();
     private Toolbar myToolbar;
     AppDatabase appDatabase = App.getInstance().getDatabase();
     Bundle bundleExtra = null;
     long idNoteBundle;
-    long dateBundle;
     RepositoryNotesImpl repositoryNotes = new RepositoryNotesImpl(appDatabase.noteDao());
 
 
@@ -102,9 +99,8 @@ public class NotesActivity extends AppCompatActivity {
                 if (checkDeadline.isChecked()) {
                     deadlineSetEnabledAndClickable();
                     Date date = new Date();
-                    DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm",
-                            Locale.getDefault());
-                    dateCalendar.setText(dateFormat.format(date));
+                    dateCalendar.setText(new DateDeadlineFormatter()
+                            .getFormatDate(date.getTime()));
                 } else {
                     dateCalendar.setText(null);
                     imgBtnCalendar.setClickable(false);
@@ -120,46 +116,43 @@ public class NotesActivity extends AppCompatActivity {
         DatePickerDialog datePickerDialog = new DatePickerDialog(
                 this,
                 onDateSet,
-                todayCalendar.get(Calendar.YEAR),
-                todayCalendar.get(Calendar.MONTH),
-                todayCalendar.get(Calendar.DAY_OF_MONTH)
+                deadlineCalendar.get(Calendar.YEAR),
+                deadlineCalendar.get(Calendar.MONTH),
+                deadlineCalendar.get(Calendar.DAY_OF_MONTH)
         );
         datePickerDialog.show();
     }
 
     public void setTimeCalendar() {
         new TimePickerDialog(this, onTimeSet,
-                todayCalendar.get(Calendar.HOUR_OF_DAY),
-                todayCalendar.get(Calendar.MINUTE), true)
+                deadlineCalendar.get(Calendar.HOUR_OF_DAY),
+                deadlineCalendar.get(Calendar.MINUTE), true)
                 .show();
     }
 
     TimePickerDialog.OnTimeSetListener onTimeSet = new TimePickerDialog.OnTimeSetListener() {
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-            todayCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-            todayCalendar.set(Calendar.MINUTE, minute);
+            deadlineCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+            deadlineCalendar.set(Calendar.MINUTE, minute);
 
         }
     };
 
     DatePickerDialog.OnDateSetListener onDateSet = new DatePickerDialog.OnDateSetListener() {
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-            todayCalendar.set(Calendar.YEAR, year);
-            todayCalendar.set(Calendar.MONTH, monthOfYear);
-            todayCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            Date date = new Date();
-            date.setTime(todayCalendar.getTimeInMillis());
-            DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-            dateCalendar.setText(dateFormat.format(date.getTime()));
+            deadlineCalendar.set(Calendar.YEAR, year);
+            deadlineCalendar.set(Calendar.MONTH, monthOfYear);
+            deadlineCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            dateCalendar.setText(new DateDeadlineFormatter()
+                    .getFormatDate(deadlineCalendar.getTimeInMillis()));
         }
     };
 
 
     private void saveNote() {
         try {
-            CreatorNotes creatorNotes = new CreatorNotes();
-            Note myNote = creatorNotes.createNote(idNoteBundle, title, text,
-                    checkDeadline.isChecked(), todayCalendar);
+            Note myNote = new CreatorNotes().createNote(idNoteBundle, title, text,
+                    checkDeadline.isChecked(), deadlineCalendar);
 
             Completable completable = repositoryNotes.insert(myNote);
             completable.observeOn(AndroidSchedulers.mainThread())
@@ -206,19 +199,15 @@ public class NotesActivity extends AppCompatActivity {
                                 if (note.getDayDeadline() != 0) {
                                     checkDeadline.setChecked(note.isCheck());
                                     if (checkDeadline.isChecked()) {
-                                        Date date = new Date();
-                                        date.setTime(note.getDayDeadline());
-                                        todayCalendar.setTime(date);
-                                        DateFormat dateFormat =
-                                                new SimpleDateFormat("dd.MM.yyyy HH:mm");
-                                        dateCalendar.setText(dateFormat.format(date.getTime()));
+                                        deadlineCalendar.setTime(new Date(note.getDayDeadline()));
+                                        dateCalendar.setText(new DateDeadlineFormatter()
+                                                .getFormatDate(note.getDayDeadline()));
                                         deadlineSetEnabledAndClickable();
 
                                     }
                                 }
                                 title.setText(note.getTitle());
                                 text.setText(note.getText());
-
                             }
 
                             @Override
@@ -236,10 +225,8 @@ public class NotesActivity extends AppCompatActivity {
 
     private void update() {
         try {
-
-            CreatorNotes creatorNotes = new CreatorNotes();
-            Note myNote = creatorNotes.createNote(idNoteBundle, title, text,
-                    checkDeadline.isChecked(), todayCalendar);
+            Note myNote = new CreatorNotes().createNote(idNoteBundle, title, text,
+                    checkDeadline.isChecked(), deadlineCalendar);
 
             Completable completable = repositoryNotes.update(myNote);
             completable.observeOn(AndroidSchedulers.mainThread())

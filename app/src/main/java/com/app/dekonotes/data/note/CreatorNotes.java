@@ -12,10 +12,10 @@ public class CreatorNotes {
     }
 
     public Note createNote(long idNoteBundle, TextView title, TextView text, boolean checkDeadline,
-                           Calendar todayCalendar) {
+                           Calendar deadlineCalendar) {
         long date;
-        if (todayCalendar != null) {
-            date = todayCalendar.getTimeInMillis();
+        if (deadlineCalendar != null) {
+            date = deadlineCalendar.getTimeInMillis();
         } else {
             date = 0;
         }
