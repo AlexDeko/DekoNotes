@@ -21,12 +21,12 @@ import com.app.dekonotes.data.key.KeyStore;
 public class SettingsActivity extends AppCompatActivity {
 
     private final static String TAG = "Settings";
-    EditText editNewPin;
-    Button btnSave;
-    ImageButton btnVisiblePin;
-    TextView error;
-    int close = 1;
-    Toolbar myToolbar;
+    private EditText editNewPin;
+    private Button btnSave;
+    private ImageButton btnVisiblePin;
+    private TextView error;
+    private int close = 1;
+    private Toolbar myToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

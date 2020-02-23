@@ -26,8 +26,6 @@ import com.app.dekonotes.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Completable;
-import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -41,11 +39,11 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private RecyclerAdapterNotes recyclerAdapter;
     private FloatingActionButton addNewNote;
-    List<Note> myList = new ArrayList<>();
+    private List<Note> myList = new ArrayList<>();
     // Контейнер для подписок. См. onDestroy()
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
-    AppDatabase appDatabase = App.getInstance().getDatabase();
-    RepositoryNotesImpl repositoryNotes = new RepositoryNotesImpl(appDatabase.noteDao());
+    private AppDatabase appDatabase = App.getInstance().getDatabase();
+    private RepositoryNotesImpl repositoryNotes = new RepositoryNotesImpl(appDatabase.noteDao());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,26 +86,22 @@ public class MainActivity extends AppCompatActivity {
                         builderDialogDelete.setPositiveButton(R.string.ok,
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
-                                        try {
-                                            Completable completable = repositoryNotes.delete(item);
-                                            completable.observeOn(AndroidSchedulers.mainThread())
-                                                    .subscribe(new DisposableCompletableObserver() {
-                                                        @Override
-                                                        public void onComplete() {
-                                                            Log.i(TAG, "Удалена заметка");
-                                                            subscribe();
-                                                            recyclerAdapter.notifyDataSetChanged();
-                                                        }
+                                        repositoryNotes.delete(item)
+                                                .observeOn(AndroidSchedulers.mainThread())
+                                                .subscribe(new DisposableCompletableObserver() {
+                                                    @Override
+                                                    public void onComplete() {
+                                                        subscribe();
+                                                        recyclerAdapter.notifyDataSetChanged();
+                                                    }
 
-                                                        @Override
-                                                        public void onError(Throwable e) {
-                                                            e.printStackTrace();
-                                                        }
-                                                    });
-
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
+                                                    @Override
+                                                    public void onError(Throwable e) {
+                                                        Toast.makeText(MainActivity.this,
+                                                                getString(R.string.error_notes),
+                                                                Toast.LENGTH_LONG).show();
+                                                    }
+                                                });
                                     }
                                 });
 
@@ -130,8 +124,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void subscribe() {
-        Observable<List<Note>> listObservable = repositoryNotes.getAll();
-        listObservable.observeOn(AndroidSchedulers.mainThread())
+        repositoryNotes.getAll().
+                observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<List<Note>>() {
                     @Override
                     public void onSubscribe(Disposable d) {

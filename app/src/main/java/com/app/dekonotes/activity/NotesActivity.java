@@ -46,10 +46,10 @@ public class NotesActivity extends AppCompatActivity {
     private EditText dateCalendar = null;
     private Calendar deadlineCalendar = Calendar.getInstance();
     private Toolbar myToolbar;
-    AppDatabase appDatabase = App.getInstance().getDatabase();
-    Bundle bundleExtra = null;
-    long idNoteBundle;
-    RepositoryNotesImpl repositoryNotes = new RepositoryNotesImpl(appDatabase.noteDao());
+    private AppDatabase appDatabase = App.getInstance().getDatabase();
+    private Bundle bundleExtra = null;
+    private long idNoteBundle;
+    private RepositoryNotesImpl repositoryNotes = new RepositoryNotesImpl(appDatabase.noteDao());
 
 
     @Override
