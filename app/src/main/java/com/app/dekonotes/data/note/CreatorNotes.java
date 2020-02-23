@@ -14,7 +14,7 @@ public class CreatorNotes {
     public Note createNote(long idNoteBundle, TextView title, TextView text, boolean checkDeadline,
                            Calendar deadlineCalendar) {
         long date;
-        if (deadlineCalendar != null) {
+        if (checkDeadline) {
             date = deadlineCalendar.getTimeInMillis();
         } else {
             date = 0;
