@@ -17,7 +17,6 @@ import com.app.dekonotes.data.key.KeyStore;
 
 public class EnterPinActivity extends AppCompatActivity {
 
-    private final static String keyBundleCountShape = "keyCountShape";
     private final static String keyBundlePin = "keyPin";
     private Animation animAlpha;
     private Button number0;

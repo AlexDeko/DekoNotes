@@ -1,5 +1,6 @@
 package com.app.dekonotes.activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -20,12 +21,14 @@ import com.app.dekonotes.data.key.KeyStore;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    private final static String TAG = "Settings";
+    private final static String keyBundlePin = "keyPin";
+    private final static String keyBundleVisibleError = "keyPin";
+    private final static String keyBundleEyesBoolean = "keyEyes";
     private EditText editNewPin;
     private Button btnSave;
     private ImageButton btnVisiblePin;
     private TextView error;
-    private int close = 1;
+    private boolean close = true;
     private Toolbar myToolbar;
 
     @Override
@@ -34,6 +37,7 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
         setMyToolbar();
         initViews();
+        setBtnVisibleEyes(close);
         setBtn();
     }
 
@@ -51,6 +55,31 @@ public class SettingsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    private void setBtnVisibleEyes(boolean close) {
+        if (!close) {
+            btnVisiblePin.setImageResource(R.drawable.ic_open_eye);
+            editNewPin.setTransformationMethod(HideReturnsTransformationMethod
+                    .getInstance());
+        } else {
+            btnVisiblePin.setImageResource(R.drawable.ic_close_eye);
+            editNewPin.setTransformationMethod(PasswordTransformationMethod
+                    .getInstance());
+        }
+    }
+
+    private void setPinAndError(String pin) {
+        if (pin.length() < 4) {
+            error.setVisibility(View.VISIBLE);
+        } else {
+            error.setVisibility(View.INVISIBLE);
+            KeyStore keyStore = App.getInstance().getKeyStore();
+            keyStore.saveNew(editNewPin.getText().toString());
+            Toast.makeText(SettingsActivity.this,
+                    getString(R.string.toast_database_save),
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void setBtn() {
 
         myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -63,71 +92,42 @@ public class SettingsActivity extends AppCompatActivity {
         btnVisiblePin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (close == 1) {
-                    btnVisiblePin.setImageResource(R.drawable.ic_open_eye);
-                    editNewPin.setTransformationMethod(HideReturnsTransformationMethod
-                            .getInstance());
-                    close -= 1;
+                //setBtnVisibleEyes();
+
+                if (close){
+                    close = false;
                 } else {
-                    btnVisiblePin.setImageResource(R.drawable.ic_close_eye);
-                    editNewPin.setTransformationMethod(PasswordTransformationMethod
-                            .getInstance());
-                    close += 1;
+                    close = true;
                 }
+                setBtnVisibleEyes(close);
             }
         });
 
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String pin = editNewPin.getText().toString();
-                if (pin.length() < 4) {
-                    error.setVisibility(View.VISIBLE);
-                } else {
-                    error.setVisibility(View.INVISIBLE);
-                    KeyStore keyStore = App.getInstance().getKeyStore();
-                    keyStore.saveNew(editNewPin.getText().toString());
-                    Toast.makeText(SettingsActivity.this,
-                            getString(R.string.toast_database_save),
-                            Toast.LENGTH_SHORT).show();
-                }
+                setPinAndError(editNewPin.getText().toString());
             }
         });
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        Log.i(TAG, "onStart()");
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(keyBundleEyesBoolean, close);
+        if (error.getVisibility() == View.VISIBLE){
+            outState.putString(keyBundleVisibleError, editNewPin.getText().toString());
+        }
+
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        Log.i(TAG, "onResume()");
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.i(TAG, "onPause()");
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.i(TAG, "onStop()");
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        Log.i(TAG, "onRestart()");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.i(TAG, "onDestroy()");
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        close = savedInstanceState.getBoolean(keyBundleEyesBoolean);
+        setBtnVisibleEyes(close);
+        if (savedInstanceState.containsKey(keyBundleVisibleError)){
+            setPinAndError(savedInstanceState.getString(keyBundlePin));
+        }
     }
 }
