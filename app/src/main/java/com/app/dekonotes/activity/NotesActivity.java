@@ -59,7 +59,6 @@ public class NotesActivity extends AppCompatActivity {
         myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         initViews();
         setClick();
         getInfoExtra();

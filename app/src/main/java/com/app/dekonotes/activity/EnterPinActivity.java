@@ -44,19 +44,19 @@ public class EnterPinActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enter_pin);
-        hasPin();
+      //  hasPin();
         initViews();
         setClickNumberOnKeyboard();
         setClickDeleteLastInput();
     }
 
-    private void hasPin() {
-        if (!keyStore.hasPin()) {
-            Intent startSettings = new Intent(EnterPinActivity.this,
-                    SettingsActivity.class);
-            startActivity(startSettings);
-        }
-    }
+//    private void hasPin() {
+//        if (!keyStore.hasPin()) {
+//            Intent startSettings = new Intent(EnterPinActivity.this,
+//                    SettingsActivity.class);
+//            startActivity(startSettings);
+//        }
+//    }
 
     private void storePin() {
         if (keyStore.checkPin(pin.toString())) {
