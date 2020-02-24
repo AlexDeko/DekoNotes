@@ -9,13 +9,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import com.app.dekonotes.App;
+import com.app.dekonotes.adapter.DiffUtil.NotesDiffUtilResult;
 import com.app.dekonotes.adapter.RecyclerAdapterNotes;
 import com.app.dekonotes.data.AppDatabase;
 import com.app.dekonotes.data.note.RepositoryNotesImpl;
@@ -34,13 +36,11 @@ import io.reactivex.observers.DisposableCompletableObserver;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final static String TAG = "Main";
-    private static long back_pressed;
+    private static long backPressed;
     private RecyclerView recyclerView;
     private RecyclerAdapterNotes recyclerAdapter;
     private FloatingActionButton addNewNote;
     private List<Note> myList = new ArrayList<>();
-    // Контейнер для подписок. См. onDestroy()
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private AppDatabase appDatabase = App.getInstance().getDatabase();
     private RepositoryNotesImpl repositoryNotes = new RepositoryNotesImpl(appDatabase.noteDao());
@@ -70,53 +70,45 @@ public class MainActivity extends AppCompatActivity {
                 new RecyclerAdapterNotes.OnItemClickListener() {
                     @Override
                     public void onItemClick(Note item) {
-                        Intent reWriteNote = new Intent(MainActivity.this,
-                                NotesActivity.class);
-                        reWriteNote.putExtra("id", item.getId());
-                        startActivity(reWriteNote);
+                        startActivity(NotesActivity
+                                .startNotesActivityWIthExtra(getApplicationContext(),
+                                        item.getId()));
                     }
                 },
 
                 new RecyclerAdapterNotes.OnItemLongClickListener() {
                     @Override
                     public void onItemLongClick(final Note item) {
-                        AlertDialog.Builder builderDialogDelete = new AlertDialog
-                                .Builder(MainActivity.this);
+                        new AlertDialog.Builder(MainActivity.this)
+                                .setPositiveButton(R.string.ok,
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
 
-                        builderDialogDelete.setPositiveButton(R.string.ok,
+                                                compositeDisposable.add(
+                                                        repositoryNotes.delete(item)
+                                                                .observeOn(AndroidSchedulers.mainThread())
+                                                                .subscribeWith(new DisposableCompletableObserver() {
+                                                                    @Override
+                                                                    public void onComplete() {
+
+                                                                    }
+
+                                                                    @Override
+                                                                    public void onError(Throwable e) {
+                                                                        Toast.makeText(MainActivity.this,
+                                                                                getString(R.string.error_notes),
+                                                                                Toast.LENGTH_LONG).show();
+                                                                    }
+                                                                })
+                                                );
+                                            }
+                                        }).setNegativeButton(R.string.cancel,
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
-                                        repositoryNotes.delete(item)
-                                                .observeOn(AndroidSchedulers.mainThread())
-                                                .subscribe(new DisposableCompletableObserver() {
-                                                    @Override
-                                                    public void onComplete() {
-                                                        subscribe();
-                                                        recyclerAdapter.notifyDataSetChanged();
-                                                    }
-
-                                                    @Override
-                                                    public void onError(Throwable e) {
-                                                        Toast.makeText(MainActivity.this,
-                                                                getString(R.string.error_notes),
-                                                                Toast.LENGTH_LONG).show();
-                                                    }
-                                                });
                                     }
-                                });
-
-                        builderDialogDelete.setNegativeButton(R.string.cancel,
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        // User cancelled the dialog
-                                    }
-                                });
-
-                        builderDialogDelete.setMessage(R.string.dialog_message)
+                                }).setMessage(R.string.dialog_message)
                                 .setTitle(R.string.dialog_title)
-                                .setIcon(R.drawable.ic_delete3d);
-                        AlertDialog dialogDelete = builderDialogDelete.create();
-                        dialogDelete.show();
+                                .setIcon(R.drawable.ic_delete3d).create().show();
                     }
                 });
 
@@ -129,14 +121,13 @@ public class MainActivity extends AppCompatActivity {
                 .subscribe(new Observer<List<Note>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        // Disposable представляет собой интерфейс для работы с подпиской. Через него можно отписаться
                         compositeDisposable.add(d);
+
                     }
 
                     @Override
                     public void onNext(List<Note> note) {
-                        myList = note;
-                        updateList(note);
+                        new NotesDiffUtilResult().getDIffUtilResult(recyclerAdapter, note);
                     }
 
                     @Override
@@ -167,11 +158,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void updateList(List<Note> baseListNote) {
-        recyclerAdapter.clearItems();
-        recyclerAdapter.setItems(baseListNote);
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -194,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (back_pressed + 2000 > System.currentTimeMillis()) {
+        if (backPressed + 2000 > System.currentTimeMillis()) {
             //эмулируем нажатие на HOME, сворачивая приложение
             Intent endWork = new Intent(Intent.ACTION_MAIN);
             endWork.addCategory(Intent.CATEGORY_HOME);
@@ -204,43 +190,12 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getBaseContext(), getString(R.string.toast_againOnBackPressed),
                     Toast.LENGTH_SHORT).show();
         }
-        back_pressed = System.currentTimeMillis();
-        Log.i(TAG, "onBackPressed()");
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.i(TAG, "onStart()");
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.i(TAG, "onResume()");
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.i(TAG, "onPause()");
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.i(TAG, "onStop()");
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        Log.i(TAG, "onRestart()");
+        backPressed = System.currentTimeMillis();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.i(TAG, "onDestroy()");
+        compositeDisposable.dispose();
     }
 }

@@ -99,16 +99,12 @@ public class RecyclerAdapterNotes extends RecyclerView.Adapter<RecyclerAdapterNo
         this.listenerLong = listenerLong;
     }
 
-    public void setItems(List<Note> notes) {
-        notesList.addAll(notes);
-        notifyDataSetChanged();
+    public List<Note> getList(){
+        return notesList;
     }
 
-    public void clearItems() {
-        if (!notesList.isEmpty()) {
-            notesList.clear();
-            notifyDataSetChanged();
-        }
+    public void setData(List<Note> newNoteList){
+        notesList = newNoteList;
     }
 
     @Override

@@ -7,7 +7,6 @@ import androidx.appcompat.widget.Toolbar;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -92,8 +91,6 @@ public class SettingsActivity extends AppCompatActivity {
         btnVisiblePin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //setBtnVisibleEyes();
-
                 if (close){
                     close = false;
                 } else {

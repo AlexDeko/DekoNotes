@@ -33,11 +33,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
-        android:scrollbars="vertical"
         android:cacheColorHint="@color/colorNull"
         android:divider="@drawable/list_divider"
         android:dividerHeight="12dp"
-        android:nestedScrollingEnabled="true" />
+        android:nestedScrollingEnabled="true"
+        android:scrollbars="vertical"
+        tools:listitem="@layout/list_item" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/FABAddNote"
