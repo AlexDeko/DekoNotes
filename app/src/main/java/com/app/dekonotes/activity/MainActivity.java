@@ -12,15 +12,12 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import com.app.dekonotes.App;
 import com.app.dekonotes.adapter.DiffUtil.NotesDiffUtilResult;
 import com.app.dekonotes.adapter.RecyclerAdapterNotes;
-import com.app.dekonotes.data.AppDatabase;
-import com.app.dekonotes.data.note.RepositoryNotesImpl;
+import com.app.dekonotes.data.note.RepositoryNotes;
 import com.app.dekonotes.data.note.Note;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.app.dekonotes.R;
@@ -42,8 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton addNewNote;
     private List<Note> myList = new ArrayList<>();
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private AppDatabase appDatabase = App.getInstance().getDatabase();
-    private RepositoryNotesImpl repositoryNotes = new RepositoryNotesImpl(appDatabase.noteDao());
+    private RepositoryNotes repositoryNotes = App.getInstance().getRepositoryNotes();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

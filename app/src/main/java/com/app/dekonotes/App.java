@@ -7,11 +7,14 @@ import androidx.room.Room;
 import com.app.dekonotes.data.AppDatabase;
 import com.app.dekonotes.data.key.HashedKeyStore;
 import com.app.dekonotes.data.key.KeyStore;
+import com.app.dekonotes.data.note.RepositoryNotes;
+import com.app.dekonotes.data.note.RepositoryNotesImpl;
 
 public class App extends Application {
     public static App instance;
     private AppDatabase database;
     private KeyStore keyStore;
+    private RepositoryNotes repositoryNotes;
 
     @Override
     public void onCreate() {
@@ -20,6 +23,7 @@ public class App extends Application {
         database = Room.databaseBuilder(this, AppDatabase.class, "database")
                 .build();
         keyStore = new HashedKeyStore(this);
+        repositoryNotes = new RepositoryNotesImpl(database.noteDao());
 
     }
 
@@ -27,8 +31,8 @@ public class App extends Application {
         return instance;
     }
 
-    public AppDatabase getDatabase() {
-        return database;
+    public RepositoryNotes getRepositoryNotes() {
+        return repositoryNotes;
     }
 
     public KeyStore getKeyStore() {

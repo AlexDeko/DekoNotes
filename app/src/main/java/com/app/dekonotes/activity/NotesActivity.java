@@ -20,10 +20,9 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.app.dekonotes.App;
 import com.app.dekonotes.R;
-import com.app.dekonotes.data.AppDatabase;
 import com.app.dekonotes.data.formatter.DateDeadlineFormatter;
 import com.app.dekonotes.data.note.CreatorNotes;
-import com.app.dekonotes.data.note.RepositoryNotesImpl;
+import com.app.dekonotes.data.note.RepositoryNotes;
 import com.app.dekonotes.data.note.Note;
 
 import java.util.Calendar;
@@ -46,11 +45,11 @@ public class NotesActivity extends AppCompatActivity {
     private Calendar deadlineCalendar = Calendar.getInstance();
     private Toolbar myToolbar;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private AppDatabase appDatabase = App.getInstance().getDatabase();
     private Bundle bundleExtra = null;
     private long idNoteBundle;
     private CreatorNotes creatorNotes = new CreatorNotes();
-    private RepositoryNotesImpl repositoryNotes = new RepositoryNotesImpl(appDatabase.noteDao());
+    private DateDeadlineFormatter dateDeadlineFormatter = new DateDeadlineFormatter();
+    private RepositoryNotes repositoryNotes = App.getInstance().getRepositoryNotes();
 
 
     @Override
@@ -100,8 +99,7 @@ public class NotesActivity extends AppCompatActivity {
                 if (checkDeadline.isChecked()) {
                     deadlineSetEnabledAndClickable();
                     Date date = new Date();
-                    dateCalendar.setText(new DateDeadlineFormatter()
-                            .getFormatDate(date.getTime()));
+                    dateCalendar.setText(dateDeadlineFormatter.getFormatDate(date.getTime()));
                 } else {
                     dateCalendar.setText(null);
                     imgBtnCalendar.setClickable(false);
@@ -144,7 +142,7 @@ public class NotesActivity extends AppCompatActivity {
             deadlineCalendar.set(Calendar.YEAR, year);
             deadlineCalendar.set(Calendar.MONTH, monthOfYear);
             deadlineCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            dateCalendar.setText(new DateDeadlineFormatter()
+            dateCalendar.setText(dateDeadlineFormatter
                     .getFormatDate(deadlineCalendar.getTimeInMillis()));
         }
     };
@@ -171,7 +169,7 @@ public class NotesActivity extends AppCompatActivity {
                 });
     }
 
-    public static Intent startNotesActivityWIthExtra(Context context, long id){
+    public static Intent startNotesActivityWIthExtra(Context context, long id) {
         Intent reWriteNote = new Intent(context,
                 NotesActivity.class);
         reWriteNote.putExtra(idBundleExtra, id);
@@ -183,7 +181,7 @@ public class NotesActivity extends AppCompatActivity {
         bundleExtra = intentInfoIdNote.getExtras();
         idNoteBundle = 0;
         if (bundleExtra != null) {
-            idNoteBundle = bundleExtra.getLong("id");
+            idNoteBundle = bundleExtra.getLong(idBundleExtra);
             repositoryNotes.getById(idNoteBundle)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new SingleObserver<Note>() {
@@ -199,7 +197,7 @@ public class NotesActivity extends AppCompatActivity {
                                 checkDeadline.setChecked(note.isCheck());
                                 if (checkDeadline.isChecked()) {
                                     deadlineCalendar.setTime(new Date(note.getDayDeadline()));
-                                    dateCalendar.setText(new DateDeadlineFormatter()
+                                    dateCalendar.setText(dateDeadlineFormatter
                                             .getFormatDate(note.getDayDeadline()));
                                     deadlineSetEnabledAndClickable();
 
