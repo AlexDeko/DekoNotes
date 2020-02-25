@@ -99,11 +99,11 @@ public class RecyclerAdapterNotes extends RecyclerView.Adapter<RecyclerAdapterNo
         this.listenerLong = listenerLong;
     }
 
-    public List<Note> getList(){
+    public List<Note> getList() {
         return notesList;
     }
 
-    public void setData(List<Note> newNoteList){
+    public void setData(List<Note> newNoteList) {
         notesList = newNoteList;
     }
 

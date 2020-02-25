@@ -24,12 +24,14 @@ public class SettingsActivity extends AppCompatActivity {
     private final static String keyBundlePin = "keyPin";
     private final static String keyBundleVisibleError = "keyPin";
     private final static String keyBundleEyesBoolean = "keyEyes";
+    private static long backPressed;
     private EditText editNewPin;
     private Button btnSave;
     private ImageButton btnVisiblePin;
     private TextView error;
     private boolean close = true;
     private Toolbar myToolbar;
+    private KeyStore keyStore = App.getInstance().getKeyStore();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,11 +74,12 @@ public class SettingsActivity extends AppCompatActivity {
             error.setVisibility(View.VISIBLE);
         } else {
             error.setVisibility(View.INVISIBLE);
-            KeyStore keyStore = App.getInstance().getKeyStore();
+
             keyStore.saveNew(editNewPin.getText().toString());
             Toast.makeText(SettingsActivity.this,
                     getString(R.string.toast_database_save),
                     Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, MainActivity.class));
         }
     }
 
@@ -92,7 +95,7 @@ public class SettingsActivity extends AppCompatActivity {
         btnVisiblePin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (close){
+                if (close) {
                     close = false;
                 } else {
                     close = true;
@@ -111,15 +114,28 @@ public class SettingsActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        startActivity(new Intent(this, MainActivity.class));
+        if (!keyStore.hasPin()) {
+            if (backPressed + 2000 > System.currentTimeMillis()) {
+                //эмулируем нажатие на HOME, сворачивая приложение
+                Intent endWork = new Intent(Intent.ACTION_MAIN);
+                endWork.addCategory(Intent.CATEGORY_HOME);
+                endWork.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(endWork);
+            } else {
+                Toast.makeText(getBaseContext(), getString(R.string.toast_againOnBackPressed),
+                        Toast.LENGTH_SHORT).show();
+            }
+            backPressed = System.currentTimeMillis();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(keyBundleEyesBoolean, close);
-        if (error.getVisibility() == View.VISIBLE){
+        if (error.getVisibility() == View.VISIBLE) {
             outState.putString(keyBundleVisibleError, editNewPin.getText().toString());
         }
 
@@ -130,7 +146,7 @@ public class SettingsActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
         close = savedInstanceState.getBoolean(keyBundleEyesBoolean);
         setBtnVisibleEyes(close);
-        if (savedInstanceState.containsKey(keyBundleVisibleError)){
+        if (savedInstanceState.containsKey(keyBundleVisibleError)) {
             setPinAndError(savedInstanceState.getString(keyBundlePin));
         }
     }

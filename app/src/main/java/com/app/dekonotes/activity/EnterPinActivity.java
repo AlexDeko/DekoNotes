@@ -18,6 +18,7 @@ import com.app.dekonotes.data.key.KeyStore;
 public class EnterPinActivity extends AppCompatActivity {
 
     private final static String keyBundlePin = "keyPin";
+    private static long backPressed;
     private Animation animAlpha;
     private Button number0;
     private Button number1;
@@ -44,19 +45,10 @@ public class EnterPinActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enter_pin);
-      //  hasPin();
         initViews();
         setClickNumberOnKeyboard();
         setClickDeleteLastInput();
     }
-
-//    private void hasPin() {
-//        if (!keyStore.hasPin()) {
-//            Intent startSettings = new Intent(EnterPinActivity.this,
-//                    SettingsActivity.class);
-//            startActivity(startSettings);
-//        }
-//    }
 
     private void storePin() {
         if (keyStore.checkPin(pin.toString())) {
@@ -173,6 +165,21 @@ public class EnterPinActivity extends AppCompatActivity {
             pin.deleteCharAt(length - 1);
         }
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (backPressed + 2000 > System.currentTimeMillis()) {
+            //эмулируем нажатие на HOME, сворачивая приложение
+            Intent endWork = new Intent(Intent.ACTION_MAIN);
+            endWork.addCategory(Intent.CATEGORY_HOME);
+            endWork.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(endWork);
+        } else {
+            Toast.makeText(getBaseContext(), getString(R.string.toast_againOnBackPressed),
+                    Toast.LENGTH_SHORT).show();
+        }
+        backPressed = System.currentTimeMillis();
     }
 
     @Override

@@ -5,12 +5,12 @@
     android:opacity="opaque">
 
     <item
-        android:drawable="@color/colorBlueToolBar"/>
+        android:drawable="@color/colorBackgroundSplash"/>
 
     <item
         android:drawable="@drawable/ic_notepad_12"
         android:gravity="center"
-        android:width="120dp"
-        android:height="240dp">
+        android:width="102dp"
+        android:height="102dp">
     </item>
 </layer-list>

@@ -15,6 +15,7 @@ import android.widget.ImageButton;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -36,6 +37,7 @@ import io.reactivex.observers.DisposableCompletableObserver;
 
 public class NotesActivity extends AppCompatActivity {
 
+    private final static String keyBundleIdNote = "keyIdNote";
     private static String idBundleExtra = "id";
     private ImageButton imgBtnCalendar = null;
     private CheckBox checkDeadline = null;
@@ -45,8 +47,7 @@ public class NotesActivity extends AppCompatActivity {
     private Calendar deadlineCalendar = Calendar.getInstance();
     private Toolbar myToolbar;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private Bundle bundleExtra = null;
-    private long idNoteBundle;
+    private long idNoteBundle = 0;
     private CreatorNotes creatorNotes = new CreatorNotes();
     private DateDeadlineFormatter dateDeadlineFormatter = new DateDeadlineFormatter();
     private RepositoryNotes repositoryNotes = App.getInstance().getRepositoryNotes();
@@ -150,7 +151,7 @@ public class NotesActivity extends AppCompatActivity {
 
         Note myNote = creatorNotes.createNote(idNoteBundle, title, text,
                 checkDeadline.isChecked(), deadlineCalendar);
-
+        idNoteBundle = myNote.getId();
         repositoryNotes.insert(myNote)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DisposableCompletableObserver() {
@@ -175,13 +176,9 @@ public class NotesActivity extends AppCompatActivity {
         return reWriteNote;
     }
 
-    private void getInfoExtra() {
-        Intent intentInfoIdNote = getIntent();
-        bundleExtra = intentInfoIdNote.getExtras();
-        idNoteBundle = 0;
-        if (bundleExtra != null) {
-            idNoteBundle = bundleExtra.getLong(idBundleExtra);
-            repositoryNotes.getById(idNoteBundle)
+    private void getNoteById(long id) {
+        if (id != 0) {
+            repositoryNotes.getById(id)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new SingleObserver<Note>() {
 
@@ -211,6 +208,17 @@ public class NotesActivity extends AppCompatActivity {
 
                         }
                     });
+        }
+    }
+
+    private void getInfoExtra() {
+        Intent intentInfoIdNote = getIntent();
+        Bundle bundleExtra = intentInfoIdNote.getExtras();
+        if (idNoteBundle != 0) {
+            getNoteById(idNoteBundle);
+        } else if (bundleExtra != null) {
+            idNoteBundle = bundleExtra.getLong(idBundleExtra);
+            getNoteById(idNoteBundle);
         }
     }
 
@@ -254,12 +262,7 @@ public class NotesActivity extends AppCompatActivity {
 
         int id = item.getItemId();
         if (id == R.id.action_save) {
-            if (bundleExtra == null) {
-                onBackPressed();
-
-            } else {
-                onBackPressed();
-            }
+            onBackPressed();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -268,7 +271,7 @@ public class NotesActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if (bundleExtra == null) {
+        if (idNoteBundle == 0) {
             saveNote();
         } else {
             update();
@@ -279,5 +282,19 @@ public class NotesActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         compositeDisposable.dispose();
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putLong(keyBundleIdNote, idNoteBundle);
+    }
+
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        idNoteBundle = savedInstanceState.getLong(keyBundleIdNote);
+        getInfoExtra();
     }
 }
