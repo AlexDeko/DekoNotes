@@ -151,12 +151,17 @@ public class NotesActivity extends AppCompatActivity {
 
         Note myNote = creatorNotes.createNote(idNoteBundle, title, text,
                 checkDeadline.isChecked(), deadlineCalendar);
-        idNoteBundle = myNote.getId();
+
         repositoryNotes.insert(myNote)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DisposableCompletableObserver() {
+                .subscribe(new SingleObserver<Long>() {
                     @Override
-                    public void onComplete() {
+                    public void onSubscribe(Disposable d) {
+                    }
+
+                    @Override
+                    public void onSuccess(Long aLong) {
+                        idNoteBundle = aLong;
                         Toast.makeText(NotesActivity.this,
                                 getString(R.string.toast_database_save),
                                 Toast.LENGTH_LONG).show();
@@ -177,47 +182,45 @@ public class NotesActivity extends AppCompatActivity {
     }
 
     private void getNoteById(long id) {
-        if (id != 0) {
-            repositoryNotes.getById(id)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new SingleObserver<Note>() {
+        repositoryNotes.getById(id)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleObserver<Note>() {
 
-                        @Override
-                        public void onSubscribe(Disposable d) {
-                            compositeDisposable.add(d);
-                        }
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        compositeDisposable.add(d);
+                    }
 
-                        @Override
-                        public void onSuccess(Note note) {
-                            if (note.getDayDeadline() != 0) {
-                                checkDeadline.setChecked(note.isCheck());
-                                if (checkDeadline.isChecked()) {
-                                    deadlineCalendar.setTime(new Date(note.getDayDeadline()));
-                                    dateCalendar.setText(dateDeadlineFormatter
-                                            .getFormatDate(note.getDayDeadline()));
-                                    deadlineSetEnabledAndClickable();
+                    @Override
+                    public void onSuccess(Note note) {
+                        if (note.getDayDeadline() != 0) {
+                            checkDeadline.setChecked(note.isCheck());
+                            if (checkDeadline.isChecked()) {
+                                deadlineCalendar.setTime(new Date(note.getDayDeadline()));
+                                dateCalendar.setText(dateDeadlineFormatter
+                                        .getFormatDate(note.getDayDeadline()));
+                                deadlineSetEnabledAndClickable();
 
-                                }
                             }
-                            title.setText(note.getTitle());
-                            text.setText(note.getText());
                         }
+                        title.setText(note.getTitle());
+                        text.setText(note.getText());
+                    }
 
-                        @Override
-                        public void onError(Throwable e) {
+                    @Override
+                    public void onError(Throwable e) {
 
-                        }
-                    });
-        }
+                    }
+                });
     }
 
     private void getInfoExtra() {
         Intent intentInfoIdNote = getIntent();
         Bundle bundleExtra = intentInfoIdNote.getExtras();
-        if (idNoteBundle != 0) {
-            getNoteById(idNoteBundle);
-        } else if (bundleExtra != null) {
+        if (bundleExtra != null) {
             idNoteBundle = bundleExtra.getLong(idBundleExtra);
+            getNoteById(idNoteBundle);
+        } else if (idNoteBundle != 0){
             getNoteById(idNoteBundle);
         }
     }
@@ -287,9 +290,11 @@ public class NotesActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putLong(keyBundleIdNote, idNoteBundle);
-    }
+        if (idNoteBundle != 0 ){
+            outState.putLong(keyBundleIdNote, idNoteBundle);
+        }
 
+    }
 
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {

@@ -23,7 +23,7 @@ public interface NoteDao {
     Single<Note> getNoteById(long id);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    Completable insertNote(Note note);
+    Single<Long> insertNote(Note note);
 
     @Update
     Completable update(Note note);

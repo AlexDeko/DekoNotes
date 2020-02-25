@@ -16,5 +16,5 @@ public interface RepositoryNotes {
 
     Completable delete(Note note);
 
-    Completable insert(Note myNote);
+    Single<Long> insert(Note myNote);
 }

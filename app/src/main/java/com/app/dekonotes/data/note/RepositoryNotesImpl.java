@@ -40,7 +40,7 @@ public class RepositoryNotesImpl implements RepositoryNotes {
     }
 
     @Override
-    public Completable insert(Note myNote) {
+    public Single<Long> insert(Note myNote) {
         return noteDao.insertNote(myNote)
                 .subscribeOn(Schedulers.io());
     }
