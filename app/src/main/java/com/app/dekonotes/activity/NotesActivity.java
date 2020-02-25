@@ -18,11 +18,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.app.dekonotes.App;
 import com.app.dekonotes.R;
 import com.app.dekonotes.data.formatter.DateDeadlineFormatter;
 import com.app.dekonotes.data.note.CreatorNotes;
+import com.app.dekonotes.data.note.NoteViewModel;
 import com.app.dekonotes.data.note.RepositoryNotes;
 import com.app.dekonotes.data.note.Note;
 
@@ -47,7 +49,7 @@ public class NotesActivity extends AppCompatActivity {
     private Calendar deadlineCalendar = Calendar.getInstance();
     private Toolbar myToolbar;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private long idNoteBundle = 0;
+    private long idNoteBundle;
     private CreatorNotes creatorNotes = new CreatorNotes();
     private DateDeadlineFormatter dateDeadlineFormatter = new DateDeadlineFormatter();
     private RepositoryNotes repositoryNotes = App.getInstance().getRepositoryNotes();
@@ -147,6 +149,11 @@ public class NotesActivity extends AppCompatActivity {
         }
     };
 
+    private void setNoteViewModel(Long idNote){
+       // NoteViewModel model = new ViewModelProvider(this).get(NoteViewModel.class);
+      //  model.getNoteId().observe(this, idNote);
+    }
+
     private void saveNote() {
 
         Note myNote = creatorNotes.createNote(idNoteBundle, title, text,
@@ -161,10 +168,11 @@ public class NotesActivity extends AppCompatActivity {
 
                     @Override
                     public void onSuccess(Long aLong) {
-                        idNoteBundle = aLong;
+                        idNoteBundle = Long.parseLong(aLong.toString());
                         Toast.makeText(NotesActivity.this,
                                 getString(R.string.toast_database_save),
                                 Toast.LENGTH_LONG).show();
+                        setNoteViewModel(aLong);
                     }
 
                     @Override
@@ -220,11 +228,12 @@ public class NotesActivity extends AppCompatActivity {
         if (bundleExtra != null) {
             idNoteBundle = bundleExtra.getLong(idBundleExtra);
             getNoteById(idNoteBundle);
-        } else if (idNoteBundle != 0){
+        } else if (idNoteBundle != 0) {
             getNoteById(idNoteBundle);
+        } else {
+            idNoteBundle = 0;
         }
     }
-
 
     private void update() {
         Note myNote = creatorNotes.createNote(idNoteBundle, title, text,
@@ -290,10 +299,9 @@ public class NotesActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (idNoteBundle != 0 ){
+        if (idNoteBundle != 0) {
             outState.putLong(keyBundleIdNote, idNoteBundle);
         }
-
     }
 
     @Override
