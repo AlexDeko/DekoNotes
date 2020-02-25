@@ -23,5 +23,6 @@ public class NoteViewModel extends ViewModel {
     }
     private void loadNoteId() {
        // noteId;
+
     }
 }

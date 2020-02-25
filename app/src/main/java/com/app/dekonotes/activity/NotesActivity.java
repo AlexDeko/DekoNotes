@@ -18,6 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.app.dekonotes.App;
@@ -150,6 +151,7 @@ public class NotesActivity extends AppCompatActivity {
     };
 
     private void setNoteViewModel(Long idNote){
+       // LiveData<Long> liveData = App.getInstance().getData();
        // NoteViewModel model = new ViewModelProvider(this).get(NoteViewModel.class);
       //  model.getNoteId().observe(this, idNote);
     }
