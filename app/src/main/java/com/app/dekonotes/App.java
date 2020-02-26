@@ -2,6 +2,7 @@ package com.app.dekonotes;
 
 import android.app.Application;
 
+import androidx.lifecycle.MutableLiveData;
 import androidx.room.Room;
 
 import com.app.dekonotes.data.AppDatabase;
@@ -27,7 +28,7 @@ public class App extends Application {
                 .build();
         keyStore = new HashedKeyStore(this);
         repositoryNotes = new RepositoryNotesImpl(database.noteDao());
-        lifeData = new LifeDataImp();
+        lifeData = new LifeDataImp(this);
 
     }
 

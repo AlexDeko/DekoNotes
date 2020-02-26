@@ -19,11 +19,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.app.dekonotes.App;
 import com.app.dekonotes.R;
 import com.app.dekonotes.data.formatter.DateDeadlineFormatter;
+import com.app.dekonotes.data.lifedata.LifeData;
+import com.app.dekonotes.data.lifedata.LifeDataImp;
 import com.app.dekonotes.data.note.CreatorNotes;
 import com.app.dekonotes.data.note.NoteViewModel;
 import com.app.dekonotes.data.note.RepositoryNotes;
@@ -66,6 +69,7 @@ public class NotesActivity extends AppCompatActivity {
         initViews();
         setClick();
         getInfoExtra();
+
     }
 
     private void initViews() {
@@ -150,10 +154,18 @@ public class NotesActivity extends AppCompatActivity {
         }
     };
 
-    private void setNoteViewModel(Long idNote){
-       // LiveData<Long> liveData = App.getInstance().getData();
-       // NoteViewModel model = new ViewModelProvider(this).get(NoteViewModel.class);
-      //  model.getNoteId().observe(this, idNote);
+    private void setNoteViewModel(final Long idNote){
+        LifeData lifeData = App.getInstance().getLifeData();
+        lifeData.observerData(idNote);
+
+        NoteViewModel model = new ViewModelProvider(this).get(NoteViewModel.class);
+        LiveData<Long> idLiveData = model.getNoteId();
+        idLiveData.observe(this, new Observer<Long>() {
+            @Override
+            public void onChanged(Long aLong) {
+                idNoteBundle = aLong;
+            }
+        });
     }
 
     private void saveNote() {

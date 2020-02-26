@@ -1,8 +1,9 @@
 package com.app.dekonotes.data.lifedata;
 
-import androidx.lifecycle.Observer;
+import io.reactivex.Flowable;
 
 public interface LifeData {
 
-    Observer<Long> observerData();
+    void observerData(Long value);
+    Long getValue();
 }

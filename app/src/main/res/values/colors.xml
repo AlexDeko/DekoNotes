@@ -8,5 +8,6 @@
     <color name="colorBackgroundSplash">#7DE3D9</color>
     <color name="colorNull">#00000000</color>
     <color name="colorBlackText">#000000</color>
+    <color name="colorBackgroundActivity">#FFF8E2</color>
 
 </resources>
