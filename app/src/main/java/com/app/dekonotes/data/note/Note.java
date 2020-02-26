@@ -1,13 +1,17 @@
 package com.app.dekonotes.data.note;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import java.util.Objects;
 
+// http://developer.alexanderklimov.ru/android/theory/parcelable.php Чтобы передавать объекты через Bundle
 @Entity
-public class Note {
+public class Note implements Parcelable {
     @PrimaryKey(autoGenerate = true)
     private long id;
     @ColumnInfo(name = "title")
@@ -32,6 +36,46 @@ public class Note {
         this.lastChange = lastChange;
         this.containsDeadline = containsDeadline;
     }
+
+    // Это всё boilerplate я создал по нажатию alt+enter, когда написал implements Parcelable.
+    // Есть способы, как это вообще не писать, но для простоты понимания пока так
+    protected Note(Parcel in) {
+        id = in.readLong();
+        title = in.readString();
+        text = in.readString();
+        check = in.readByte() != 0;
+        dayDeadline = in.readLong();
+        lastChange = in.readLong();
+        containsDeadline = in.readInt();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(id);
+        dest.writeString(title);
+        dest.writeString(text);
+        dest.writeByte((byte) (check ? 1 : 0));
+        dest.writeLong(dayDeadline);
+        dest.writeLong(lastChange);
+        dest.writeInt(containsDeadline);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Note> CREATOR = new Creator<Note>() {
+        @Override
+        public Note createFromParcel(Parcel in) {
+            return new Note(in);
+        }
+
+        @Override
+        public Note[] newArray(int size) {
+            return new Note[size];
+        }
+    };
 
     public String getTitle() {
         return title;

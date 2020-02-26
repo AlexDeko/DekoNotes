@@ -15,36 +15,30 @@ import android.widget.ImageButton;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
 import com.app.dekonotes.App;
 import com.app.dekonotes.R;
 import com.app.dekonotes.data.formatter.DateDeadlineFormatter;
-import com.app.dekonotes.data.lifedata.LifeData;
-import com.app.dekonotes.data.lifedata.LifeDataImp;
-import com.app.dekonotes.data.note.CreatorNotes;
-import com.app.dekonotes.data.note.NoteViewModel;
-import com.app.dekonotes.data.note.RepositoryNotes;
 import com.app.dekonotes.data.note.Note;
+import com.app.dekonotes.data.note.NoteViewModel;
+import com.app.dekonotes.lifecycle.FinishEvent;
+import com.app.dekonotes.lifecycle.SingleLiveEventObserver;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 
-import io.reactivex.SingleObserver;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.observers.DisposableCompletableObserver;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.AbstractSavedStateViewModelFactory;
+import androidx.lifecycle.SavedStateHandle;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 public class NotesActivity extends AppCompatActivity {
 
-    private final static String keyBundleIdNote = "keyIdNote";
-    private static String idBundleExtra = "id";
+    private final static String NOTE_KEY = "NOTE_KEY";
     private ImageButton imgBtnCalendar = null;
     private CheckBox checkDeadline = null;
     private EditText title = null;
@@ -52,24 +46,71 @@ public class NotesActivity extends AppCompatActivity {
     private EditText dateCalendar = null;
     private Calendar deadlineCalendar = Calendar.getInstance();
     private Toolbar myToolbar;
-    private CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private long idNoteBundle;
-    private CreatorNotes creatorNotes = new CreatorNotes();
     private DateDeadlineFormatter dateDeadlineFormatter = new DateDeadlineFormatter();
-    private RepositoryNotes repositoryNotes = App.getInstance().getRepositoryNotes();
+    private NoteViewModel viewModel;
+    @Nullable
+    private Note argument;
 
+    // Кажется так удобнее
+    public static void startNotesActivityWIthExtra(Context context, Note note) {
+        Intent reWriteNote = new Intent(context,
+                NotesActivity.class);
+        reWriteNote.putExtra(NOTE_KEY, note);
+
+        context.startActivity(reWriteNote);
+    }
+
+    public static void startNotesActivity(Context context) {
+        Intent reWriteNote = new Intent(context,
+                NotesActivity.class);
+
+        context.startActivity(reWriteNote);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        argument = getIntent().getParcelableExtra(NOTE_KEY);
+        initViewModel();
         setContentView(R.layout.activity_notes);
         myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         initViews();
+        if (savedInstanceState == null) {
+            setDefaultValues();
+        }
         setClick();
-        getInfoExtra();
+    }
 
+    private void initViewModel() {
+        viewModel = new ViewModelProvider(this, new AbstractSavedStateViewModelFactory(this, getIntent().getExtras()) {
+            // Поскольку у нас в конструктор передаются аргументы, нужна фабрика
+            @NonNull
+            @Override
+            protected <T extends ViewModel> T create(@NonNull String key, @NonNull Class<T> modelClass, @NonNull SavedStateHandle handle) {
+                Long defaultId = null;
+                if (argument != null) {
+                    defaultId = argument.getId();
+                }
+
+                //noinspection unchecked
+                return (T) new NoteViewModel(handle, App.getInstance().getRepositoryNotes(), defaultId);
+            }
+        }).get(NoteViewModel.class);
+
+        viewModel.getFinishEvent().observe(this, new SingleLiveEventObserver<FinishEvent>() {
+            @Override
+            public void receiveEvent(FinishEvent event) {
+                finish();
+            }
+        });
+        viewModel.getMessageEvent().observe(this, new SingleLiveEventObserver<Integer>() {
+            @Override
+            public void receiveEvent(Integer event) {
+                Toast.makeText(NotesActivity.this, event, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void initViews() {
@@ -82,6 +123,25 @@ public class NotesActivity extends AppCompatActivity {
         dateCalendar = findViewById(R.id.editDateDeadline);
         dateCalendar.setClickable(false);
         dateCalendar.setEnabled(false);
+    }
+
+    private void setDefaultValues() {
+        if (argument == null) {
+            return;
+        }
+
+        if (argument.getDayDeadline() != 0) {
+            checkDeadline.setChecked(argument.isCheck());
+            if (checkDeadline.isChecked()) {
+                deadlineCalendar.setTime(new Date(argument.getDayDeadline()));
+                dateCalendar.setText(dateDeadlineFormatter
+                        .getFormatDate(argument.getDayDeadline()));
+                deadlineSetEnabledAndClickable();
+
+            }
+        }
+        title.setText(argument.getTitle());
+        text.setText(argument.getText());
     }
 
     private void setClick() {
@@ -154,122 +214,6 @@ public class NotesActivity extends AppCompatActivity {
         }
     };
 
-    private void setNoteViewModel(final Long idNote){
-        LifeData lifeData = App.getInstance().getLifeData();
-        lifeData.observerData(idNote);
-
-        NoteViewModel model = new ViewModelProvider(this).get(NoteViewModel.class);
-        LiveData<Long> idLiveData = model.getNoteId();
-        idLiveData.observe(this, new Observer<Long>() {
-            @Override
-            public void onChanged(Long aLong) {
-                idNoteBundle = aLong;
-            }
-        });
-    }
-
-    private void saveNote() {
-
-        Note myNote = creatorNotes.createNote(idNoteBundle, title, text,
-                checkDeadline.isChecked(), deadlineCalendar);
-
-        repositoryNotes.insert(myNote)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SingleObserver<Long>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                    }
-
-                    @Override
-                    public void onSuccess(Long aLong) {
-                        idNoteBundle = Long.parseLong(aLong.toString());
-                        Toast.makeText(NotesActivity.this,
-                                getString(R.string.toast_database_save),
-                                Toast.LENGTH_LONG).show();
-                        setNoteViewModel(aLong);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-                });
-    }
-
-    public static Intent startNotesActivityWIthExtra(Context context, long id) {
-        Intent reWriteNote = new Intent(context,
-                NotesActivity.class);
-        reWriteNote.putExtra(idBundleExtra, id);
-        return reWriteNote;
-    }
-
-    private void getNoteById(long id) {
-        repositoryNotes.getById(id)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SingleObserver<Note>() {
-
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        compositeDisposable.add(d);
-                    }
-
-                    @Override
-                    public void onSuccess(Note note) {
-                        if (note.getDayDeadline() != 0) {
-                            checkDeadline.setChecked(note.isCheck());
-                            if (checkDeadline.isChecked()) {
-                                deadlineCalendar.setTime(new Date(note.getDayDeadline()));
-                                dateCalendar.setText(dateDeadlineFormatter
-                                        .getFormatDate(note.getDayDeadline()));
-                                deadlineSetEnabledAndClickable();
-
-                            }
-                        }
-                        title.setText(note.getTitle());
-                        text.setText(note.getText());
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-                });
-    }
-
-    private void getInfoExtra() {
-        Intent intentInfoIdNote = getIntent();
-        Bundle bundleExtra = intentInfoIdNote.getExtras();
-        if (bundleExtra != null) {
-            idNoteBundle = bundleExtra.getLong(idBundleExtra);
-            getNoteById(idNoteBundle);
-        } else if (idNoteBundle != 0) {
-            getNoteById(idNoteBundle);
-        } else {
-            idNoteBundle = 0;
-        }
-    }
-
-    private void update() {
-        Note myNote = creatorNotes.createNote(idNoteBundle, title, text,
-                checkDeadline.isChecked(), deadlineCalendar);
-
-        repositoryNotes.update(myNote)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DisposableCompletableObserver() {
-                    @Override
-                    public void onComplete() {
-                        Toast.makeText(NotesActivity.this,
-                                getString(R.string.toast_database_save),
-                                Toast.LENGTH_LONG).show();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-                });
-    }
-
     private void deadlineSetEnabledAndClickable() {
         imgBtnCalendar.setClickable(true);
         imgBtnCalendar.setEnabled(true);
@@ -294,34 +238,39 @@ public class NotesActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    // Нажатие на тулбар
+    @Override
+    public boolean onSupportNavigateUp() {
+        saveAndFinish();
+        return true;
+    }
+
+    // Тут если не переопределить этот метод, то по нажатию назад вьюмодель уничтожится сразу, а нам нужно, чтобы в базу сохранилось сначала
+    @Override
+    public void onBackPressed() {
+        saveAndFinish();
+    }
+
     @Override
     protected void onStop() {
         super.onStop();
-        if (idNoteBundle == 0) {
-            saveNote();
-        } else {
-            update();
+
+        if (!isFinishing()) {
+            viewModel.saveNote(title.getText().toString(), text.getText().toString(), checkDeadline.isChecked(), deadlineCalendar.getTime());
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        compositeDisposable.dispose();
-    }
-
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (idNoteBundle != 0) {
-            outState.putLong(keyBundleIdNote, idNoteBundle);
+    private void saveAndFinish() {
+        if (isNoteEmpty()) {
+            finish();
+            return;
         }
+
+        viewModel.saveNoteAndFinish(title.getText().toString(), text.getText().toString(), checkDeadline.isChecked(), deadlineCalendar.getTime());
     }
 
-    @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        idNoteBundle = savedInstanceState.getLong(keyBundleIdNote);
-        getInfoExtra();
+    // Наверное нет смысла сохранять пустую заметку?
+    private boolean isNoteEmpty() {
+        return (title.getText().toString().isEmpty() && text.getText().toString().isEmpty());
     }
 }

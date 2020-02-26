@@ -66,9 +66,7 @@ public class MainActivity extends AppCompatActivity {
                 new RecyclerAdapterNotes.OnItemClickListener() {
                     @Override
                     public void onItemClick(Note item) {
-                        startActivity(NotesActivity
-                                .startNotesActivityWIthExtra(getApplicationContext(),
-                                        item.getId()));
+                        NotesActivity.startNotesActivityWIthExtra(MainActivity.this, item);
                     }
                 },
 
@@ -147,9 +145,7 @@ public class MainActivity extends AppCompatActivity {
         addNewNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent startCreateNewNote = new Intent(MainActivity.this,
-                        NotesActivity.class);
-                startActivity(startCreateNewNote);
+                NotesActivity.startNotesActivity(MainActivity.this);
             }
         });
     }
