@@ -1,27 +1,22 @@
 package com.app.dekonotes.data.note;
 
-import android.widget.TextView;
-
-import java.util.Calendar;
 import java.util.Date;
 
 public class CreatorNotes {
 
-    public CreatorNotes() {
-
+    private CreatorNotes() {
     }
 
-    public Note createNote(long idNoteBundle, TextView title, TextView text, boolean checkDeadline,
-                           Calendar deadlineCalendar) {
+    // Лучше статика в данном случае
+    public static Note createNote(long idNote, String title, String text, boolean checkDeadline,
+                           Date deadlineDate) {
         long date;
         if (checkDeadline) {
-            date = deadlineCalendar.getTimeInMillis();
+            date = deadlineDate.getTime();
         } else {
             date = 0;
         }
 
-        String titleNote = title.getText().toString();
-        String textNote = text.getText().toString();
         Date dateChange = new Date();
         long lastChange = dateChange.getTime();
 
@@ -32,9 +27,8 @@ public class CreatorNotes {
             containsDeadline = 1;
         }
 
-        Note myNote = new Note(idNoteBundle, titleNote, textNote,
+        return new Note(idNote, title, text,
                 checkDeadline, date, lastChange, containsDeadline);
-        return myNote;
     }
 
 }

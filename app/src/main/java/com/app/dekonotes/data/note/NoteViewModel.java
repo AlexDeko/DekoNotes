@@ -1,76 +1,152 @@
 package com.app.dekonotes.data.note;
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
+import com.app.dekonotes.R;
+import com.app.dekonotes.lifecycle.FinishEvent;
+import com.app.dekonotes.lifecycle.MutableSingleLiveEvent;
+import com.app.dekonotes.lifecycle.SingleLiveEvent;
+
+import java.util.Date;
+
+import androidx.annotation.Nullable;
+import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
-
-import com.app.dekonotes.App;
-import com.app.dekonotes.data.lifedata.LifeData;
-
-import org.reactivestreams.Publisher;
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
-
-import java.util.Iterator;
-import java.util.Observable;
-
-import io.reactivex.Flowable;
-import io.reactivex.FlowableEmitter;
-import io.reactivex.FlowableOnSubscribe;
-import io.reactivex.FlowableSubscriber;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 
 public class NoteViewModel extends ViewModel {
 
-    private LifeData lifeData = App.getInstance().getLifeData();
-    private MutableLiveData<Long> noteId;
-    private Flowable<Long> longFlowable;
-    private Long aLong;
+    private final static String ID_KEY = "NOTE_ID";
 
-    public LiveData<Long> getNoteId() {
-        if (noteId == null) {
-            noteId = new MutableLiveData<>();
-
-            loadNoteId();
+    private RepositoryNotes repositoryNotes;
+    private SavedStateHandle savedStateHandle;
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    // Поскольку нет доступа к активити, таким способом сообщаем ей о событиях
+    private MutableSingleLiveEvent<FinishEvent> finishEvent = new MutableSingleLiveEvent<>();
+    // Поскольку нет доступа к активити, таким способом сообщаем ей о событиях
+    private MutableSingleLiveEvent<Integer> messageEvent = new MutableSingleLiveEvent<>();
+    private Consumer<Long> saveObserver = new Consumer<Long>() {
+        @Override
+        public void accept(Long id) {
+            savedStateHandle.set(ID_KEY, id);
+            messageEvent.sendEvent(R.string.toast_database_save);
         }
-        return noteId;
+    };
+    private Action updateObserver = new Action() {
+        @Override
+        public void run() {
+            messageEvent.sendEvent(R.string.toast_database_save);
+        }
+    };
+    private Consumer<Long> saveFinishObserver = new Consumer<Long>() {
+        @Override
+        public void accept(Long id) {
+            messageEvent.sendEvent(R.string.toast_database_save);
+            finishEvent.sendEvent(FinishEvent.getInstance());
+        }
+    };
+    private Action updateFinishObserver = new Action() {
+        @Override
+        public void run() {
+            finishEvent.sendEvent(FinishEvent.getInstance());
+        }
+    };
+
+    // Возвращаю неизменяемый интерфейс, чтобы подписчик не мог записать ничего
+    public SingleLiveEvent<FinishEvent> getFinishEvent() {
+        return finishEvent;
     }
 
-    private void loadNoteId() {
+    // Возвращаю неизменяемый интерфейс, чтобы подписчик не мог записать ничего
+    public SingleLiveEvent<Integer> getMessageEvent() {
+        return messageEvent;
+    }
 
-        longFlowable.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).subscribe(new FlowableSubscriber<Long>() {
-            @Override
-            public void onSubscribe(Subscription s) {
+    @Nullable
+    private Long defaultId;
 
+    // SavedStateHandle для доступа к Bundle из вьюмодели https://developer.android.com/topic/libraries/architecture/viewmodel-savedstate
+    public NoteViewModel(SavedStateHandle savedStateHandle, RepositoryNotes repositoryNotes, @Nullable Long defaultId) {
+        this.savedStateHandle = savedStateHandle;
+        this.repositoryNotes = repositoryNotes;
+        this.defaultId = defaultId;
+    }
+
+    public void saveNote(
+            String title,
+            String text,
+            boolean checkDeadline,
+            Date deadlineDate
+    ) {
+        saveNote(title, text, checkDeadline, deadlineDate, saveObserver, updateObserver);
+    }
+
+    public void saveNoteAndFinish(
+            String title,
+            String text,
+            boolean checkDeadline,
+            Date deadlineDate
+    ) {
+        saveNote(title, text, checkDeadline, deadlineDate, saveFinishObserver, updateFinishObserver);
+    }
+
+    private void saveNote(
+            String title,
+            String text,
+            boolean checkDeadline,
+            Date deadlineDate,
+            Consumer<Long> onSuccess,
+            Action onUpdate
+    ) {
+
+        Note note = buildNote(title, text, checkDeadline, deadlineDate);
+
+        if (note.getId() != 0) {
+            update(note, onUpdate);
+            return;
+        }
+
+        compositeDisposable.add(
+                repositoryNotes.insert(note)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(onSuccess)
+        );
+    }
+
+    private Note buildNote(
+            String title,
+            String text,
+            boolean checkDeadline,
+            Date deadlineDate
+    ) {
+        Long savedId = savedStateHandle.get(ID_KEY);
+
+        // На котлине можно намного красивее
+        long id;
+        if (savedId == null) {
+            if (defaultId != null) {
+                id = defaultId;
+            } else {
+                id = 0;
             }
+        } else {
+            id = savedId;
+        }
 
-            @Override
-            public void onNext(Long aLong) {
-                noteId.setValue(lifeData.getValue());
-            }
+        return CreatorNotes.createNote(id, title, text, checkDeadline, deadlineDate);
+    }
 
-            @Override
-            public void onError(Throwable t) {
-
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        });
+    private void update(Note note, Action onComplete) {
+        compositeDisposable.add(
+                repositoryNotes.update(note)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(onComplete)
+        );
     }
 
     @Override
     protected void onCleared() {
-        super.onCleared();
-    }
-
-    public NoteViewModel() {
-        super();
+        compositeDisposable.dispose();
     }
 }
