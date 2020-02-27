@@ -17,8 +17,9 @@ import android.widget.Toast;
 import com.app.dekonotes.App;
 import com.app.dekonotes.adapter.DiffUtil.NotesDiffUtilResult;
 import com.app.dekonotes.adapter.RecyclerAdapterNotes;
-import com.app.dekonotes.data.note.RepositoryNotes;
 import com.app.dekonotes.data.note.Note;
+import com.app.dekonotes.data.note.RepositoryNotes;
+import com.app.dekonotes.life.methods.DoubleBackPressed;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.app.dekonotes.R;
 
@@ -172,18 +173,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (backPressed + 2000 > System.currentTimeMillis()) {
-            //эмулируем нажатие на HOME, сворачивая приложение
-            Intent endWork = new Intent(Intent.ACTION_MAIN);
-            endWork.addCategory(Intent.CATEGORY_HOME);
-            endWork.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(endWork);
-        } else {
-            Toast.makeText(getBaseContext(), getString(R.string.toast_againOnBackPressed),
-                    Toast.LENGTH_SHORT).show();
-        }
-        backPressed = System.currentTimeMillis();
+        DoubleBackPressed.onBackPressed(MainActivity.this,
+                getString(R.string.toast_againOnBackPressed));
     }
+
 
     @Override
     protected void onDestroy() {

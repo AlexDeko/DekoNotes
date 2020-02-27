@@ -17,7 +17,7 @@ buildscript {
 }
 
 ext {
-    roomVersion = "2.1.0"
+    roomVersion = "2.2.4"
 }
 
 allprojects {

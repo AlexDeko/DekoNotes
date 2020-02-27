@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.app.dekonotes.App;
 import com.app.dekonotes.R;
 import com.app.dekonotes.data.key.KeyStore;
+import com.app.dekonotes.life.methods.DoubleBackPressed;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -95,11 +96,7 @@ public class SettingsActivity extends AppCompatActivity {
         btnVisiblePin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (close) {
-                    close = false;
-                } else {
-                    close = true;
-                }
+                close = !close;
                 setBtnVisibleEyes(close);
             }
         });
@@ -115,17 +112,8 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (!keyStore.hasPin()) {
-            if (backPressed + 2000 > System.currentTimeMillis()) {
-                //эмулируем нажатие на HOME, сворачивая приложение
-                Intent endWork = new Intent(Intent.ACTION_MAIN);
-                endWork.addCategory(Intent.CATEGORY_HOME);
-                endWork.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(endWork);
-            } else {
-                Toast.makeText(getBaseContext(), getString(R.string.toast_againOnBackPressed),
-                        Toast.LENGTH_SHORT).show();
-            }
-            backPressed = System.currentTimeMillis();
+            DoubleBackPressed.onBackPressed(SettingsActivity.this,
+                    getString(R.string.toast_againOnBackPressed));
         } else {
             super.onBackPressed();
         }

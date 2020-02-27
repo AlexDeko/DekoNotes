@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.app.dekonotes.App;
 import com.app.dekonotes.R;
 import com.app.dekonotes.data.key.KeyStore;
+import com.app.dekonotes.life.methods.DoubleBackPressed;
 
 public class EnterPinActivity extends AppCompatActivity {
 
@@ -169,17 +170,8 @@ public class EnterPinActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (backPressed + 2000 > System.currentTimeMillis()) {
-            //эмулируем нажатие на HOME, сворачивая приложение
-            Intent endWork = new Intent(Intent.ACTION_MAIN);
-            endWork.addCategory(Intent.CATEGORY_HOME);
-            endWork.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(endWork);
-        } else {
-            Toast.makeText(getBaseContext(), getString(R.string.toast_againOnBackPressed),
-                    Toast.LENGTH_SHORT).show();
-        }
-        backPressed = System.currentTimeMillis();
+        DoubleBackPressed.onBackPressed(EnterPinActivity.this,
+                getString(R.string.toast_againOnBackPressed));
     }
 
     @Override

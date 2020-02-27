@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.dekonotes.R;
 import com.app.dekonotes.data.formatter.DateDeadlineFormatter;
+import com.app.dekonotes.data.formatter.Formatter;
 import com.app.dekonotes.data.note.Note;
 
 import java.util.Date;
@@ -23,6 +24,7 @@ public class RecyclerAdapterNotes extends RecyclerView.Adapter<RecyclerAdapterNo
     private List<Note> notesList;
     private final OnItemClickListener listener;
     private final OnItemLongClickListener listenerLong;
+    private final Formatter dateDeadlineFormatter = new DateDeadlineFormatter();
 
     public interface OnItemClickListener {
         void onItemClick(Note item);
@@ -32,21 +34,40 @@ public class RecyclerAdapterNotes extends RecyclerView.Adapter<RecyclerAdapterNo
         void onItemLongClick(Note item);
     }
 
-    class RecyclerViewHolder extends RecyclerView.ViewHolder {
+    static class RecyclerViewHolder extends RecyclerView.ViewHolder {
 
-        TextView deadlineView;
-        TextView textView;
-        TextView titleView;
+        private TextView deadlineView;
+        private TextView textView;
+        private TextView titleView;
+        private Formatter dateFormatter;
+        private Note currentNote;
 
-        private RecyclerViewHolder(final View itemView) {
+        private RecyclerViewHolder(final View itemView, final Formatter dateFormatter,
+                                   final OnItemClickListener listener,
+                                   final OnItemLongClickListener listenerLong) {
             super(itemView);
+            this.dateFormatter = dateFormatter;
             titleView = itemView.findViewById(R.id.titleItem1);
             textView = itemView.findViewById(R.id.textItem2);
             deadlineView = itemView.findViewById(R.id.deadlineItem3);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onItemClick(currentNote);
+                }
+            });
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    listenerLong.onItemLongClick(currentNote);
+                    return true;
+                }
+            });
         }
 
-        private void bind(final Note note, final OnItemClickListener listener,
-                          final OnItemLongClickListener listenerLong) {
+        private void bind(final Note note) {
 
             if (TextUtils.isEmpty(note.getTitle())) {
                 titleView.setVisibility(View.GONE);
@@ -74,21 +95,6 @@ public class RecyclerAdapterNotes extends RecyclerView.Adapter<RecyclerAdapterNo
                             R.color.colorBlackText)));
                 }
             }
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onItemClick(note);
-                }
-            });
-
-            itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    listenerLong.onItemLongClick(note);
-                    return true;
-                }
-            });
         }
     }
 
@@ -114,12 +120,14 @@ public class RecyclerAdapterNotes extends RecyclerView.Adapter<RecyclerAdapterNo
                 .inflate(R.layout.list_item, parent, false);
 
 
-        return new RecyclerViewHolder(view);
+        return new RecyclerViewHolder(view, dateDeadlineFormatter, listener, listenerLong);
     }
 
     @Override
     public void onBindViewHolder(@NonNull final RecyclerViewHolder holder, final int position) {
-        holder.bind(notesList.get(position), listener, listenerLong);
+        Note currentNote = notesList.get(position);
+        holder.currentNote = currentNote;
+        holder.bind(currentNote);
     }
 
     @Override

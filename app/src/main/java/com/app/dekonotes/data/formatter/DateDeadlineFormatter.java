@@ -7,16 +7,16 @@ import java.util.Locale;
 
 public class DateDeadlineFormatter implements Formatter {
 
-    public DateDeadlineFormatter(){
+    private DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault());
+    private Date date = new Date();
+
+    public DateDeadlineFormatter() {
 
     }
 
     @Override
     public String getFormatDate(long dayDeadline) {
-        Date date = new Date();
         date.setTime(dayDeadline);
-        DateFormat dateFormat =
-                new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault());
-        return  dateFormat.format(date.getTime());
+        return dateFormat.format(date.getTime());
     }
 }
