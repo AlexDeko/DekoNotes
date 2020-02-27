@@ -9,7 +9,6 @@ import androidx.room.PrimaryKey;
 
 import java.util.Objects;
 
-// http://developer.alexanderklimov.ru/android/theory/parcelable.php Чтобы передавать объекты через Bundle
 @Entity
 public class Note implements Parcelable {
     @PrimaryKey(autoGenerate = true)
@@ -37,8 +36,6 @@ public class Note implements Parcelable {
         this.containsDeadline = containsDeadline;
     }
 
-    // Это всё boilerplate я создал по нажатию alt+enter, когда написал implements Parcelable.
-    // Есть способы, как это вообще не писать, но для простоты понимания пока так
     protected Note(Parcel in) {
         id = in.readLong();
         title = in.readString();

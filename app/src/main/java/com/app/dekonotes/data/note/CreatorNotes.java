@@ -7,7 +7,6 @@ public class CreatorNotes {
     private CreatorNotes() {
     }
 
-    // Лучше статика в данном случае
     public static Note createNote(long idNote, String title, String text, boolean checkDeadline,
                            Date deadlineDate) {
         long date;

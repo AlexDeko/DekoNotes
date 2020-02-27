@@ -51,7 +51,6 @@ public class NotesActivity extends AppCompatActivity {
     @Nullable
     private Note argument;
 
-    // Кажется так удобнее
     public static void startNotesActivityWIthExtra(Context context, Note note) {
         Intent reWriteNote = new Intent(context,
                 NotesActivity.class);
@@ -84,20 +83,21 @@ public class NotesActivity extends AppCompatActivity {
     }
 
     private void initViewModel() {
-        viewModel = new ViewModelProvider(this, new AbstractSavedStateViewModelFactory(this, getIntent().getExtras()) {
-            // Поскольку у нас в конструктор передаются аргументы, нужна фабрика
-            @NonNull
-            @Override
-            protected <T extends ViewModel> T create(@NonNull String key, @NonNull Class<T> modelClass, @NonNull SavedStateHandle handle) {
-                Long defaultId = null;
-                if (argument != null) {
-                    defaultId = argument.getId();
-                }
+        viewModel = new ViewModelProvider(this,
+                new AbstractSavedStateViewModelFactory(this, getIntent().getExtras()) {
+                    @NonNull
+                    @Override
+                    protected <T extends ViewModel> T create(@NonNull String key,
+                                                             @NonNull Class<T> modelClass,
+                                                             @NonNull SavedStateHandle handle) {
+                        Long defaultId = null;
+                        if (argument != null) {
+                            defaultId = argument.getId();
+                        }
 
-                //noinspection unchecked
-                return (T) new NoteViewModel(handle, App.getInstance().getRepositoryNotes(), defaultId);
-            }
-        }).get(NoteViewModel.class);
+                        return (T) new NoteViewModel(handle, App.getInstance().getRepositoryNotes(), defaultId);
+                    }
+                }).get(NoteViewModel.class);
 
         viewModel.getFinishEvent().observe(this, new SingleLiveEventObserver<FinishEvent>() {
             @Override
@@ -130,10 +130,10 @@ public class NotesActivity extends AppCompatActivity {
             return;
         }
 
+        deadlineCalendar.setTime(new Date(argument.getDayDeadline()));
         if (argument.getDayDeadline() != 0) {
             checkDeadline.setChecked(argument.isCheck());
             if (checkDeadline.isChecked()) {
-                deadlineCalendar.setTime(new Date(argument.getDayDeadline()));
                 dateCalendar.setText(dateDeadlineFormatter
                         .getFormatDate(argument.getDayDeadline()));
                 deadlineSetEnabledAndClickable();
@@ -166,6 +166,7 @@ public class NotesActivity extends AppCompatActivity {
                 if (checkDeadline.isChecked()) {
                     deadlineSetEnabledAndClickable();
                     Date date = new Date();
+                    deadlineCalendar.setTimeInMillis(date.getTime());
                     dateCalendar.setText(dateDeadlineFormatter.getFormatDate(date.getTime()));
                 } else {
                     dateCalendar.setText(null);
@@ -238,14 +239,12 @@ public class NotesActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    // Нажатие на тулбар
     @Override
     public boolean onSupportNavigateUp() {
         saveAndFinish();
         return true;
     }
 
-    // Тут если не переопределить этот метод, то по нажатию назад вьюмодель уничтожится сразу, а нам нужно, чтобы в базу сохранилось сначала
     @Override
     public void onBackPressed() {
         saveAndFinish();
@@ -256,7 +255,9 @@ public class NotesActivity extends AppCompatActivity {
         super.onStop();
 
         if (!isFinishing()) {
-            viewModel.saveNote(title.getText().toString(), text.getText().toString(), checkDeadline.isChecked(), deadlineCalendar.getTime());
+            viewModel.saveNote(title.getText().toString(),
+                    text.getText().toString(), checkDeadline.isChecked(),
+                    deadlineCalendar.getTime());
         }
     }
 
@@ -266,10 +267,18 @@ public class NotesActivity extends AppCompatActivity {
             return;
         }
 
-        viewModel.saveNoteAndFinish(title.getText().toString(), text.getText().toString(), checkDeadline.isChecked(), deadlineCalendar.getTime());
+        if (argument != null && argument.getText().equals(text.getText().toString())
+                && argument.getTitle().equals(title.getText().toString())
+                && argument.getDayDeadline() == deadlineCalendar.getTimeInMillis()
+                && (argument.getContainsDeadline() == 1) == checkDeadline.isChecked()) {
+            finish();
+            return;
+        }
+
+        viewModel.saveNoteAndFinish(title.getText().toString(), text.getText().toString(),
+                checkDeadline.isChecked(), deadlineCalendar.getTime());
     }
 
-    // Наверное нет смысла сохранять пустую заметку?
     private boolean isNoteEmpty() {
         return (title.getText().toString().isEmpty() && text.getText().toString().isEmpty());
     }

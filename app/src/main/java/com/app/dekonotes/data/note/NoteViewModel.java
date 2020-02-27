@@ -22,9 +22,7 @@ public class NoteViewModel extends ViewModel {
     private RepositoryNotes repositoryNotes;
     private SavedStateHandle savedStateHandle;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
-    // Поскольку нет доступа к активити, таким способом сообщаем ей о событиях
     private MutableSingleLiveEvent<FinishEvent> finishEvent = new MutableSingleLiveEvent<>();
-    // Поскольку нет доступа к активити, таким способом сообщаем ей о событиях
     private MutableSingleLiveEvent<Integer> messageEvent = new MutableSingleLiveEvent<>();
     private Consumer<Long> saveObserver = new Consumer<Long>() {
         @Override
@@ -53,12 +51,10 @@ public class NoteViewModel extends ViewModel {
         }
     };
 
-    // Возвращаю неизменяемый интерфейс, чтобы подписчик не мог записать ничего
     public SingleLiveEvent<FinishEvent> getFinishEvent() {
         return finishEvent;
     }
 
-    // Возвращаю неизменяемый интерфейс, чтобы подписчик не мог записать ничего
     public SingleLiveEvent<Integer> getMessageEvent() {
         return messageEvent;
     }
@@ -66,7 +62,7 @@ public class NoteViewModel extends ViewModel {
     @Nullable
     private Long defaultId;
 
-    // SavedStateHandle для доступа к Bundle из вьюмодели https://developer.android.com/topic/libraries/architecture/viewmodel-savedstate
+    // SavedStateHandle для доступа к Bundle из вьюмодели
     public NoteViewModel(SavedStateHandle savedStateHandle, RepositoryNotes repositoryNotes, @Nullable Long defaultId) {
         this.savedStateHandle = savedStateHandle;
         this.repositoryNotes = repositoryNotes;
@@ -122,7 +118,7 @@ public class NoteViewModel extends ViewModel {
     ) {
         Long savedId = savedStateHandle.get(ID_KEY);
 
-        // На котлине можно намного красивее
+        //toDo
         long id;
         if (savedId == null) {
             if (defaultId != null) {
