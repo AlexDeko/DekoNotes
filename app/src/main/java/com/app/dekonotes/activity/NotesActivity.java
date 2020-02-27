@@ -131,7 +131,7 @@ public class NotesActivity extends AppCompatActivity {
         }
 
         if (argument.getDayDeadline() != 0) {
-            checkDeadline.setChecked(argument.isCheck());
+            checkDeadline.setChecked(argument.getCheck());
             if (checkDeadline.isChecked()) {
                 deadlineCalendar.setTime(new Date(argument.getDayDeadline()));
                 dateCalendar.setText(dateDeadlineFormatter
