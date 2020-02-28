@@ -4,6 +4,7 @@
     <string name="add">Добавить</string>
     <string name="pin">****</string>
     <string name="enter_new_pin">Введите новый pin code</string>
+    <string name="enter_old_pin">Введите старый pin code</string>
     <string name="notes">Заметки</string>
     <string name="main">Начальная страница</string>
     <string name="save">Сохранить</string>
@@ -44,6 +45,7 @@
     <string name="error_pin">Введён некоректный пин-код</string>
     <string name="error_notes">Ошибка c получением заметок</string>
     <string name="error_enter_newPin">Введите, пожалуйста, 4 символа.</string>
+    <string name="error_enter_old_pin">Проверьте, пожалуйста, корректность ввода </string>
     <string name="notification_deadline_end_title">Где-то истёк deadline.</string>
     <string name="notification_deadline_end_text">Нажмите, чтобы перейти к заметкам.</string>
 

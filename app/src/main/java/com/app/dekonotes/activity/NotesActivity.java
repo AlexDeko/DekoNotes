@@ -95,7 +95,8 @@ public class NotesActivity extends AppCompatActivity {
                             defaultId = argument.getId();
                         }
 
-                        return (T) new NoteViewModel(handle, App.getInstance().getRepositoryNotes(), defaultId);
+                        return (T) new NoteViewModel(handle,
+                                App.getInstance().getRepositoryNotes(), defaultId);
                     }
                 }).get(NoteViewModel.class);
 

@@ -19,7 +19,6 @@ import com.app.dekonotes.life.methods.DoubleBackPressed;
 public class EnterPinActivity extends AppCompatActivity {
 
     private final static String keyBundlePin = "keyPin";
-    private static long backPressed;
     private Animation animAlpha;
     private Button number0;
     private Button number1;

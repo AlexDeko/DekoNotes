@@ -34,7 +34,6 @@ import io.reactivex.observers.DisposableCompletableObserver;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static long backPressed;
     private RecyclerView recyclerView;
     private RecyclerAdapterNotes recyclerAdapter;
     private FloatingActionButton addNewNote;
