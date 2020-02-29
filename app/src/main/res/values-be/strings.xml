@@ -1,48 +1,45 @@
 <resources>
-    <String name="app_name">DekoNotes</ string>
-    <String name="settings">Налады</ string> 
-    <String name="add">Дадаць</ string>
-    <String name="pin">****</ string>
-    <String name="enter_new_pin">Калі ласка, увядзіце новы pin code</ string>
-    <String name="enter_old_pin">Калі ласка, увядзіце стары pin code</ string>
-    <String name="notes">Нататкі</ string>
-    <String name="main">Пачатковая старонка</ string>
-    <String name="save">Захаваць</ string>
-    <String name="delete">Выдаліць</ string>
-    <String name="add_btn">Дадаць</ string>
-    <String name="title">Загаловак</ string>
-    <String name="deadline_check">Як наконт Deadline?</ String>
-    <String name="deadline_day">Deadline day</ string>
-    <String name="text_notes">Ваш цудоўны тэкст</ string>
-    <String name="newString">Новы радок</ string>  
-    <String name="enterPin">Калі ласка, увядзіце pin code</ string>
-    <String name="number0">0</ string>
-    <String name="number1">1</ string>
-    <String name="number2">2</ string>
-    <String name="number3">3</ string>
-    <String name="number4">4</ string>
-    <String name="number5">5</ string>
-    <String name="number6">6</ string>
-    <String name="number7">7</ string>
-    <String name="number8">8</ string>
-    <String name="number9">9</ string>
-    <String name="numberS">0</ string>
-    <String name="dialog_message">Вы ўпэўненыя, што жадаеце безвозратно выдаліць сваю пышную нататку?</ string>
-    <String name="dialog_title">Небяспечна</ string>
-    <String name="ok">Ок</ string>   
-    <String name="null_string">Пуста</ string>    
-    <String name="description_image_save_deadline">Кнопка дадаць deadline да нататцы</ string>
-    <String name="description_image_visible_password">Кнопка для адлюстравання ўводу пароля</ string>    
-    <String name="cancel">Адмена</ string>    
-    <String name="toast_save">дадзеныя захаваны</ string>    
-    <String name="toast_database_save">Захавана.</ String>
-    <String name="toast_againOnBackPressed">Націсніце яшчэ раз, каб выйсці.</ String>
-    <String name="error_note">Памылка з нататкай</ string>
-    <String name="error_pin">Уведзены некарэктныя пін-код</ string>
-    <String name="error_notes">Памылка c атрыманнем нататак</ string>   
-    <String name="error_enter_newPin">Калі ласка, увядзіце, калі ласка, 4 сімвала.</ String>
-    <String name="error_enter_old_pin">Праверце, калі ласка, карэктнасць ўводу</ string>  
-    <String name="notification_deadline_end_title">Дзе-то мінуў deadline.</ String>
-    <String name="notification_deadline_end_text">Націсніце, каб перайсці да нататак.</ String>
+    <string name="app_name">DekoNotes</string>
+    <string name="settings">Налады</string><![CDATA[ 
+    ]]>
+    <string name="pin">****</string>
+    <string name="enter_new_pin">Калі ласка, увядзіце новы pin code</string>
+    <string name="enter_old_pin">Калі ласка, увядзіце стары pin code</string>
+    <string name="save">Захаваць</string>
+    <string name="title">Загаловак</string>
+    <string name="deadline_check">Як наконт Deadline?</string>
+    <string name="deadline_day">Deadline day</string>
+    <string name="text_notes">Ваш цудоўны тэкст</string><![CDATA[
+      
+    ]]>
+    <string name="enterPin">Калі ласка, увядзіце pin code</string>
+    <string name="number0">0</string>
+    <string name="number1">1</string>
+    <string name="number2">2</string>
+    <string name="number3">3</string>
+    <string name="number4">4</string>
+    <string name="number5">5</string>
+    <string name="number6">6</string>
+    <string name="number7">7</string>
+    <string name="number8">8</string>
+    <string name="number9">9</string>
+    <string name="dialog_message">Вы ўпэўненыя, што жадаеце безвозратно выдаліць сваю пышную нататку?</string>
+    <string name="dialog_title">Небяспечна</string>
+    <string name="ok">Ок</string><![CDATA[   
+        
+    ]]>
+    <string name="description_image_save_deadline">Кнопка дадаць deadline да нататцы</string>
+    <string name="description_image_visible_password">Кнопка для адлюстравання ўводу пароля</string>    
+    <string name="cancel">Адмена</string><![CDATA[    
+        
+    ]]>
+    <string name="toast_database_save">Захавана.</string>
+    <string name="toast_againOnBackPressed">Націсніце яшчэ раз, каб выйсці.</string>
+    <string name="error_note">Памылка з нататкай</string>
+    <string name="error_pin">Уведзены некарэктныя пін-код</string>
+    <string name="error_notes">Памылка c атрыманнем нататак</string>   
+    <string name="error_enter_newPin">Калі ласка, увядзіце, калі ласка, 4 сімвала.</string>
+    <string name="error_enter_old_pin">Праверце, калі ласка, карэктнасць ўводу</string><![CDATA[  
 
+]]>
 </resources>

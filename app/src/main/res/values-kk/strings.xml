@@ -1,21 +1,20 @@
 <resources>
     <string name="app_name"> DekoNotes </string> 
     <string name="settings"> Параметрлер </string>
-    <string name="add"> Қосу </string>
     <string name="pin"> **** </string>   
     <string name="enter_new_pin"> Жаңа пин кодын енгізіңіз </string>    
-    <string name="enter_old_pin"> Ескі PIN кодын енгізіңіз </string>    
-    <string name="notes"> Ескертулер </string>
-    <string name="main"> Бастапқы бет </string>   
-    <string name="save"> Сақтау </string>   
-    <string name="delete"> Жою </string>   
-    <string name="add_btn"> Қосу </string>  
-    <string name="title"> Тақырып </string>   
+    <string name="enter_old_pin"> Ескі PIN кодын енгізіңіз </string><![CDATA[    
+
+       
+    ]]><string name="save"> Сақтау </string><![CDATA[   
+       
+      
+    ]]><string name="title"> Тақырып </string>   
     <string name="deadline_check">Мерзіміне қатысты қалай?</string>  
     <string name="deadline_day"> Соңғы күн </string>
-    <string name="text_notes"> керемет мәтініңіз </string>   
-    <string name="newString"> Жаңа жол </string>    
-    <string name="enterPin"> PIN кодты енгізіңіз </string>    
+    <string name="text_notes"> керемет мәтініңіз </string><![CDATA[   
+        
+    ]]><string name="enterPin"> PIN кодты енгізіңіз </string>    
     <string name="number0"> 0 </string>   
     <string name="number1"> 1 </string>    
     <string name="number2"> 2 </string>    
@@ -25,17 +24,17 @@
     <string name="number6"> 6 </string>    
     <string name="number7"> 7 </string>   
     <string name="number8"> 8 </string>  
-    <string name="number9"> 9 </string>    
-    <string name="numberS"> 0 </string>    
-    <string name="dialog_message"> Шынымен жойғыңыз келетініне сенімдісіз сіздің керемет жазбаңыз? </string>   
+    <string name="number9"> 9 </string><![CDATA[    
+        
+    ]]><string name="dialog_message"> Шынымен жойғыңыз келетініне сенімдісіз сіздің керемет жазбаңыз? </string>   
     <string name="dialog_title"> Қауіп </string>  
-    <string name="ok"> Ok </string>   
-    <string name="null_string"> Бос </string>    
+    <string name="ok"> Ok </string><![CDATA[   
+        
+    ]]>
     <string name="description_image_save_deadline"> Жазбаларға мерзімдерді қосу түймесі </string>
     <string name="description_image_visible_password"> Құпия сөзді енгізуге арналған батырма </string>   
-    <string name="cancel"> Болдырмау </string>    
-    <string name="toast_save"> мәліметтер сақталды </string>
-    <string name="toast_notes"> Жазбаларды ашу </string>
+    <string name="cancel"> Болдырмау </string><![CDATA[    
+    ]]>
     <string name="toast_database_save"> Сақталды. </string>
     <string name="toast_againOnBackPressed"> Шығу үшін қайтадан басыңыз. </string>
     <string name="error_note"> Ескертпенің қатесі </string>
@@ -43,6 +42,4 @@
     <string name="error_notes"> Ескертулерді қабылдау қатесі </string>
     <string name="error_enter_newPin"> 4 таңбаны енгізіңіз. </string>
     <string name="error_enter_old_pin"> Кірістің дұрыс екенін тексеріңіз </string>
-    <string name="notification_deadline_end_title"> Мерзімі бір жерде аяқталды. </string>
-    <string name="notification_deadline_end_text"> Ескертулерге өту үшін басыңыз. </string>
-    </resources>
+</resources>

@@ -1,21 +1,23 @@
 <resources>
     <string name = "app_name"> DekoNotes </string>
-        <string name = "settings"> Настройки </string>
-        <string name = "add"> Добавить </string>
-        <string name = "pin"> **** </string>
+        <string name = "settings"> Настройки </string><![CDATA[
+        
+        ]]>
+    <string name = "pin"> **** </string>
         <string name = "enter_new_pin"> Codice PIN di Введите новый </string>
-        <string name = "enter_old_pin"> Codice PIN di Введите старый </string>
-        <string name = "notes"> Заметки </string>
-    <string name = "main"> Pagina iniziale </string>
-        <string name = "save"> Salva </string>
-        <string name = "delete"> Elimina </string>
-        <string name = "add_btn"> Aggiungi </string>
-        <string name = "title"> Title </string>
+        <string name = "enter_old_pin"> Codice PIN di Введите старый </string><![CDATA[
+        
+        ]]><string name = "save"> Salva </string><![CDATA[
+        
+        
+        ]]>
+    <string name = "title"> Title </string>
         <string name = "deadline_check"> Che ne dici di Deadline? </string>
         <string name = "deadline_day"> Deadline day </string>
-    <string name = "text_notes"> Il tuo grande testo </string>
-        <string name = "newString"> Nuova linea  </string>
-        <string name = "enterPin"> Inserisci il codice pin </string>
+    <string name = "text_notes"> Il tuo grande testo </string><![CDATA[
+        
+        ]]>
+    <string name = "enterPin"> Inserisci il codice pin </string>
         <string name = "number0"> 0 </string>
         <string name = "number1"> 1 </string>
         <string name = "number2"> 2 </string>
@@ -25,25 +27,28 @@
         <string name = "number6"> 6 </string>
         <string name = "number7"> 7 </string>
         <string name = "number8"> 8 </string>
-        <string name = "number9"> 9 </string>
-        <string name = "numberS"> 0 </string>
-        <string name = "dialog_message"> Sei sicuro di voler eliminare definitivamente la tua ottima nota?</string>
+        <string name = "number9"> 9 </string><![CDATA[
+        
+        ]]>
+    <string name = "dialog_message"> Sei sicuro di voler eliminare definitivamente la tua ottima nota?</string>
         <string name = "dialog_title"> Pericolo </string>
-        <string name = "ok"> Ok </string>
-        <string name = "null_string"> Null </string>
-        <string name = "description_image_save_deadline"> Aggiungi scadenza al pulsante nota </string>
+        <string name = "ok"> Ok </string><![CDATA[
+        
+        ]]>
+    <string name = "description_image_save_deadline"> Aggiungi scadenza al pulsante nota </string>
     <string name = "description_image_visible_password"> Pulsante per visualizzare l\'immissione della password </string>
-        <string name = "cancel"> Annulla </string>
-        <string name = "toast_save"> dati salvati </string>
-        <string name = "toast_database_save"> Salvato. </string>
+        <string name = "cancel"> Annulla </string><![CDATA[
+        
+        ]]>
+    <string name = "toast_database_save"> Salvato. </string>
         <string name = "toast_againOnBackPressed"> Fai di nuovo clic per uscire. </string>
     <string name = "error_note"> Errore con la nota </string>
         <string name = "error_pin"> Pin errato inserito </string>
         <string name = "error_notes"> Errore durante la ricezione delle note </string>
         <string name = "error_enter_newPin"> Inserisci 4 caratteri. </string>
-        <string name = "error_enter_old_pin"> Controlla
-validità di input </string>
-        <string name = "notification_deadline_end_title"> La scadenza è scaduta da qualche parte. </string>
-        <string name = "notification_deadline_end_text"> Fai clic per andare alle note. </string>
+        <string name = "error_enter_old_pin"> Controlla validità di input </string><![CDATA[
+        
+        
 
+]]>
 </resources>
